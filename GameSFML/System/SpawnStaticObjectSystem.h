@@ -22,78 +22,81 @@ class SpawnStaticObjectSystem : public ISystemECS
 			}
 			return true;//keep going to find all fixtures in the query area
 		}
-		std::vector<uint32_t> foundBodies;
+		std::vector<entt::entity> foundBodies;
 		b2AABB aabb;
-		uint32_t exclutedEntity;
+		entt::entity exclutedEntity;
 	};
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
-		auto& gfx = Locator::Graphic::ref();
-		//spawn static object from tile
-		ECS.view<StaticObjectSpawnInfo>().each([&ECS, &gfx](auto entity, StaticObjectSpawnInfo &info) {
-			const b2Vec2 worldSize = gfx.GetWorldSize({ info.width, info.height });
-			const auto pos = gfx.ScreenToWorldPos(info.pos);
-			
+		//auto& gfx = Locator::Graphic::ref();
+		////spawn static object from tile
+		//ECS.view<StaticObjectSpawnInfo>().each([&ECS, &gfx](auto entity, StaticObjectSpawnInfo &info) {
+		//	const b2Vec2 worldSize = gfx.GetWorldSize({ info.width, info.height });
+		//	const auto pos = gfx.ScreenToWorldPos(info.pos);
+		//	
 
-			b2BodyDef bodyDef;
-			bodyDef.type = b2_staticBody;
-			bodyDef.position = pos;
+		//	b2BodyDef bodyDef;
+		//	bodyDef.type = b2_staticBody;
+		//	bodyDef.position = pos;
 
-			b2PolygonShape boxShape;
-			boxShape.SetAsBox(worldSize.x, worldSize.y);
+		//	b2PolygonShape boxShape;
+		//	boxShape.SetAsBox(worldSize.x, worldSize.y);
 
-			b2FixtureDef fixtureDef;
-			fixtureDef.shape = &boxShape;
-			fixtureDef.density = 1.0f;
-			fixtureDef.friction = 0.0f;
-			fixtureDef.restitution = 1.0f;
+		//	b2FixtureDef fixtureDef;
+		//	fixtureDef.shape = &boxShape;
+		//	fixtureDef.density = 1.0f;
+		//	fixtureDef.friction = 0.0f;
+		//	fixtureDef.restitution = 1.0f;
 
-			ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-			ECS.assign<PhysicDebug>(entity);
-		});
-		ECS.reset<StaticObjectSpawnInfo>();
+		//	ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
+		//	ECS.assign<PhysicDebug>(entity);
+		//});
+		//ECS.clear<StaticObjectSpawnInfo>();
 
-		//spawn custom object
-		ECS.view<StaticCustomObjectSpawnInfo>().each([&ECS, &gfx, this](auto entity, StaticCustomObjectSpawnInfo &info) {
-			const b2Vec2 worldSize = gfx.GetWorldSize({ info.width, info.height });
-			const auto pos = gfx.ScreenToWorldPos(info.pos);
+		////spawn custom object
+		//ECS.view<StaticCustomObjectSpawnInfo>().each([&ECS, &gfx, this](auto entity, StaticCustomObjectSpawnInfo &info) {
+		//	const b2Vec2 worldSize = gfx.GetWorldSize({ info.width, info.height });
+		//	const auto pos = gfx.ScreenToWorldPos(info.pos);
 
 
-			b2BodyDef bodyDef;
-			bodyDef.type = b2_staticBody;
-			bodyDef.position = pos;
+		//	b2BodyDef bodyDef;
+		//	bodyDef.type = b2_staticBody;
+		//	bodyDef.position = pos;
 
-			b2PolygonShape boxShape;
-			boxShape.SetAsBox(worldSize.x, worldSize.y);
+		//	b2PolygonShape boxShape;
+		//	boxShape.SetAsBox(worldSize.x, worldSize.y);
 
-			b2FixtureDef fixtureDef;
-			fixtureDef.shape = &boxShape;
-			fixtureDef.density = 1.0f;
-			fixtureDef.friction = 0.0f;
-			fixtureDef.restitution = 1.0f;
+		//	b2FixtureDef fixtureDef;
+		//	fixtureDef.shape = &boxShape;
+		//	fixtureDef.density = 1.0f;
+		//	fixtureDef.friction = 0.0f;
+		//	fixtureDef.restitution = 1.0f;
 
-			ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-			ECS.assign<PhysicDebug>(entity);
+		//	ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
+		//	ECS.assign<PhysicDebug>(entity);
 
-			//check if overlap with any tile object and delete the tile
-			b2AABB aabb;
-			aabb.lowerBound = pos - worldSize;
-			aabb.upperBound = pos + worldSize;
+		//	//check if overlap with any tile object and delete the tile
+		//	b2AABB aabb;
+		//	aabb.lowerBound = pos - worldSize;
+		//	aabb.upperBound = pos + worldSize;
 
-			overlapQuery.foundBodies.clear();
-			overlapQuery.aabb = aabb;
-			overlapQuery.exclutedEntity = entity;
-			Locator::Physic::ref().QueryAABB(&overlapQuery, aabb);
+		//	overlapQuery.foundBodies.clear();
+		//	overlapQuery.aabb = aabb;
+		//	overlapQuery.exclutedEntity = entity;
+		//	if (auto* physicEngine = ECS.try_ctx<PhysicEngine>(); physicEngine)
+		//	{
+		//		physicEngine->Engine->QueryAABB(&overlapQuery, aabb);
+		//	}
 
-			for (auto e : overlapQuery.foundBodies)
-			{
-				ECS.assign<Overlaped>(e);
-			}
-		});
+		//	for (auto e : overlapQuery.foundBodies)
+		//	{
+		//		ECS.assign<Overlaped>(e);
+		//	}
+		//});
 
-		ECS.reset<StaticCustomObjectSpawnInfo>();
-		ECS.destroy<Overlaped>();
+		//ECS.clear<StaticCustomObjectSpawnInfo>();
+		//ECS.clear<Overlaped>();
 	}
 private:
 	OverlapQuerySelector overlapQuery;

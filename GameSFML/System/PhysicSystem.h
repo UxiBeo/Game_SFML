@@ -1,12 +1,14 @@
 #pragma once
-#include "../Locator.h"
+#include "../Component/PhysicComponent.h"
 #include "../System/ISystemECS.h"
 
 class PhysicSystem : public ISystemECS
 {
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
-		if (Locator::Physic::empty()) return;
-		Locator::Physic::ref().Step(dt, 4, 2);
+		if (auto* physicEngine = ECS.try_ctx<PhysicEngine>(); physicEngine)
+		{
+			physicEngine->Engine->Step(dt, 4, 2);
+		}
 	}
 };

@@ -22,31 +22,35 @@ class CullingSystem : public ISystemECS
 		{
 			std::sort(std::execution::par_unseq, foundBodies.begin(), foundBodies.end());
 		}
-		std::vector<uint32_t> foundBodies;
+		std::vector<entt::entity> foundBodies;
 	};
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
-		ECS.reset<Viewable>();
-		cullingQueryCallback.foundBodies.clear();
-		auto viewport = Locator::Graphic::ref().GetViewport();
-		b2AABB aabb;
-		if (viewport.first.x > viewport.second.x)
+		if (auto* physicEngine = ECS.try_ctx<PhysicEngine>(); physicEngine)
 		{
-			std::swap(viewport.first.x, viewport.second.x);
+			ECS.clear<Viewable>();
+			cullingQueryCallback.foundBodies.clear();
+			auto viewport = Locator::Graphic::ref().GetViewport();
+			b2AABB aabb;
+			if (viewport.first.x > viewport.second.x)
+			{
+				std::swap(viewport.first.x, viewport.second.x);
+			}
+			if (viewport.first.y > viewport.second.y)
+			{
+				std::swap(viewport.first.y, viewport.second.y);
+			}
+			aabb.lowerBound = viewport.first;
+			aabb.upperBound = viewport.second;
+			physicEngine->Engine->QueryAABB(&cullingQueryCallback, aabb);
+			for (auto e : cullingQueryCallback.foundBodies)
+			{
+				ECS.assign<entt::tag<Database::Viewable>>(e);
+			}
 		}
-		if (viewport.first.y > viewport.second.y)
-		{
-			std::swap(viewport.first.y, viewport.second.y);
-		}
-		aabb.lowerBound = viewport.first;
-		aabb.upperBound = viewport.second;
-		Locator::Physic::ref().QueryAABB(&cullingQueryCallback, aabb);
 
-		for (auto e : cullingQueryCallback.foundBodies)
-		{
-			ECS.assign<Viewable>(e);
-		}
+		
 	}
 private:
 	CullingQuerySelector cullingQueryCallback;

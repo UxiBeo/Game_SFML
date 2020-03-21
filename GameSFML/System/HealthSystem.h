@@ -7,7 +7,7 @@
 class HealthSystem : public ISystemECS
 {
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
 		ECS.view<HealthComponent>().each([&ECS](auto entity, HealthComponent &Health) {
 			if (Health.curHealth > Health.maxHealth)

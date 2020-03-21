@@ -5,7 +5,7 @@
 class RenderScreenBaseUISystem final : public IDrawSystem
 {
 public:
-	void Draw(Graphics& gfx, entt::DefaultRegistry& ECS) const final
+	void Draw(Graphics& gfx, entt::registry& ECS) const final
 	{
 		ECS.view<ScreenBaseUI, ProgressiveBarComponent>().each([&gfx](auto entity, ScreenBaseUI& UI, ProgressiveBarComponent& bar) {
 			const auto location = gfx.GetViewportLocation() + UI.offsetLocaion;

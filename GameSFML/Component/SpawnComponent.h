@@ -21,9 +21,9 @@ struct SpawnPosition
 };
 struct NotifyOnDead
 {
-	uint32_t onwerEntity;
-	entt::SigH<void(uint32_t, entt::DefaultRegistry& ECS)> mySignal;
-	static void EnemyNotifySpawner(uint32_t entity, entt::DefaultRegistry& ECS)
+	entt::entity onwerEntity;
+	entt::sigh<void(entt::entity, entt::registry& ECS)> mySignal;
+	static void EnemyNotifySpawner(entt::entity entity, entt::registry& ECS)
 	{
 		auto& notifier = ECS.get<NotifyOnDead>(entity);
 		if (ECS.has<SpawnCapacity>(notifier.onwerEntity))
@@ -34,9 +34,9 @@ struct NotifyOnDead
 };
 struct UpdateSpawnComponent
 {
-	entt::Delegate<void(uint32_t, entt::DefaultRegistry&)> myDelegate;
+	entt::delegate<void(entt::entity, entt::registry&)> myDelegate;
 
-	static void Enemy(uint32_t spawnerEntity, entt::DefaultRegistry& ECS)
+	static void Enemy(entt::entity spawnerEntity, entt::registry& ECS)
 	{
 		if (ECS.has<SpawnCapacity>(spawnerEntity))
 		{
@@ -84,7 +84,7 @@ struct UpdateSpawnComponent
 		auto entity = ECS.create();
 		auto& notifier = ECS.assign<NotifyOnDead>(entity);
 		notifier.onwerEntity = spawnerEntity;
-		notifier.mySignal.sink().connect<&NotifyOnDead::EnemyNotifySpawner>();
+		//notifier.mySignal.<&NotifyOnDead::EnemyNotifySpawner>();
 		ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
 
 		//sprite
@@ -94,16 +94,16 @@ struct UpdateSpawnComponent
 			switch (textID(Locator::Random::ref()))
 			{
 			case 0:
-				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy01);
+				texture = &Codex<TextureResource>::Retrieve(Database::TEnemy01).data;
 				break;
 			case 1:
-				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy02);
+				texture = &Codex<TextureResource>::Retrieve(Database::TEnemy02).data;
 				break;
 			case 2:
-				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy03);
+				texture = &Codex<TextureResource>::Retrieve(Database::TEnemy03).data;
 				break;
 			default:
-				texture = &Locator::Codex::ref().GetTexture(Database::TEnemy01);
+				texture = &Codex<TextureResource>::Retrieve(Database::TEnemy01).data;
 				break;
 			}
 			auto& sprite = ECS.assign<sf::Sprite>(entity, *texture);
@@ -112,8 +112,8 @@ struct UpdateSpawnComponent
 		}
 
 		ECS.assign<PhysicDebug>(entity);
-		ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-		ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespondComponent::Enemy>();
+		//ECS.assign<PhysicComponent>(entity, entity, ECS, bodyDef, fixtureDef);
+		//ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespondComponent::Enemy>();
 
 		//Health Bar
 		{
@@ -126,8 +126,7 @@ struct UpdateSpawnComponent
 		//health Text
 		{
 			auto entityUI = UIFactory::GetEntity(entity, ECS);
-			const auto& textFont = Locator::Codex::ref().GetFont(Database::FontSplatch);
-			ECS.assign<sf::Text>(entityUI, "Health: ", textFont, 15);
+			ECS.assign<sf::Text>(entityUI, "Health: ", Codex<FontResource>::Retrieve(Database::FontSplatch).data, 15);
 			ECS.assign<WorldBaseUI>(entityUI, entity);
 			ECS.assign<UpdateWorldBaseUIComponent>(entityUI).myDelegate.connect<&UpdateWorldBaseUIComponent::HealthText>();
 		}

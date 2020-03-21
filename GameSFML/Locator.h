@@ -9,12 +9,9 @@
 #include <random>
 struct Locator
 {
-	using Physic = entt::ServiceLocator<b2World>;
-	using Graphic = entt::ServiceLocator<Graphics>;
-	using ECS = entt::ServiceLocator<entt::DefaultRegistry>;
-	using Random = entt::ServiceLocator<std::mt19937>;
-	using Mouse = entt::ServiceLocator<Mouse>;
-	using Keyboard = entt::ServiceLocator<Keyboard>;
-	using Codex = entt::ServiceLocator<Codex>;
-	using Grid = entt::ServiceLocator<Grid>;
+	using Graphic = entt::service_locator<Graphics>;
+	using ECS = entt::service_locator<entt::registry>;
+	using Random = entt::service_locator<std::mt19937>;
+	using Mouse = entt::service_locator<Mouse>;
+	using Keyboard = entt::service_locator<Keyboard>;
 };

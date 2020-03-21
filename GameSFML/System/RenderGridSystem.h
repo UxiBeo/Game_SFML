@@ -5,21 +5,23 @@
 class GridUpdateSystem final : public ISystemECS
 {
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
-		if (Locator::Graphic::empty() || Locator::Grid::empty()) return;
-
-		auto viewport = Locator::Graphic::ref().GetViewportScreen();
-		Locator::Grid::ref().Culling(viewport.first, viewport.second);
+		if (auto* grid = ECS.try_ctx<Grid>(); grid)
+		{
+			auto viewport = Locator::Graphic::ref().GetViewportScreen();
+			//grid->Culling(viewport.first, viewport.second);
+		}
 	}
 };
 class RenderGridSystem final : public IDrawSystem
 {
 public:
-	void Draw(Graphics& gfx, entt::DefaultRegistry& ECS) const final
+	void Draw(Graphics& gfx, entt::registry& ECS) const final
 	{
-		if (Locator::Grid::empty()) return;
-
-		gfx.Draw(Locator::Grid::ref());
+		if (auto* grid = ECS.try_ctx<Grid>(); grid)
+		{
+			grid->Draw(gfx, ECS);
+		}
 	}
 };

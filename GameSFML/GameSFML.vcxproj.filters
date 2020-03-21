@@ -65,9 +65,6 @@
     <ClInclude Include="Locator.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Box2DContactListener.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="json.hpp">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -90,9 +87,6 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Component\AnimationComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\GameplayTags.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="Component\HealthComponent.h">
@@ -134,12 +128,6 @@
     <ClInclude Include="System\ISystemECS.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="System\TransitionStateSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\TransitionStateComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="MaxxConsole.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -148,9 +136,6 @@
     </ClInclude>
     <ClInclude Include="System\CollisionRespondSystem.h">
       <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\CollisionRespondComponent.h">
-      <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="System\PlayerUpdateSystem.h">
       <Filter>Header Files\Systems</Filter>
@@ -171,6 +156,30 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Component\SpawnComponent.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MaxxUtility.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="System\StateMachineSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\CharacterStateComponent.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeFactory.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="AttributeComponent.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLayer.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\GameplayTag.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\TagRule.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>

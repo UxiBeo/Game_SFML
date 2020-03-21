@@ -22,32 +22,32 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{38CAD35A-0EF1-4EAD-AA80-786EECE45802}</ProjectGuid>
     <RootNamespace>GameSFML</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -135,14 +135,15 @@
     <ClCompile Include="Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Box2DContactListener.h" />
+    <ClInclude Include="AttributeComponent.h" />
+    <ClInclude Include="AttributeFactory.h" />
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
-    <ClInclude Include="Component\CollisionRespondComponent.h" />
+    <ClInclude Include="Component\CharacterStateComponent.h" />
+    <ClInclude Include="Component\GameplayTag.h" />
     <ClInclude Include="Component\SpawnComponent.h" />
+    <ClInclude Include="Component\TagRule.h" />
     <ClInclude Include="Component\UIComponent.h" />
-    <ClInclude Include="Component\TransitionStateComponent.h" />
-    <ClInclude Include="Component\GameplayTags.h" />
     <ClInclude Include="Component\HealthComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
     <ClInclude Include="Component\PlayerControllerComponent.h" />
@@ -156,7 +157,9 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="MapLayer.h" />
     <ClInclude Include="MaxxConsole.h" />
+    <ClInclude Include="MaxxUtility.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="SystemInclude.h" />
     <ClInclude Include="System\CollisionRespondSystem.h" />
@@ -165,7 +168,6 @@
     <ClInclude Include="System\PlayerUpdateSystem.h" />
     <ClInclude Include="System\RenderScreenBaseUISystem.h" />
     <ClInclude Include="System\RenderWorldBaseUISystem.h" />
-    <ClInclude Include="System\TransitionStateSystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />
     <ClInclude Include="System\CullingSystem.h" />
     <ClInclude Include="System\DrawDebugSystem.h" />
@@ -178,6 +180,7 @@
     <ClInclude Include="System\RenderSpriteSystem.h" />
     <ClInclude Include="System\SpawnAndCleanDeathSystem.h" />
     <ClInclude Include="System\SpawnStaticObjectSystem.h" />
+    <ClInclude Include="System\StateMachineSystem.h" />
     <ClInclude Include="System\UpdateUISystem.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>

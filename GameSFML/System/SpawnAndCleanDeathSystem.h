@@ -6,21 +6,21 @@
 class CleanDeadSystem : public ISystemECS
 {
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
-		ECS.view<DeathTag, NotifyOnDead>().each([&ECS, dt](auto entity, auto&, NotifyOnDead& notifier) {
+		/*ECS.view<DeathTag, NotifyOnDead>().each([&ECS, dt](auto entity, auto&, NotifyOnDead& notifier) {
 			notifier.mySignal.publish(entity, ECS);
 			ECS.destroy(entity);
 		});
-		ECS.destroy<DeathTag>();
+		ECS.clear<DeathTag>();*/
 	}
 };
 class SpawnSystem : public ISystemECS
 {
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
-		ECS.view<SpawnComponent, UpdateSpawnComponent>().each([&ECS, dt](auto entity, SpawnComponent& spawn, UpdateSpawnComponent& update) {
+		/*ECS.view<SpawnComponent, UpdateSpawnComponent>().each([&ECS, dt](auto entity, SpawnComponent& spawn, UpdateSpawnComponent& update) {
 			if (!spawn.bIsEnable) return;
 
 			spawn.curTime += dt;
@@ -29,6 +29,6 @@ public:
 				spawn.curTime -= spawn.interval;
 				update.myDelegate(entity, ECS);
 			}
-		});
+		});*/
 	}
 };

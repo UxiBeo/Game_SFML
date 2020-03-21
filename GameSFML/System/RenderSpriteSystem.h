@@ -14,35 +14,37 @@ class SpirteUpdateSystem final : public ISystemECS
 {
 public:
 	//update before Culling, animation, physic
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
 		{
-			auto view = ECS.view<Viewable, AnimationComponent, sf::Sprite>();
+			auto view = ECS.view<AnimationComponent, sf::Sprite>();
 
 			std::for_each(std::execution::par, view.begin(), view.end(), [&ECS](auto entity) {
 				auto& animCom = ECS.get<AnimationComponent>(entity);
-				ECS.get<sf::Sprite>(entity).setTextureRect(animCom.frames->at(animCom.iCurFrame));
+				auto& sprite = ECS.get<sf::Sprite>(entity);
+				sprite.setTextureRect(Codex<AnimationResource>::Retrieve(animCom.animationName).GetRectByIndex(animCom.iCurFrame));
 			});
 		}
 
 		{
-			auto view = ECS.view<Viewable, PhysicComponent, sf::Sprite>();
+			auto view = ECS.view<PhysicComponent, sf::Sprite>();
 			std::for_each(std::execution::par, view.begin(), view.end(), [&ECS](auto entity) {
 				auto& sprite = ECS.get<sf::Sprite>(entity);
 
 				sprite.setPosition(
 					Locator::Graphic::ref().WorldToScreenPos(ECS.get<PhysicComponent>(entity).body->GetPosition())
 				);
-			});
+				});
 		}
+		
 	}
 };
 class RenderSpriteSystem final : public IDrawSystem
 {
 public:
-	void Draw(Graphics& gfx, entt::DefaultRegistry& ECS) const final
+	void Draw(Graphics& gfx, entt::registry& ECS) const final
 	{
-		ECS.view<Viewable, sf::Sprite>().each([&gfx](auto entity, auto&, sf::Sprite &sprite) {
+		ECS.view<sf::Sprite>().each([&gfx](auto entity, sf::Sprite &sprite) {
 			gfx.DrawSprite(sprite);
 		});
 	}

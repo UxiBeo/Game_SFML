@@ -4,5 +4,5 @@
 class IDrawSystem
 {
 public:
-	virtual void Draw(Graphics& gfx, entt::DefaultRegistry& ECS) const = 0;
+	virtual void Draw(Graphics& gfx, entt::registry& ECS) const = 0;
 };

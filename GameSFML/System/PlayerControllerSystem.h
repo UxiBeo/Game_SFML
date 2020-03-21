@@ -6,7 +6,7 @@
 class PlayerControllerSystem final : public ISystemECS
 {
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	void Update(entt::registry& ECS, float dt) final
 	{
 		//keyboard
 		auto& kbd = Locator::Keyboard::ref();
@@ -57,7 +57,7 @@ public:
 		}
 		ECS.view<PlayerControllerComponent>().each([&dir, bIsShooting, &mouse](auto entity, PlayerControllerComponent& controller) {
 			controller.direction = dir;
-			controller.bIsShooting = bIsShooting;
+			controller.shootIsPressed = bIsShooting;
 			controller.mousePos = mouse.GetPos();
 		});
 	}

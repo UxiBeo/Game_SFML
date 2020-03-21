@@ -4,20 +4,23 @@
 #include <vector>
 struct AnimationComponent
 {
-	AnimationComponent(const AnimationResource& resource, unsigned int iAnimationSet = 0)
+	AnimationComponent(entt::hashed_string animationName)
 		:
-		holdTime((float)resource.frameTime / 1000.0f),
-		rangeIndex(resource.animationSets[iAnimationSet]),
-		frames(&resource.frames),
-		resource(&resource)
+		animationName(animationName)
 	{
-		rangeIndex.second = rangeIndex.first;
+		const auto& resource = Codex<AnimationResource>::Retrieve(animationName);
+		textureName = resource.textureName;
+		holdTime = float(resource.frameTime) / 1000.0f;
+		
+		beginFrame = resource.sets[0].rangeIndex.first;
+		endFrame = resource.sets[0].rangeIndex.second;
 	}
-	float holdTime;
+	bool isUpdate = true;
+	float holdTime = 0.16f;
 	float curFrameTime = 0.0f;
-	unsigned char iCurFrame = 0;
-	std::pair<unsigned char, unsigned char> rangeIndex;
-	//will use share component in the next entt update
-	const std::vector<sf::IntRect>* frames = nullptr;
-	const AnimationResource* resource = nullptr;
+	unsigned char iCurFrame = 0u;
+	unsigned char beginFrame = 0u;
+	unsigned char endFrame = 0u;
+	entt::hashed_string animationName;
+	entt::hashed_string textureName;
 };

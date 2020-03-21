@@ -8,11 +8,11 @@
 class DrawDebugSystem final : public IDrawSystem
 {
 public:
-	void Draw(Graphics& gfx, entt::DefaultRegistry& ECS) const final
+	void Draw(Graphics& gfx, entt::registry& ECS) const final
 	{
 		if (MaxxConsole::r_showDebugPhysic == 0) return;
 
-		ECS.view<Viewable, PhysicDebug, PhysicComponent>().each([&ECS, &gfx](auto entity, auto&, auto&, PhysicComponent &physic) {
+		/*ECS.view<Viewable, PhysicDebug, PhysicComponent>().each([&ECS, &gfx](auto entity, auto&, auto&, PhysicComponent &physic) {
 			switch (physic.body->GetFixtureList()->GetShape()->m_type)
 			{
 			case b2Shape::Type::e_polygon:
@@ -39,6 +39,6 @@ public:
 			default:
 				break;
 			}
-		});
+		});*/
 	}
 };

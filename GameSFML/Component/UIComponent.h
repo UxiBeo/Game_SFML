@@ -4,16 +4,16 @@
 
 struct ScreenBaseUI
 {
-	uint32_t ownerEntity;
+	entt::entity ownerEntity;
 	//this is the location offset from central of the screen
 	sf::Vector2f offsetLocaion;
 };
 struct OwnedUIComponent
 {
 	//hold all Owned UI entity
-	std::vector<uint32_t> entities;
+	std::vector<entt::entity> entities;
 
-	static void Destruction(entt::DefaultRegistry& ECS, uint32_t entity)
+	static void Destruction(entt::registry& ECS, entt::entity entity)
 	{
 		auto& owend = ECS.get<OwnedUIComponent>(entity);
 		for (auto& e : owend.entities)
@@ -24,7 +24,7 @@ struct OwnedUIComponent
 };
 struct WorldBaseUI
 {
-	uint32_t ownerEntity;
+	entt::entity ownerEntity;
 };
 
 struct ProgressiveBarComponent
@@ -36,9 +36,9 @@ struct ProgressiveBarComponent
 };
 struct UpdateScreenBaseUIComponent
 {
-	entt::Delegate<void(uint32_t, entt::DefaultRegistry&)> myDelegate;
+	entt::delegate<void(entt::entity, entt::registry&)> myDelegate;
 
-	static void HealthText(uint32_t entity, entt::DefaultRegistry& ECS)
+	static void HealthText(entt::entity entity, entt::registry& ECS)
 	{
 		if (!ECS.has<sf::Text>(entity) || !ECS.has<ScreenBaseUI>(entity)) return;
 
@@ -55,7 +55,7 @@ struct UpdateScreenBaseUIComponent
 
 		text.setPosition(Locator::Graphic::ref().GetViewportLocation() + UI.offsetLocaion);
 	}
-	static void HealthBar(uint32_t entity, entt::DefaultRegistry& ECS)
+	static void HealthBar(entt::entity entity, entt::registry& ECS)
 	{
 		if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<ScreenBaseUI>(entity)) return;
 
@@ -70,9 +70,9 @@ struct UpdateScreenBaseUIComponent
 };
 struct UpdateWorldBaseUIComponent
 {
-	entt::Delegate<void(uint32_t, entt::DefaultRegistry&)> myDelegate;
+	entt::delegate<void(entt::entity, entt::registry&)> myDelegate;
 
-	static void HealthText(uint32_t entity, entt::DefaultRegistry& ECS)
+	static void HealthText(entt::entity entity, entt::registry& ECS)
 	{
 		if (!ECS.has<sf::Text>(entity) || !ECS.has<WorldBaseUI>(entity)) return;
 
@@ -86,7 +86,7 @@ struct UpdateWorldBaseUIComponent
 		ss << (int)health.curHealth << " / " << (int)health.maxHealth;
 		text.setString(ss.str());
 	}
-	static void HealthBar(uint32_t entity, entt::DefaultRegistry& ECS)
+	static void HealthBar(entt::entity entity, entt::registry& ECS)
 	{
 		if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<WorldBaseUI>(entity)) return;
 
@@ -102,7 +102,7 @@ struct UpdateWorldBaseUIComponent
 
 struct UIFactory
 {
-	static uint32_t GetEntity(uint32_t entityOwner, entt::DefaultRegistry& ECS, bool bIsHaveOwner = true)
+	static entt::entity GetEntity(entt::entity entityOwner, entt::registry& ECS, bool bIsHaveOwner = true)
 	{
 		auto uiEntity = ECS.create();
 		if (bIsHaveOwner)

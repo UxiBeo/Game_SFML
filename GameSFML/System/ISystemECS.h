@@ -1,8 +1,9 @@
 #pragma once
 #include "entt/entt.hpp"
+#include "../HashStringDataBase.h"
 #include <execution>
 class ISystemECS
 {
 public:
-	virtual void Update(entt::DefaultRegistry& ECS, float dt) = 0;
+	virtual void Update(entt::registry& ECS, float dt) = 0;
 };

@@ -4,7 +4,7 @@
 class LifeTimeSystem : public ISystemECS
 {
 public:
-	void Update(entt::DefaultRegistry& ECS, float dt)
+	void Update(entt::registry& ECS, float dt)
 	{
 		ECS.view<LifeTimeComponent>().each([&ECS,dt](auto entity, LifeTimeComponent& lifeTime) {
 			lifeTime.curTime += dt;

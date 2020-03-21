@@ -6,7 +6,7 @@
 
 class UpdateScreenBaseUISystem : public ISystemECS
 {
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	/*void Update(entt::registry& ECS, float dt) final
 	{
 		auto view = ECS.view<UpdateScreenBaseUIComponent>();
 		std::for_each(std::execution::par, view.begin(), view.end(), [&ECS](auto entity) {
@@ -15,14 +15,14 @@ class UpdateScreenBaseUISystem : public ISystemECS
 
 			updateUI.myDelegate(entity, ECS);
 		});
-	}
+	}*/
 };
 
 class UpdateWorldBaseUISystem : public ISystemECS
 {
-	void Update(entt::DefaultRegistry& ECS, float dt) final
+	/*void Update(entt::registry& ECS, float dt) final
 	{
-		ECS.reset<UIViewable>();
+		ECS.clear<UIViewable>();
 
 		ECS.view<Viewable, OwnedUIComponent>().each([&ECS](auto entity, auto&, OwnedUIComponent& owned) {
 			for (auto e : owned.entities)
@@ -38,5 +38,5 @@ class UpdateWorldBaseUISystem : public ISystemECS
 
 			updateUI.myDelegate(entity, ECS);
 		});
-	}
+	}*/
 };

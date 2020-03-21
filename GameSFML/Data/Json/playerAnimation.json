@@ -7,19 +7,19 @@
   "frameTime": 150,
   "animationSets": [
     {
-      "id": 1,
+      "id": "MoveUp",
       "index": [0, 8]
     },
     {
-      "id": 2,
+      "id": "MoveLeft",
       "index": [9, 17]
     },
     {
-      "id": 3,
+      "id": "MoveDown",
       "index": [18, 26]
     },
     {
-      "id": 4,
+      "id": "MoveRight",
       "index": [27, 35]
     }
   ]
