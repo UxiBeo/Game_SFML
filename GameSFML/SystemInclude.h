@@ -6,7 +6,7 @@
 #include "System/DrawDebugSystem.h"
 #include "System/RenderScreenBaseUISystem.h"
 #include "System/RenderWorldBaseUISystem.h"
-#include "System/HealthSystem.h"
+#include "System/AttributeSystem.h"
 #include "System/SpawnAndCleanDeathSystem.h"
 #include "System/AnimationSystem.h"
 #include "System/MoveCameraSystem.h"
@@ -17,3 +17,4 @@
 #include "System/LifeTimeSystem.h"
 #include "System/UpdateUISystem.h"
 #include "System/StateMachineSystem.h"
+#include "System/CleanDeathSystem.h"

@@ -1,6 +1,7 @@
 #pragma once
 #include "HashStringDataBase.h"
 #include "SystemInclude.h"
+#include "Component/StaticFunction.h"
 #include <random>
 class World
 {
@@ -34,6 +35,7 @@ public:
 		
 	}
 	void AddNewPlayer(entt::registry& ECS) {
+		auto entity = ECS.create();
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
 		const float size = 1.3f;
@@ -48,8 +50,9 @@ public:
 		fixtureDef.density = 1.0f;
 		fixtureDef.friction = 0.0f;
 		fixtureDef.restitution = 1.0f;
-		auto entity = ECS.create();
-		ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
+		
+		
+		//ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
 		ECS.assign<PlayerControllerComponent>(entity);
 
 		auto& animation = ECS.assign<AnimationComponent>(entity, Database::PlayerAnimation);
@@ -65,8 +68,9 @@ public:
 
 
 		//ECS.assign<PhysicDebug>(entity);
-		ECS.assign<CameraTracking>(entity);
-		ECS.assign<PhysicComponent>(entity, entity, ECS.ctx<PhysicEngine>(), bodyDef, fixtureDef);
+		ECS.assign<entt::tag<"CameraTracking"_hs>>(entity);
+		Sfunc::AddPhysic(entity, ECS, bodyDef, fixtureDef);
+		
 		//ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespondComponent::Player>();
 
 		//health text
@@ -128,7 +132,7 @@ public:
 		fixtureDef.friction = 0.0f;
 		fixtureDef.restitution = 1.0f;
 		auto entity = ECS.create();
-		ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
+		//ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
 		ECS.assign<PlayerControllerComponent>(entity);
 
 		/*auto& animation = ECS.assign<AnimationComponent>(entity,
@@ -144,8 +148,8 @@ public:
 		}
 
 
-		ECS.assign<PhysicDebug>(entity);
-		ECS.assign<CameraTracking>(entity);
+		ECS.assign<entt::tag<"PhysicDebug"_hs>>(entity);
+		ECS.assign<entt::tag<"CameraTracking"_hs>>(entity);
 		//ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
 		//ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespondComponent::Player>();
 
@@ -169,7 +173,7 @@ public:
 private:
 	void SignalComponent(entt::registry& ECS)
 	{
-		ECS.on_destroy<OwnedUIComponent>().connect<&OwnedUIComponent::Destruction>();
+		ECS.on_destroy<PhysicComponent>().connect<&Sfunc::DestroyPhysicComponent>();
 	}
 	template<typename Context>
 	Context& AddContex(entt::registry& ECS)
@@ -184,7 +188,7 @@ private:
 		if (!Locator::ECS::empty())
 		{
 			auto& ECS = Locator::ECS::ref();
-			ECS.set<PhysicEngine>().Engine->SetContactListener(&ECS.set<Box2DContactListener>());
+			ECS.set<PhysicEngine>(b2Vec2(0.0f,0.0f)).SetContactListener(&ECS.set<Box2DContactListener>());
 
 			ECS.set<Grid>().LoadFromFile(Database::GridMap);
 		}
@@ -198,12 +202,12 @@ private:
 		AddECSSystem(std::make_unique<PlayerUpdateSystem>());
 		AddECSSystem(std::make_unique<StateMachineSystem>());
 		AddECSSystem(std::make_unique<PhysicSystem>());
-		//AddECSSystem(std::make_unique<CollisionRespondSystem>());
-		//AddECSSystem(std::make_unique<HealthSystem>());
+		AddECSSystem(std::make_unique<CollisionRespondSystem>());
+		AddECSSystem(std::make_unique<AttributeSystem>());
 		AddECSSystem(std::make_unique<MoveCameraSystem>());
 		//AddECSSystem(std::make_unique<GridUpdateSystem>());
 		//AddECSSystem(std::make_unique<SpawnSystem>());
-		//AddECSSystem(std::make_unique<CleanDeadSystem>());
+		AddECSSystem(std::make_unique<CleanDeadSystem>());
 		//AddECSSystem(std::make_unique<CullingSystem>());
 		//AddECSSystem(std::make_unique<UpdateScreenBaseUISystem>());
 		//AddECSSystem(std::make_unique<UpdateWorldBaseUISystem>());

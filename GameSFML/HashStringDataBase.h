@@ -11,7 +11,7 @@ namespace Database
 	constexpr auto FontSplatch = "Data\\Fonts\\Adventure.otf"_hs;
 	constexpr auto UpdateAnimation = "UpdateAnimation"_hs;
 	constexpr auto Viewable = "Viewable"_hs;
-
+	constexpr auto DestroyMe = "Destroy Me"_hs;
 	/*------------------Attribute Stat-----------------------*/
 	constexpr auto AHealth = "Att Health"_hs;
 	constexpr auto AMana = "Att Mana"_hs;

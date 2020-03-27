@@ -384,10 +384,10 @@ public:
 private:
     Chunk& getChunkAndTransform(int x, int y, sf::Vector2u& chunkRelative)
     {
-        uint32_t chunkX = (uint32_t)floor(((float)x * m_MapTileSize.x) / m_chunkSize.x);
-        uint32_t chunkY = (uint32_t)floor(((float)y * m_MapTileSize.y) / m_chunkSize.y);
-        chunkRelative.x = ((x * m_MapTileSize.x) - chunkX * m_chunkSize.x) / m_MapTileSize.x;
-        chunkRelative.y = ((y * m_MapTileSize.y) - chunkY * m_chunkSize.y) / m_MapTileSize.y;
+        uint32_t chunkX = (uint32_t)floor((x * m_MapTileSize.x) / m_chunkSize.x);
+        uint32_t chunkY = (uint32_t)floor((y * m_MapTileSize.y) / m_chunkSize.y);
+        chunkRelative.x = uint32_t(((x * m_MapTileSize.x) - chunkX * m_chunkSize.x) / m_MapTileSize.x);
+        chunkRelative.y = uint32_t(((y * m_MapTileSize.y) - chunkY * m_chunkSize.y) / m_MapTileSize.y);
         return  m_chunks[chunkX + chunkY * m_chunkCount.x];
     }
     void createChunks(const tmx::Map& map, const tmx::TileLayer& layer)

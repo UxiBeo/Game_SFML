@@ -85,7 +85,7 @@ struct UpdateSpawnComponent
 		auto& notifier = ECS.assign<NotifyOnDead>(entity);
 		notifier.onwerEntity = spawnerEntity;
 		//notifier.mySignal.<&NotifyOnDead::EnemyNotifySpawner>();
-		ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
+		//ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
 
 		//sprite
 		{
@@ -111,7 +111,7 @@ struct UpdateSpawnComponent
 			sprite.setOrigin(textSize);
 		}
 
-		ECS.assign<PhysicDebug>(entity);
+		ECS.assign<entt::tag<"PhysicDebug"_hs>>(entity);
 		//ECS.assign<PhysicComponent>(entity, entity, ECS, bodyDef, fixtureDef);
 		//ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespondComponent::Enemy>();
 

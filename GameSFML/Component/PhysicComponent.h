@@ -1,7 +1,6 @@
 #pragma once
-#include <memory>
-#include <functional>
 #include <vector>
+#include <execution>
 #include "Box2D/Box2D.h"
 #include "Locator.h"
 
@@ -14,43 +13,74 @@ enum CollisionFillter {
 class Box2DContactListener final : public b2ContactListener
 {
 public:
+	//2 entity collided waith each other
 	using PairEntity = std::pair<entt::entity, entt::entity>;
+
+	//1st element, 2: list of entity collied with entity 1st element
+	using CollisionList = std::pair<entt::entity, std::vector<entt::entity>>;
 	void BeginContact(b2Contact* contact) final
 	{
 		auto* ptrBody1 = contact->GetFixtureA()->GetBody();
 		auto* ptrBody2 = contact->GetFixtureB()->GetBody();
+		
 		if (ptrBody1->GetType() == b2BodyType::b2_staticBody || ptrBody2->GetType() == b2BodyType::b2_staticBody) return;
-
-		data.push_back({ ptrBody1->GetUserEntity(), ptrBody2->GetUserEntity() });
+		
+		
+		if (contact->GetFixtureA()->IsSensor())
+		{
+			data[1].push_back({ ptrBody1->GetUserEntity(), ptrBody2->GetUserEntity() });
+			return;
+		}
+		if (contact->GetFixtureB()->IsSensor())
+		{
+			data[1].push_back({ ptrBody2->GetUserEntity(), ptrBody1->GetUserEntity() });
+			return;
+		}
+		data[0].push_back({ ptrBody1->GetUserEntity(), ptrBody2->GetUserEntity() });
 	}
-	void ClearData()
+	void EndContact(b2Contact* contact) final
 	{
-		data.clear();
+		bool sensorA = contact->GetFixtureA()->IsSensor();
+		bool sensorB = contact->GetFixtureB()->IsSensor();
+		if (sensorA ^ sensorB)
+		{
+			auto* ptrBody1 = contact->GetFixtureA()->GetBody();
+			auto* ptrBody2 = contact->GetFixtureB()->GetBody();
+
+			if (ptrBody1->GetType() == b2BodyType::b2_staticBody || ptrBody2->GetType() == b2BodyType::b2_staticBody) return;
+
+
+			if (sensorA)
+			{
+				data[2].push_back({ ptrBody1->GetUserEntity(), ptrBody2->GetUserEntity() });
+				return;
+			}
+			if (sensorB)
+			{
+				data[2].push_back({ ptrBody2->GetUserEntity(), ptrBody1->GetUserEntity() });
+				return;
+			}
+		}
+		
 	}
-	const std::vector<PairEntity>& ReadData() const
+	void ClearAll()
+	{
+		std::for_each(std::execution::par_unseq, data.begin(), data.end(), [](std::vector<PairEntity>& con) { con.clear(); });
+	}
+	const std::array<std::vector<PairEntity>, 3>& ReadData() const
 	{
 		return data;
 	}
+	void Sort()
+	{
+		std::for_each(std::execution::par_unseq, data.begin(), data.end(), [](std::vector<PairEntity>& con) {
+			std::sort(std::execution::par_unseq, con.begin(), con.end());
+			});
+	}
 private:
-	std::vector<PairEntity> data;
+private:
+	//0: for normal Collision, 1: for sensor in, 2: for sensor out
+	std::array<std::vector<PairEntity>, 3> data;
 };
-struct PhysicEngine
-{
-	PhysicEngine(b2Vec2 vec = { 0.0f,0.0f })
-	{
-		Engine = std::make_unique<b2World>(vec);
-	}
-	std::unique_ptr<b2World> Engine;
-};
-struct PhysicComponent
-{
-	PhysicComponent(entt::entity entity, PhysicEngine& physicEngine, const b2BodyDef& bodyDef = b2BodyDef(), const b2FixtureDef& fixtureDef = b2FixtureDef())
-	{
-		body = { physicEngine.Engine->CreateBody(&bodyDef),[&physicEngine](b2Body* pBody) {physicEngine.Engine->DestroyBody(pBody); } };
-		body->CreateFixture(&fixtureDef);
-		body->SetUserEntity(entity);
-		
-	}
-	PhysicComponent() = default;
-	std::unique_ptr<b2Body, std::function<void(b2Body*)>> body;
-};
+using PhysicEngine = b2World;
+using PhysicComponent = b2Body*;

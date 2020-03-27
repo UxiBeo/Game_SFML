@@ -1,7 +1,6 @@
 #pragma once
 #include "../System/ISystemECS.h"
 #include "../Locator.h"
-#include "../Component/GameplayTags.h"
 #include "../Component/PhysicComponent.h"
 
 class MoveCameraSystem : public ISystemECS
@@ -9,10 +8,10 @@ class MoveCameraSystem : public ISystemECS
 public:
 	void Update(entt::registry& ECS, float dt) final
 	{
-		ECS.view<CameraTracking, PhysicComponent>().each([](auto entity, auto, PhysicComponent& physic) {
+		ECS.view<entt::tag<"CameraTracking"_hs>, PhysicComponent>().each([](auto entity, auto, PhysicComponent& physic) {
 			if (Locator::Graphic::empty()) return;
 
-			Locator::Graphic::ref().MoveViewport(physic.body->GetPosition());
+			Locator::Graphic::ref().MoveViewport(physic->GetPosition());
 		});
 	}
 private:

@@ -5,7 +5,6 @@
 #include "GameResource.h"
 #include "HashStringDataBase.h"
 #include "Component/StaticObjectSpawnInfo.h"
-#include "Component/GameplayTags.h"
 
 #include "MapLayer.h"
 #include "System/IDrawSystem.h"

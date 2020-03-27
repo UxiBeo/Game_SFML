@@ -3,7 +3,6 @@
 #include "../System/ISystemECS.h"
 #include "../Component/PhysicComponent.h"
 #include "../Component/AnimationComponent.h"
-#include "../Component/GameplayTags.h"
 #include "../HashStringDataBase.h"
 #include "entt/entt.hpp"
 #include <algorithm>
@@ -29,7 +28,7 @@ public:
 	{
 		if (auto* physicEngine = ECS.try_ctx<PhysicEngine>(); physicEngine)
 		{
-			ECS.clear<Viewable>();
+			ECS.clear<entt::tag<"Viewable"_hs>>();
 			cullingQueryCallback.foundBodies.clear();
 			auto viewport = Locator::Graphic::ref().GetViewport();
 			b2AABB aabb;
@@ -43,7 +42,7 @@ public:
 			}
 			aabb.lowerBound = viewport.first;
 			aabb.upperBound = viewport.second;
-			physicEngine->Engine->QueryAABB(&cullingQueryCallback, aabb);
+			physicEngine->QueryAABB(&cullingQueryCallback, aabb);
 			for (auto e : cullingQueryCallback.foundBodies)
 			{
 				ECS.assign<entt::tag<Database::Viewable>>(e);

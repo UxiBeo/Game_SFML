@@ -4,7 +4,6 @@
 #include "../System/IDrawSystem.h"
 #include "../Component/PhysicComponent.h"
 #include "../Component/AnimationComponent.h"
-#include "../Component/GameplayTags.h"
 #include "../HashStringDataBase.h"
 #include "entt/entt.hpp"
 #include <algorithm>
@@ -32,7 +31,7 @@ public:
 				auto& sprite = ECS.get<sf::Sprite>(entity);
 
 				sprite.setPosition(
-					Locator::Graphic::ref().WorldToScreenPos(ECS.get<PhysicComponent>(entity).body->GetPosition())
+					Locator::Graphic::ref().WorldToScreenPos(ECS.get<PhysicComponent>(entity)->GetPosition())
 				);
 				});
 		}

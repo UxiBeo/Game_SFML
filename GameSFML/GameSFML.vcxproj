@@ -135,16 +135,18 @@
     <ClCompile Include="Mouse.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AttributeComponent.h" />
-    <ClInclude Include="AttributeFactory.h" />
     <ClInclude Include="Codex.h" />
+    <ClInclude Include="Component\AbilityComponent.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
+    <ClInclude Include="Component\AttributeComponent.h" />
+    <ClInclude Include="Component\AttributeFactory.h" />
     <ClInclude Include="Component\CharacterStateComponent.h" />
+    <ClInclude Include="Component\CollisionRespondComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
     <ClInclude Include="Component\SpawnComponent.h" />
+    <ClInclude Include="Component\StaticFunction.h" />
     <ClInclude Include="Component\TagRule.h" />
     <ClInclude Include="Component\UIComponent.h" />
-    <ClInclude Include="Component\HealthComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
     <ClInclude Include="Component\PlayerControllerComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
@@ -162,6 +164,8 @@
     <ClInclude Include="MaxxUtility.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="SystemInclude.h" />
+    <ClInclude Include="System\AttributeSystem.h" />
+    <ClInclude Include="System\CleanDeathSystem.h" />
     <ClInclude Include="System\CollisionRespondSystem.h" />
     <ClInclude Include="System\LifeTimeSystem.h" />
     <ClInclude Include="System\PhysicSystem.h" />
@@ -171,7 +175,6 @@
     <ClInclude Include="System\AnimationSystem.h" />
     <ClInclude Include="System\CullingSystem.h" />
     <ClInclude Include="System\DrawDebugSystem.h" />
-    <ClInclude Include="System\HealthSystem.h" />
     <ClInclude Include="System\IDrawSystem.h" />
     <ClInclude Include="System\ISystemECS.h" />
     <ClInclude Include="System\MoveCameraSystem.h" />

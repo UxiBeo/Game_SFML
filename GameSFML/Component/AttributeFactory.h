@@ -32,7 +32,7 @@ public:
 		assert(false && "Can't find attribute");
 		return AttributeMap();
 	}
-	const int GetIndex(entt::hashed_string attName) const
+	size_t GetIndex(entt::hashed_string attName) const
 	{
 		if (auto i = binary_find(lookUpMap, attName.value()))
 			return *i;
@@ -119,7 +119,7 @@ private:
 	{
 		const auto it = std::lower_bound(vec.begin(), vec.end(), attrName,
 			[](const Container::value_type& lhs, const AttributeType& attrName) { return lhs.name < attrName; });
-		return it != vec.end() && *it == attrName ? std::distance(vec.begin(), it) : std::optional<size_t>{};
+		return it != vec.end() && it->name == attrName ? std::distance(vec.begin(), it) : std::optional<size_t>{};
 	}
 private:
 	std::vector<AttributeMap> lookUpMap;

@@ -2,7 +2,6 @@
 #include "../System/ISystemECS.h"
 #include "../Component/PlayerControllerComponent.h"
 #include "../Component/PhysicComponent.h"
-#include "../Component/GameplayTags.h"
 class PlayerUpdateSystem final : public ISystemECS
 {
 public:
@@ -12,11 +11,11 @@ public:
 		//update controller
 		ECS.view<PlayerControllerComponent, PhysicComponent>().each([&ECS, &gfx](auto entity, PlayerControllerComponent& controller, PhysicComponent& physic) {
 			
-			b2Vec2 vel = physic.body->GetLinearVelocity();
+			b2Vec2 vel = physic->GetLinearVelocity();
 			b2Vec2 desiredVel{(float)controller.direction.x, (float)controller.direction.y };
 			desiredVel.Normalize();
 			desiredVel = 15.0f * desiredVel;
-			physic.body->ApplyLinearImpulseToCenter(physic.body->GetMass() * (desiredVel - vel), true);
+			physic->ApplyLinearImpulseToCenter(physic->GetMass() * (desiredVel - vel), true);
 
 			//if (controller.bIsShooting)
 			//{

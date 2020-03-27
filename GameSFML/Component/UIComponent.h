@@ -40,7 +40,7 @@ struct UpdateScreenBaseUIComponent
 
 	static void HealthText(entt::entity entity, entt::registry& ECS)
 	{
-		if (!ECS.has<sf::Text>(entity) || !ECS.has<ScreenBaseUI>(entity)) return;
+		/*if (!ECS.has<sf::Text>(entity) || !ECS.has<ScreenBaseUI>(entity)) return;
 
 		auto& UI = ECS.get<ScreenBaseUI>(entity);
 
@@ -53,11 +53,11 @@ struct UpdateScreenBaseUIComponent
 		text.setString(ss.str());
 		if (Locator::Graphic::empty()) return;
 
-		text.setPosition(Locator::Graphic::ref().GetViewportLocation() + UI.offsetLocaion);
+		text.setPosition(Locator::Graphic::ref().GetViewportLocation() + UI.offsetLocaion);*/
 	}
 	static void HealthBar(entt::entity entity, entt::registry& ECS)
 	{
-		if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<ScreenBaseUI>(entity)) return;
+		/*if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<ScreenBaseUI>(entity)) return;
 
 		auto& UI = ECS.get<ScreenBaseUI>(entity);
 
@@ -65,7 +65,7 @@ struct UpdateScreenBaseUIComponent
 
 		auto& progressBar = ECS.get<ProgressiveBarComponent>(entity);
 		auto& health = ECS.get<HealthComponent>(UI.ownerEntity);
-		progressBar.percent = health.curHealth / health.maxHealth;
+		progressBar.percent = health.curHealth / health.maxHealth;*/
 	}
 };
 struct UpdateWorldBaseUIComponent
@@ -74,7 +74,7 @@ struct UpdateWorldBaseUIComponent
 
 	static void HealthText(entt::entity entity, entt::registry& ECS)
 	{
-		if (!ECS.has<sf::Text>(entity) || !ECS.has<WorldBaseUI>(entity)) return;
+		/*if (!ECS.has<sf::Text>(entity) || !ECS.has<WorldBaseUI>(entity)) return;
 
 		auto& UI = ECS.get<WorldBaseUI>(entity);
 
@@ -84,11 +84,11 @@ struct UpdateWorldBaseUIComponent
 		auto& health = ECS.get<HealthComponent>(UI.ownerEntity);
 		std::stringstream ss;
 		ss << (int)health.curHealth << " / " << (int)health.maxHealth;
-		text.setString(ss.str());
+		text.setString(ss.str());*/
 	}
 	static void HealthBar(entt::entity entity, entt::registry& ECS)
 	{
-		if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<WorldBaseUI>(entity)) return;
+		/*if (!ECS.has<ProgressiveBarComponent>(entity) || !ECS.has<WorldBaseUI>(entity)) return;
 
 		auto& UI = ECS.get<WorldBaseUI>(entity);
 
@@ -96,7 +96,7 @@ struct UpdateWorldBaseUIComponent
 
 		auto& progressBar = ECS.get<ProgressiveBarComponent>(entity);
 		auto& health = ECS.get<HealthComponent>(UI.ownerEntity);
-		progressBar.percent = health.curHealth / health.maxHealth;
+		progressBar.percent = health.curHealth / health.maxHealth;*/
 	}
 };
 
