@@ -3,10 +3,10 @@
 #include "../Locator.h"
 #include "../Component/PhysicComponent.h"
 
-class MoveCameraSystem : public ISystemECS
+class MoveCameraSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
 		ECS.view<entt::tag<"CameraTracking"_hs>, PhysicComponent>().each([](auto entity, auto, PhysicComponent& physic) {
 			if (Locator::Graphic::empty()) return;

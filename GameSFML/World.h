@@ -14,13 +14,13 @@ public:
 		AddNewPlayer(Locator::ECS::ref());
 		int aaa = 11111;
 	}
-	void Update(float dt)
+	void Update()
 	{
 		if (Locator::ECS::empty()) return;
-		
+		auto& ECS = Locator::ECS::ref();
 		for (auto& sys : ecsSystems)
 		{
-			sys->Update(Locator::ECS::ref(), dt);
+			sys->Update(ECS);
 		}
 	}
 	void Draw()const
@@ -191,11 +191,13 @@ private:
 			ECS.set<PhysicEngine>(b2Vec2(0.0f,0.0f)).SetContactListener(&ECS.set<Box2DContactListener>());
 
 			ECS.set<Grid>().LoadFromFile(Database::GridMap);
+			ECS.set<WorldTimer>();
 		}
 		
 	}
 	void InitSystem()
 	{
+		AddECSSystem(std::make_unique<WorldTimerSystem>());
 		//AddECSSystem(std::make_unique<SpawnStaticObjectSystem>());
 		//AddECSSystem(std::make_unique<LifeTimeSystem>());
 		AddECSSystem(std::make_unique<PlayerControllerSystem>());
@@ -207,7 +209,7 @@ private:
 		AddECSSystem(std::make_unique<MoveCameraSystem>());
 		//AddECSSystem(std::make_unique<GridUpdateSystem>());
 		//AddECSSystem(std::make_unique<SpawnSystem>());
-		AddECSSystem(std::make_unique<CleanDeadSystem>());
+		AddECSSystem(std::make_unique<CleanDeathSystem>());
 		//AddECSSystem(std::make_unique<CullingSystem>());
 		//AddECSSystem(std::make_unique<UpdateScreenBaseUISystem>());
 		//AddECSSystem(std::make_unique<UpdateWorldBaseUISystem>());

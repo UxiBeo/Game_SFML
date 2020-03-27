@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <execution>
 #include <iostream>
-class CullingSystem : public ISystemECS
+class CullingSystem final : public ISystemECS
 {
 	struct CullingQuerySelector final : public b2QueryCallback
 	{
@@ -24,7 +24,7 @@ class CullingSystem : public ISystemECS
 		std::vector<entt::entity> foundBodies;
 	};
 public:
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
 		if (auto* physicEngine = ECS.try_ctx<PhysicEngine>(); physicEngine)
 		{

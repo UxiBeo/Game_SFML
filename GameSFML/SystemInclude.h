@@ -18,3 +18,4 @@
 #include "System/UpdateUISystem.h"
 #include "System/StateMachineSystem.h"
 #include "System/CleanDeathSystem.h"
+#include "System/WorldTimerSystem.h"

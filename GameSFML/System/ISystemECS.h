@@ -5,5 +5,5 @@
 class ISystemECS
 {
 public:
-	virtual void Update(entt::registry& ECS, float dt) = 0;
+	virtual void Update(entt::registry& ECS) = 0;
 };

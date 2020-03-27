@@ -6,7 +6,7 @@
 class PlayerControllerSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
 		//keyboard
 		auto& kbd = Locator::Keyboard::ref();

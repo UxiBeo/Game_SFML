@@ -26,7 +26,7 @@ class SpawnStaticObjectSystem : public ISystemECS
 		entt::entity exclutedEntity;
 	};
 public:
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
 		//auto& gfx = Locator::Graphic::ref();
 		////spawn static object from tile

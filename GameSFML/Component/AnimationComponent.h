@@ -1,6 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "../GameResource.h"
+#include "entt/signal/sigh.hpp"
 #include <vector>
 struct AnimationComponent
 {
@@ -24,3 +25,5 @@ struct AnimationComponent
 	entt::hashed_string animationName;
 	entt::hashed_string textureName;
 };
+using PairKeyframe = std::pair<unsigned char, entt::delegate<void(entt::entity, entt::registry&)>>;
+using AnimNotify = std::vector<PairKeyframe>;

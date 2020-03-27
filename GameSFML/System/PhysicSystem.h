@@ -1,12 +1,16 @@
 #pragma once
 #include "../Component/PhysicComponent.h"
 #include "../Component/CollisionRespondComponent.h"
+#include "../System/WorldTimerSystem.h"
 #include "../System/ISystemECS.h"
 
-class PhysicSystem : public ISystemECS
+class PhysicSystem final : public ISystemECS
 {
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
+		auto* worldTime = ECS.try_ctx<WorldTimer>();
+		if (worldTime == nullptr) return;
+		float dt = worldTime->dt;
 
 		if (auto* physicEngine = ECS.try_ctx<PhysicEngine>(); physicEngine)
 		{

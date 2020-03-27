@@ -14,8 +14,7 @@ public:
 private:
 	void UpdateModel()
 	{
-		const float dt = float(clock.restart().asMilliseconds()) / 1000.0f;
-		wld.Update(dt);
+		wld.Update();
 	}
 	void ComposeFrame()
 	{
@@ -23,7 +22,7 @@ private:
 	}
 private:
 	/**************** User Variable *******************/
-	sf::Clock clock;
+
 	World wld;
 	/**************** User Variable *******************/
 };

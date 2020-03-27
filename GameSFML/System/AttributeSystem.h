@@ -2,21 +2,20 @@
 #include "../System/ISystemECS.h"
 #include "../Component/AttributeComponent.h"
 #include "../Component/AttributeFactory.h"
-class AttributeSystem : public ISystemECS
+class AttributeSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
 		if (auto* factory = ECS.try_ctx<AttributeFactory>(); factory)
 		{
 			//Attribute With min max value
 			{
-				auto view = ECS.view<ChangeAttribute, AttributeSet>();
-				std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&ECS, &factory](auto entity) {
+				auto view = ECS.view<const ChangeAttribute, AttributeSet>();
+				std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&view, &ECS, &factory](auto entity) {
+					auto [change, atts] = view.get<const ChangeAttribute, AttributeSet>(entity);
 
-					auto& change = ECS.get<ChangeAttribute>(entity);
-					auto& atts = ECS.get<AttributeSet>(entity);
-					for (std::pair<entt::hashed_string, Attribute>& i : change)
+					for (auto& i : change)
 					{
 						switch (i.first.value())
 						{
@@ -44,11 +43,11 @@ public:
 			
 			// Health
 			{
-				auto view = ECS.view<ChangeHealth, HealthComponent>();
-				std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&ECS, &factory](auto entity) {
+				auto view = ECS.view<const ChangeHealth, HealthComponent>();
+				std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&view, &ECS, &factory](auto entity) {
 
-					auto& amount = ECS.get<ChangeHealth>(entity);
-					auto& value = ECS.get<HealthComponent>(entity);
+					auto [amount, value] = view.get<const ChangeHealth, HealthComponent>(entity);
+
 					value.curValue = std::min(unsigned int(value.curValue + amount), value.maxValue);
 					});
 				ECS.view<ChangeHealth, HealthComponent, OnDeathListener>().each([&ECS](auto entity, const auto&, const auto& health, const OnDeathListener& listener) {
@@ -60,11 +59,11 @@ public:
 			}
 			// Mana
 			{
-				auto view = ECS.view<ChangeMana, ManaComponent>();
-				std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&ECS, &factory](auto entity) {
+				auto view = ECS.view<const ChangeMana, ManaComponent>();
+				std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&view, &ECS, &factory](auto entity) {
 
-					auto& amount = ECS.get<ChangeMana>(entity);
-					auto& value = ECS.get<ManaComponent>(entity);
+					auto [amount, value] = view.get<const ChangeMana, ManaComponent>(entity);
+
 					value.curValue = std::min(unsigned int(value.curValue + amount), value.maxValue);
 				});
 				ECS.clear<ChangeMana>();

@@ -5,7 +5,7 @@
 class PlayerUpdateSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
 		auto& gfx = Locator::Graphic::ref();
 		//update controller

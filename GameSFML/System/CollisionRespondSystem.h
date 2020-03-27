@@ -3,18 +3,18 @@
 #include "../Component/PhysicComponent.h"
 #include "../Component/CollisionRespondComponent.h"
 #include "../System/ISystemECS.h"
-class CollisionRespondSystem : public ISystemECS
+class CollisionRespondSystem final : public ISystemECS
 {
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
 		/*---------------Normal Collision----------------*/
 		{
-			auto view = ECS.view<ColliedWith, FColliedWithPar>();
-			std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&ECS](auto entity) {
+			auto view = ECS.view<const ColliedWith, const FColliedWithPar>();
+			std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&view,&ECS](auto entity) {
 
-				auto& respond = ECS.get<FColliedWithPar>(entity);
+				auto [colliedWith, respond] = view.get<const ColliedWith, const FColliedWithPar>(entity);
 
-				if (respond) respond(entity, ECS.get<ColliedWith>(entity), ECS);
+				if (respond) respond(entity, colliedWith, ECS);
 				});
 		}
 
@@ -28,7 +28,7 @@ class CollisionRespondSystem : public ISystemECS
 
 
 		/*-------------------Sensor Out------------------*/
-		ECS.view<SensorOut, SensorWith>().each([&ECS](auto entity, const auto& senOut, auto& senWith) {
+		ECS.group<SensorOut>(entt::get<SensorWith>).each([&ECS](auto entity, const auto& senOut, auto& senWith) {
 
 			SensorWith diff;
 			std::set_difference(senWith.data.begin(), senWith.data.end(), senOut.data.begin(), senOut.data.end(), std::back_inserter(diff.data));
@@ -77,15 +77,16 @@ class CollisionRespondSystem : public ISystemECS
 		
 
 		/*-------------------Sensor With------------------*/
-		auto view = ECS.view<SensorWith, FSensorPar>();
-		std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&ECS](auto entity) {
+		auto group = ECS.group<const FSensorPar>(entt::get<const SensorWith>);
+		std::for_each(std::execution::par_unseq, group.begin(), group.end(), [&group, &ECS](auto entity) {
 
-			auto& fSensor = ECS.get<FSensorPar>(entity);
-
-			fSensor.func(entity, ECS.get<SensorWith>(entity).data, ECS);
+			auto [fSensor, sensorWith] = group.get<const FSensorPar, const SensorWith>(entity);
+			if (fSensor.func)
+				fSensor.func(entity, sensorWith.data, ECS);
+			
 			});
 
-		ECS.view<SensorWith, FSensorSeg>().each([&ECS](auto entity, const auto& senWith, const auto& respond) {
+		ECS.group<FSensorSeg>(entt::get<const SensorWith>).each([&ECS](auto entity, const auto& respond, const auto& senWith) {
 
 			if (respond.func) respond.func(entity, senWith.data, ECS);
 

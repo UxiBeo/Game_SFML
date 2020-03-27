@@ -1,24 +1,16 @@
 #pragma once
 #include "../System/ISystemECS.h"
+#include "../System/WorldTimerSystem.h"
 #include "../Component/SpawnComponent.h"
 #include "../Locator.h"
-class CleanDeadSystem : public ISystemECS
+class SpawnSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS, float dt) final
+	void Update(entt::registry& ECS) final
 	{
-		/*ECS.view<DeathTag, NotifyOnDead>().each([&ECS, dt](auto entity, auto&, NotifyOnDead& notifier) {
-			notifier.mySignal.publish(entity, ECS);
-			ECS.destroy(entity);
-		});
-		ECS.clear<DeathTag>();*/
-	}
-};
-class SpawnSystem : public ISystemECS
-{
-public:
-	void Update(entt::registry& ECS, float dt) final
-	{
+		auto* worldTime = ECS.try_ctx<WorldTimer>();
+		if (worldTime == nullptr) return;
+		float dt = worldTime->dt;
 		/*ECS.view<SpawnComponent, UpdateSpawnComponent>().each([&ECS, dt](auto entity, SpawnComponent& spawn, UpdateSpawnComponent& update) {
 			if (!spawn.bIsEnable) return;
 
