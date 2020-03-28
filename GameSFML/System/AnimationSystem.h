@@ -12,7 +12,7 @@ public:
 		float dt = worldTime->dt;
 
 		auto view = ECS.view<AnimationComponent>(entt::exclude<AnimNotify>);
-		std::for_each(std::execution::par, view.begin(), view.end(), [&view, &ECS, dt](auto entity) {
+		std::for_each(std::execution::par, view.begin(), view.end(), [&view, dt](auto entity) {
 			auto& animation = view.get<AnimationComponent>(entity);
 			if (animation.isUpdate)
 			{

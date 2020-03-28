@@ -54,4 +54,4 @@ struct ManaComponent
 	unsigned int curValue;
 	unsigned int maxValue;
 };
-using OnDeathListener = std::vector<entt::delegate<void(entt::entity, entt::registry&)>>;
+using OnDeathNotify = std::vector<entt::delegate<void(entt::entity, entt::registry&)>>;

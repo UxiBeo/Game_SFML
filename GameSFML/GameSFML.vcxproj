@@ -142,10 +142,12 @@
     <ClInclude Include="Component\AttributeFactory.h" />
     <ClInclude Include="Component\CharacterStateComponent.h" />
     <ClInclude Include="Component\CollisionRespondComponent.h" />
+    <ClInclude Include="Component\GameplayEffectComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
     <ClInclude Include="Component\SpawnComponent.h" />
     <ClInclude Include="Component\StaticFunction.h" />
     <ClInclude Include="Component\TagRule.h" />
+    <ClInclude Include="Component\TimerComponent.h" />
     <ClInclude Include="Component\UIComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
     <ClInclude Include="Component\PlayerControllerComponent.h" />
@@ -167,6 +169,7 @@
     <ClInclude Include="System\AttributeSystem.h" />
     <ClInclude Include="System\CleanDeathSystem.h" />
     <ClInclude Include="System\CollisionRespondSystem.h" />
+    <ClInclude Include="System\GameplayEffectSystem.h" />
     <ClInclude Include="System\LifeTimeSystem.h" />
     <ClInclude Include="System\PhysicSystem.h" />
     <ClInclude Include="System\PlayerUpdateSystem.h" />

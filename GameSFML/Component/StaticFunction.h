@@ -13,11 +13,5 @@ namespace Sfunc
 			physic->SetUserEntity(entity);
 		}
 	}
-	void DestroyPhysicComponent(entt::registry& ECS, entt::entity entity)
-	{
-		if (auto* engine = ECS.try_ctx<PhysicEngine>(); engine)
-		{
-			engine->DestroyBody(ECS.get<PhysicComponent>(entity));
-		}
-	}
+	
 };

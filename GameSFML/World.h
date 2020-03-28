@@ -10,6 +10,7 @@ public:
 	{
 		InitServiceLocator();
 		InitSystem();
+		BeginPlay(Locator::ECS::ref());
 		//TestSomething();
 		AddNewPlayer(Locator::ECS::ref());
 		int aaa = 11111;
@@ -171,20 +172,17 @@ public:
 		}
 	}
 private:
-	void SignalComponent(entt::registry& ECS)
+	void BeginPlay(entt::registry& ECS)
 	{
-		ECS.on_destroy<PhysicComponent>().connect<&Sfunc::DestroyPhysicComponent>();
-	}
-	template<typename Context>
-	Context& AddContex(entt::registry& ECS)
-	{
-		return ECS.set<Context>();
+		for (auto& sys : ecsSystems)
+		{
+			sys->BeginPlay(ECS);
+		}
 	}
 	void InitServiceLocator()
 	{
 		Locator::Random::set(std::random_device{}());
 		Locator::ECS::set();
-		SignalComponent(Locator::ECS::ref());
 		if (!Locator::ECS::empty())
 		{
 			auto& ECS = Locator::ECS::ref();
@@ -205,6 +203,7 @@ private:
 		AddECSSystem(std::make_unique<StateMachineSystem>());
 		AddECSSystem(std::make_unique<PhysicSystem>());
 		AddECSSystem(std::make_unique<CollisionRespondSystem>());
+		AddECSSystem(std::make_unique<GameplayEffectSystem>());
 		AddECSSystem(std::make_unique<AttributeSystem>());
 		AddECSSystem(std::make_unique<MoveCameraSystem>());
 		//AddECSSystem(std::make_unique<GridUpdateSystem>());

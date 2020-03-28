@@ -9,33 +9,33 @@ class CollisionRespondSystem final : public ISystemECS
 	{
 		/*---------------Normal Collision----------------*/
 		{
-			auto view = ECS.view<const ColliedWith, const FColliedWithPar>();
+			auto view = ECS.view<const Physic::ColliedWith, Physic::CanParallel, const Physic::FColliedWith>();
 			std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&view,&ECS](auto entity) {
 
-				auto [colliedWith, respond] = view.get<const ColliedWith, const FColliedWithPar>(entity);
+				auto [colliedWith, respond] = view.get<const Physic::ColliedWith, const Physic::FColliedWith>(entity);
 
 				if (respond) respond(entity, colliedWith, ECS);
 				});
 		}
 
-		ECS.view<ColliedWith, FColliedWithSeg>().each([&ECS](auto entity, const auto& data, const auto& respond) {
+		ECS.view<Physic::ColliedWith, Physic::FColliedWith>(entt::exclude<Physic::CanParallel>).each([&ECS](auto entity, const auto& data, const auto& respond) {
 			
 			if (respond) respond(entity, data, ECS);
 
 			});
-		ECS.clear<ColliedWith>();
+		ECS.clear<Physic::ColliedWith>();
 		/*---------------Normal Collision----------------*/
 
 
 		/*-------------------Sensor Out------------------*/
-		ECS.group<SensorOut>(entt::get<SensorWith>).each([&ECS](auto entity, const auto& senOut, auto& senWith) {
+		ECS.group<Physic::SensorOut>(entt::get<Physic::SensorWith>).each([&ECS](auto entity, const auto& senOut, auto& senWith) {
 
-			SensorWith diff;
+			Physic::SensorWith diff;
 			std::set_difference(senWith.data.begin(), senWith.data.end(), senOut.data.begin(), senOut.data.end(), std::back_inserter(diff.data));
 
 			if ((senWith.data.size() - diff.data.size()) != senOut.data.size()) assert(false && "Sensor out have some element mismatch");
 
-			if (auto* fSensor = ECS.try_get<FSensorOut>(entity); fSensor)
+			if (auto* fSensor = ECS.try_get<Physic::FSensorOut>(entity); fSensor)
 			{
 				if (fSensor->func)
 					fSensor->func(entity, senOut.data, ECS);
@@ -47,46 +47,46 @@ class CollisionRespondSystem final : public ISystemECS
 			}
 			else
 			{
-				ECS.remove<SensorWith>(entity);
+				ECS.remove<Physic::SensorWith>(entity);
 			}
 			
 			
 			});
-		ECS.clear<SensorOut>();
+		ECS.clear<Physic::SensorOut>();
 		/*-------------------Sensor Out------------------*/
 
 
 		/*-------------------Sensor In------------------*/
-		ECS.view<SensorIn>().each([&ECS](auto entity, const auto& senIn) {
+		ECS.view<Physic::SensorIn>().each([&ECS](auto entity, const auto& senIn) {
 
-			auto& senWith = ECS.get_or_assign<SensorWith>(entity);
-			SensorWith merge;
+			auto& senWith = ECS.get_or_assign<Physic::SensorWith>(entity);
+			Physic::SensorWith merge;
 			std::merge(senWith.data.begin(), senWith.data.end(), senIn.data.begin(), senIn.data.end(), std::back_inserter(merge.data));
 
 			if ((senWith.data.size() + senIn.data.size()) != merge.data.size()) assert(false && "Sensor out have some element mismatch");
 
-			if (auto* fSensor = ECS.try_get<FSensorIn>(entity); fSensor && fSensor->func)
+			if (auto* fSensor = ECS.try_get<Physic::FSensorIn>(entity); fSensor && fSensor->func)
 			{
 					fSensor->func(entity, senIn.data, ECS);
 			}
 
 			senWith.data = std::move(merge.data);
 			});
-		ECS.clear<SensorIn>();
+		ECS.clear<Physic::SensorIn>();
 		/*-------------------Sensor In------------------*/
 		
 
 		/*-------------------Sensor With------------------*/
-		auto group = ECS.group<const FSensorPar>(entt::get<const SensorWith>);
-		std::for_each(std::execution::par_unseq, group.begin(), group.end(), [&group, &ECS](auto entity) {
+		auto view = ECS.view<const Physic::SensorWith, Physic::CanParallel, const Physic::FSensor>();
+		std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&view, &ECS](auto entity) {
 
-			auto [fSensor, sensorWith] = group.get<const FSensorPar, const SensorWith>(entity);
+			auto [fSensor, sensorWith] = view.get<const Physic::FSensor, const Physic::SensorWith>(entity);
 			if (fSensor.func)
 				fSensor.func(entity, sensorWith.data, ECS);
 			
 			});
 
-		ECS.group<FSensorSeg>(entt::get<const SensorWith>).each([&ECS](auto entity, const auto& respond, const auto& senWith) {
+		ECS.view<const Physic::SensorWith, Physic::FSensor>(entt::exclude<Physic::CanParallel>).each([&ECS](auto entity, const auto& senWith, const auto& respond) {
 
 			if (respond.func) respond.func(entity, senWith.data, ECS);
 

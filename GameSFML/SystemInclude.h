@@ -19,3 +19,4 @@
 #include "System/StateMachineSystem.h"
 #include "System/CleanDeathSystem.h"
 #include "System/WorldTimerSystem.h"
+#include "System/GameplayEffectSystem.h"

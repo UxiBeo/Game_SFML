@@ -6,6 +6,10 @@
 
 class PhysicSystem final : public ISystemECS
 {
+	void BeginPlay(entt::registry& ECS) final
+	{
+		ECS.on_destroy<PhysicComponent>().connect<&PhysicSystem::DestroyPhysicComponent>();
+	}
 	void Update(entt::registry& ECS) final
 	{
 		auto* worldTime = ECS.try_ctx<WorldTimer>();
@@ -24,25 +28,32 @@ class PhysicSystem final : public ISystemECS
 
 			for (const auto& i : data[0])
 			{
-				if (ECS.has<FColliedWithPar>(i.first) || ECS.has<FColliedWithSeg>(i.first))
+				if (ECS.has<Physic::FColliedWith>(i.first))
 				{
-					ECS.assign_or_replace<ColliedWith>(i.first).emplace_back(i.second);
+					ECS.assign_or_replace<Physic::ColliedWith>(i.first).emplace_back(i.second);
 				}
-				if (ECS.has<FColliedWithPar>(i.second) || ECS.has<FColliedWithSeg>(i.second))
+				if (ECS.has<Physic::FColliedWith>(i.second))
 				{
-					ECS.assign_or_replace<ColliedWith>(i.second).emplace_back(i.first);
+					ECS.assign_or_replace<Physic::ColliedWith>(i.second).emplace_back(i.first);
 				}
 			}
 			for (const auto& i : data[1])
 			{
-				ECS.assign_or_replace<SensorIn>(i.first).data.emplace_back(i.second);
+				ECS.assign_or_replace<Physic::SensorIn>(i.first).data.emplace_back(i.second);
 			}
 			for (const auto& i : data[2])
 			{
-				ECS.assign_or_replace<SensorOut>(i.first).data.emplace_back(i.second);
+				ECS.assign_or_replace<Physic::SensorOut>(i.first).data.emplace_back(i.second);
 			}
 			mrLisner->ClearAll();
 		}
 	}
-
+private:
+	static void DestroyPhysicComponent(entt::registry& ECS, entt::entity entity)
+	{
+		if (auto* engine = ECS.try_ctx<PhysicEngine>(); engine)
+		{
+			engine->DestroyBody(ECS.get<PhysicComponent>(entity));
+		}
+	}
 };

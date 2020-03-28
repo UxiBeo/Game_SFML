@@ -4,7 +4,7 @@
 #include "../Component/AttributeFactory.h"
 class AttributeSystem final : public ISystemECS
 {
-public:
+private:
 	void Update(entt::registry& ECS) final
 	{
 		if (auto* factory = ECS.try_ctx<AttributeFactory>(); factory)
@@ -50,9 +50,9 @@ public:
 
 					value.curValue = std::min(unsigned int(value.curValue + amount), value.maxValue);
 					});
-				ECS.view<ChangeHealth, HealthComponent, OnDeathListener>().each([&ECS](auto entity, const auto&, const auto& health, const OnDeathListener& listener) {
+				ECS.view<ChangeHealth, OnDeathNotify, HealthComponent>().each([&ECS](auto entity, const auto&, const auto& notify, const auto& health) {
 					if (health.curValue == 0)
-						for (auto& f : listener)
+						for (auto& f : notify)
 							if (f) f(entity, ECS);
 					});
 				ECS.clear<ChangeHealth>();
@@ -71,7 +71,7 @@ public:
 			
 		}
 	}
-private:
+public:
 	//Use for health or Mana only
 	static void ChangeValueKeepPercent(const AttributeFactory& factory, entt::hashed_string attName,
 		AttributeSet& atts, unsigned int& curValue, unsigned int& maxValue, Attribute amount)
