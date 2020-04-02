@@ -133,6 +133,17 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Source\Components\AttributeFactory.cpp" />
+    <ClCompile Include="Source\Grid.cpp" />
+    <ClCompile Include="Source\Systems\AbilitySystem.cpp" />
+    <ClCompile Include="Source\Systems\AnimationSystem.cpp" />
+    <ClCompile Include="Source\Systems\AttributeSystem.cpp" />
+    <ClCompile Include="Source\Systems\CullingSystem.cpp" />
+    <ClCompile Include="Source\Systems\GameplayEffectSystem.cpp" />
+    <ClCompile Include="Source\Systems\PhysicSystem.cpp" />
+    <ClCompile Include="Source\Systems\StateMachineSystem.cpp" />
+    <ClCompile Include="Source\Systems\WorldTimerSystem.cpp" />
+    <ClCompile Include="Source\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Codex.h" />
@@ -141,11 +152,9 @@
     <ClInclude Include="Component\AttributeComponent.h" />
     <ClInclude Include="Component\AttributeFactory.h" />
     <ClInclude Include="Component\CharacterStateComponent.h" />
-    <ClInclude Include="Component\CollisionRespondComponent.h" />
     <ClInclude Include="Component\GameplayEffectComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
     <ClInclude Include="Component\SpawnComponent.h" />
-    <ClInclude Include="Component\StaticFunction.h" />
     <ClInclude Include="Component\TagRule.h" />
     <ClInclude Include="Component\TimerComponent.h" />
     <ClInclude Include="Component\UIComponent.h" />
@@ -166,9 +175,9 @@
     <ClInclude Include="MaxxUtility.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="SystemInclude.h" />
+    <ClInclude Include="System\AbilitySystem.h" />
     <ClInclude Include="System\AttributeSystem.h" />
     <ClInclude Include="System\CleanDeathSystem.h" />
-    <ClInclude Include="System\CollisionRespondSystem.h" />
     <ClInclude Include="System\GameplayEffectSystem.h" />
     <ClInclude Include="System\LifeTimeSystem.h" />
     <ClInclude Include="System\PhysicSystem.h" />

@@ -2,5 +2,5 @@
 #include "../Component/GameplayTag.h"
 struct TagRule
 {
-	GameplayTag blockMoveTags;
+	Tag::Bitfiled blockMoveTags;
 };

@@ -44,6 +44,7 @@ using ChangeAttribute = std::vector<std::pair<entt::hashed_string, Attribute>>;
 using AttributeSet = std::vector<Attribute>;
 using ChangeHealth = int;
 using ChangeMana = int;
+using IncomingDame = std::vector<std::pair<entt::hashed_string, Attribute>>;
 struct HealthComponent
 {
 	unsigned int curValue;

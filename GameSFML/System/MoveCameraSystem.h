@@ -8,7 +8,7 @@ class MoveCameraSystem final : public ISystemECS
 public:
 	void Update(entt::registry& ECS) final
 	{
-		ECS.view<entt::tag<"CameraTracking"_hs>, PhysicComponent>().each([](auto entity, auto, PhysicComponent& physic) {
+		ECS.view<entt::tag<"CameraTracking"_hs>, Physic::Component>().each([](auto entity, auto, Physic::Component& physic) {
 			if (Locator::Graphic::empty()) return;
 
 			Locator::Graphic::ref().MoveViewport(physic->GetPosition());

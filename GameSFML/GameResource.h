@@ -28,7 +28,6 @@ struct TextureResource
 	using Loader = TextureLoader;
 	sf::Texture data;
 };
-
 struct AnimationResource
 {
 	struct AnimationSet

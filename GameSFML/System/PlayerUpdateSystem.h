@@ -9,7 +9,7 @@ public:
 	{
 		auto& gfx = Locator::Graphic::ref();
 		//update controller
-		ECS.view<PlayerControllerComponent, PhysicComponent>().each([&ECS, &gfx](auto entity, PlayerControllerComponent& controller, PhysicComponent& physic) {
+		ECS.view<PlayerControllerComponent, Physic::Component>().each([&ECS, &gfx](auto entity, PlayerControllerComponent& controller, Physic::Component& physic) {
 			
 			b2Vec2 vel = physic->GetLinearVelocity();
 			b2Vec2 desiredVel{(float)controller.direction.x, (float)controller.direction.y };

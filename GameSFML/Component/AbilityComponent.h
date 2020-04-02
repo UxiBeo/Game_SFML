@@ -3,26 +3,43 @@
 #include "entt/entt.hpp"
 #include "GameplayTag.h"
 #include "AttributeFactory.h"
-#include <functional>
+#include "box2d/box2d.h"
 namespace GAS
 {
+	
+	struct AbilityComponent
+	{
+		entt::entity owner;
+		entt::hashed_string abilityName;
+	};
+
+	using WaitTargetDataObserver = entt::observer;
+	using WaitLocationObserver = entt::observer;
+	using WaitTargetData = entt::entity;
+	using WaitLocation = b2Vec2;
+
+	struct TryActivateAbility {};
+	using TryActivateDelegate = entt::delegate<bool(entt::entity, entt::registry&)>;
+	using ActivateBehaviorDelegate = entt::delegate<void(entt::entity, entt::registry&)>;
+	using CostDelegate = entt::delegate<void(entt::entity, entt::registry&)>;
+	
 	struct TagCollection
 	{
-		GameplayTag tags;
+		Tag::Bitfiled tags;
 		// Cancels any already-executing Ability with Tags matching the list provided while this Ability is executing.
-		GameplayTag cancelAbilitiesTag;
+		Tag::Bitfiled cancelWithTag;
 		// Prevents execution of any other Ability with a matching Tag while this Ability is executing.
-		GameplayTag blockAbilitiesTag;
+		Tag::Bitfiled blockWithTag;
 		//While this Ability is executing, the owner of the Ability will be granted this set of Tags.
-		GameplayTag act_OwnedTags;
+		Tag::Bitfiled act_OwnedTags;
 		//The Ability can only be activated if the activating Actor or Component has all of these Tags.
-		GameplayTag act_RequiredTags;
+		Tag::Bitfiled act_RequiredTags;
 		//The Ability can only be activated if the activating Actor or Component does not have any of these Tags.
-		GameplayTag act_BlockedTags;
+		Tag::Bitfiled act_BlockedTags;
 		//The Ability can only be activated if the target Actor or Component does not have any of these Tags.
-		GameplayTag target_RequiredTags;
+		Tag::Bitfiled target_RequiredTags;
 		// Same as Target Required Tags but with Blocked tags.
-		GameplayTag	target_BlockedTags;
+		Tag::Bitfiled target_BlockedTags;
 	};
 	enum BehaviorComponent
 	{
@@ -35,21 +52,6 @@ namespace GAS
 		TOGGLE = 1 << 7, //Can be insta-toggled.
 	};
 
-	struct Infomation
-	{
-		entt::entity ownerAbility;
-		BehaviorComponent behavior = BehaviorComponent::PASSIVE;
-		TagCollection tags;
-	};
-
-
-	struct EventComponent
-	{
-		entt::entity abilityWaitUnitTarget;
-		entt::entity abilityWaitPoint;
-		entt::entity abilityWaitAoe;
-		entt::entity abilityWaitChanneled;
-	};
 	struct CostComponent
 	{
 		entt::hashed_string attributeName;

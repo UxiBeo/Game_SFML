@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 #include "../GameResource.h"
-#include "entt/signal/sigh.hpp"
+#include "entt/entt.hpp"
 #include <vector>
 struct AnimationComponent
 {

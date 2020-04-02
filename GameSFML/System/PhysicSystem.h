@@ -1,59 +1,40 @@
 #pragma once
 #include "../Component/PhysicComponent.h"
-#include "../Component/CollisionRespondComponent.h"
-#include "../System/WorldTimerSystem.h"
 #include "../System/ISystemECS.h"
 
 class PhysicSystem final : public ISystemECS
 {
-	void BeginPlay(entt::registry& ECS) final
-	{
-		ECS.on_destroy<PhysicComponent>().connect<&PhysicSystem::DestroyPhysicComponent>();
-	}
-	void Update(entt::registry& ECS) final
-	{
-		auto* worldTime = ECS.try_ctx<WorldTimer>();
-		if (worldTime == nullptr) return;
-		float dt = worldTime->dt;
+	void BeginPlay(entt::registry& ECS) final;
+	void Update(entt::registry& ECS) final;
+public:
+	static void AddPhysic(entt::entity entity, entt::registry& ECS, const b2BodyDef& Bdef, const b2FixtureDef& fixDef);
 
-		if (auto* physicEngine = ECS.try_ctx<PhysicEngine>(); physicEngine)
-		{
-			physicEngine->Step(dt, 4, 2);
-		}
-
-		if (auto* mrLisner = ECS.try_ctx<Box2DContactListener>(); mrLisner)
-		{
-			mrLisner->Sort();
-			const auto& data = mrLisner->ReadData();
-
-			for (const auto& i : data[0])
-			{
-				if (ECS.has<Physic::FColliedWith>(i.first))
-				{
-					ECS.assign_or_replace<Physic::ColliedWith>(i.first).emplace_back(i.second);
-				}
-				if (ECS.has<Physic::FColliedWith>(i.second))
-				{
-					ECS.assign_or_replace<Physic::ColliedWith>(i.second).emplace_back(i.first);
-				}
-			}
-			for (const auto& i : data[1])
-			{
-				ECS.assign_or_replace<Physic::SensorIn>(i.first).data.emplace_back(i.second);
-			}
-			for (const auto& i : data[2])
-			{
-				ECS.assign_or_replace<Physic::SensorOut>(i.first).data.emplace_back(i.second);
-			}
-			mrLisner->ClearAll();
-		}
-	}
 private:
-	static void DestroyPhysicComponent(entt::registry& ECS, entt::entity entity)
-	{
-		if (auto* engine = ECS.try_ctx<PhysicEngine>(); engine)
-		{
-			engine->DestroyBody(ECS.get<PhysicComponent>(entity));
-		}
-	}
+	void HandleSensorData(entt::registry& ECS);
+	void ClearContactData(entt::registry& ECS);
+	void ProcessContactData(entt::registry& ECS);
+	static void DestroyPhysicComponent(entt::registry& ECS, entt::entity entity);
 };
+
+namespace Physic
+{
+	class ContactListener final : public b2ContactListener
+	{
+	public:
+		//2 entity collided waith each other
+		using PairEntity = std::pair<entt::entity, entt::entity>;
+
+		void BeginContact(b2Contact* contact) final;
+		void EndContact(b2Contact* contact) final;
+
+		void ClearAll();
+		const std::array<std::vector<PairEntity>, 3>& ReadData() const
+		{
+			return data;
+		}
+		void Sort();
+	private:
+		//0: for normal Collision, 1: for sensor in, 2: for sensor out
+		std::array<std::vector<PairEntity>, 3> data;
+	};
+}

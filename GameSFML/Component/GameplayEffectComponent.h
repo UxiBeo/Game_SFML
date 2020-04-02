@@ -5,27 +5,45 @@
 
 namespace GAS
 {
-	struct GameplayEffectComponent
+	struct DurationInstant{};
+	struct DurationInfnity{};
+
+	struct DurationLimitedTime
 	{
-		entt::entity applyOnTarget;
+		float curTime = 0.0f;
+		float maxTime = 0.0f;
 	};
-	struct OutOfStack {};
-	struct OutOfTick {};
+
+	struct IntervalTick
+	{
+		float curTime = 0.0f;
+		float intervalTime = 0.0f;
+		unsigned int curTick = 0;
+		unsigned int maxTick = 0;
+	};
+	using NumberTick = unsigned int;
+	struct DeleteEffect{};
+	/*struct ApplyGameplayEffect
+	{
+		entt::hashed_string effectName;
+		entt::delegate<void(entt::entity, ApplyGameplayEffect&, entt::registry&)> applyDelegate;
+		entt::entity owner;
+		entt::entity target;
+	};
 	struct TickAble
 	{
 		float curTime = 0.0f;
 		float intervalTime = 0.0f;
 		unsigned int maxTick = 1;
 		unsigned int curTick = 0;
+		entt::delegate<void(entt::entity, TickAble&, entt::registry&, float dt)> tickDelegate;
 	};
-	using NumberOfTick = unsigned int;
-	using AddStack = unsigned int;
 	struct StackAble
 	{
 		unsigned int curStack = 0;
 		unsigned int maxStack = 0;
 		float curTime = 0.0f;
 		float stackTime = 0.0f;
-		bool isCleanWhenOutOfTime = false;
-	};
+		entt::delegate<void(entt::entity, StackAble&, entt::registry&, float dt)> stackDelegate;
+	};*/
 }

@@ -1,9 +1,10 @@
 #pragma once
 
 #include "../System/ISystemECS.h"
-class GameplayEffectSystem final : public ISystemECS
+class AbilitySystem final : public ISystemECS
 {
 private:
 	void Update(entt::registry& ECS) final;
-	
+	void BeginPlay(entt::registry& ECS) final;
+
 };

@@ -26,12 +26,12 @@ public:
 		}
 
 		{
-			auto view = ECS.view<PhysicComponent, sf::Sprite>();
+			auto view = ECS.view<Physic::Component, sf::Sprite>();
 			std::for_each(std::execution::par, view.begin(), view.end(), [&ECS](auto entity) {
 				auto& sprite = ECS.get<sf::Sprite>(entity);
 
 				sprite.setPosition(
-					Locator::Graphic::ref().WorldToScreenPos(ECS.get<PhysicComponent>(entity)->GetPosition())
+					Locator::Graphic::ref().WorldToScreenPos(ECS.get<Physic::Component>(entity)->GetPosition())
 				);
 				});
 		}

@@ -74,8 +74,8 @@ struct UpdateSpawnComponent
 
 		b2FixtureDef fixtureDef;
 		fixtureDef.shape = &circle;
-		fixtureDef.filter.categoryBits = CollisionFillter::ENEMY;
-		fixtureDef.filter.maskBits = CollisionFillter::PLAYER | CollisionFillter::STATIC | CollisionFillter::BULLET;
+		fixtureDef.filter.categoryBits = Physic::Fillter::ENEMY;
+		fixtureDef.filter.maskBits = Physic::Fillter::PLAYER | Physic::Fillter::STATIC | Physic::Fillter::BULLET;
 		//fixtureDef.isSensor = isSensor;
 		fixtureDef.density = 1.0f;
 		fixtureDef.friction = 0.0f;

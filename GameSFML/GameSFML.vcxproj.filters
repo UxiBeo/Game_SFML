@@ -25,6 +25,12 @@
     <Filter Include="Header Files\Systems">
       <UniqueIdentifier>{a7b84ca2-75e0-44fe-a9b2-8a520fac5dfd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Systems">
+      <UniqueIdentifier>{865456a1-4c55-4bc6-a6d4-2a5a1afceed0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{28c09ba4-fdc8-47d3-8ce9-b11c9948838b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Keyboard.cpp">
@@ -35,6 +41,39 @@
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
       <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\AnimationSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\AttributeSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\GameplayEffectSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\PhysicSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\WorldTimerSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\World.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\CullingSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Grid.cpp">
+      <Filter>Source Files\Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\AttributeFactory.cpp">
+      <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\StateMachineSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\AbilitySystem.cpp">
+      <Filter>Source Files\Systems</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -128,9 +167,6 @@
     <ClInclude Include="System\PhysicSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="System\CollisionRespondSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="System\PlayerUpdateSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
@@ -173,12 +209,6 @@
     <ClInclude Include="Component\AbilityComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Component\CollisionRespondComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\StaticFunction.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Component\AttributeComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
@@ -202,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="Component\TimerComponent.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="System\AbilitySystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
