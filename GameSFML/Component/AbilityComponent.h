@@ -1,12 +1,9 @@
 #pragma once
 #include <vector>
 #include "entt/entt.hpp"
-#include "GameplayTag.h"
-#include "AttributeFactory.h"
 #include "box2d/box2d.h"
 namespace GAS
 {
-	
 	struct AbilityComponent
 	{
 		entt::entity owner;
@@ -23,24 +20,7 @@ namespace GAS
 	using ActivateBehaviorDelegate = entt::delegate<void(entt::entity, entt::registry&)>;
 	using CostDelegate = entt::delegate<void(entt::entity, entt::registry&)>;
 	
-	struct TagCollection
-	{
-		Tag::Bitfiled tags;
-		// Cancels any already-executing Ability with Tags matching the list provided while this Ability is executing.
-		Tag::Bitfiled cancelWithTag;
-		// Prevents execution of any other Ability with a matching Tag while this Ability is executing.
-		Tag::Bitfiled blockWithTag;
-		//While this Ability is executing, the owner of the Ability will be granted this set of Tags.
-		Tag::Bitfiled act_OwnedTags;
-		//The Ability can only be activated if the activating Actor or Component has all of these Tags.
-		Tag::Bitfiled act_RequiredTags;
-		//The Ability can only be activated if the activating Actor or Component does not have any of these Tags.
-		Tag::Bitfiled act_BlockedTags;
-		//The Ability can only be activated if the target Actor or Component does not have any of these Tags.
-		Tag::Bitfiled target_RequiredTags;
-		// Same as Target Required Tags but with Blocked tags.
-		Tag::Bitfiled target_BlockedTags;
-	};
+	
 	enum BehaviorComponent
 	{
 		PASSIVE = 1 << 1, //Cannot be cast like above but this one shows up on the ability HUD.

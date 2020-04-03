@@ -1,0 +1,79 @@
+{
+    "DependentType":[
+    {
+      "name": "Health Points",
+      "dependent": [
+        {
+          "name": "Constitution",
+          "perPoint": 19,
+          "percen": 0.5
+        },
+        {
+          "name": "Strength",
+          "perPoint": 5,
+          "percen": 0.1
+        }
+      ]
+    },
+    {
+      "name": "Magic Points",
+      "dependent": [
+        {
+          "name": "Intelligence",
+          "perPoint": 5,
+          "percen": 0.5
+        },
+        {
+          "name": "Dexterity",
+          "perPoint": 5,
+          "percen": 0.1
+        }
+      ]
+    },
+    {
+      "name": "Attack",
+      "dependent": [
+        {
+          "name": "Strength",
+          "perPoint": 5,
+          "percen": 0.5
+        },
+        {
+          "name": "Dexterity",
+          "perPoint": 5,
+          "percen": 0.1
+        }
+      ]
+    },
+    {
+      "name": "Defence",
+      "dependent": [
+        {
+          "name": "Dexterity",
+          "perPoint": 5,
+          "percen": 0.5
+        },
+        {
+          "name": "Constitution",
+          "perPoint": 5,
+          "percen": 0.1
+        }
+      ]
+    }
+  ],
+  "BaseType":[
+    {
+      "name": "Strength"
+    },
+    {
+      "name": "Dexterity"
+    },
+    {
+      "name": "Constitution"
+    },
+    {
+      "name": "Intelligence"
+    }
+  ]
+}
+  

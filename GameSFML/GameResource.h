@@ -1,5 +1,5 @@
 #pragma once
-#include "SFML/Graphics/Texture.hpp"
+#include "SFML/Graphics.hpp"
 #include "entt/core/hashed_string.hpp"
 #include "MaxxUtility.h"
 #include "Codex.h"
@@ -28,6 +28,7 @@ struct TextureResource
 	using Loader = TextureLoader;
 	sf::Texture data;
 };
+
 struct AnimationResource
 {
 	struct AnimationSet

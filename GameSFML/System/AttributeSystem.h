@@ -6,39 +6,34 @@ class AttributeSystem final : public ISystemECS
 {
 private:
 	void Update(entt::registry& ECS) final;
+	void BeginPlay(entt::registry& ECS) final;
 public:
-	//Use for health or Mana only
-	static void ChangeValueKeepPercent(const AttributeFactory& factory, entt::hashed_string attName,
-		AttributeSet& atts, unsigned int& curValue, unsigned int& maxValue, Attribute amount)
+	static void ChangeSpecialStatKeepPercent(int& curValue, unsigned int& maxValue, const float newMaxValue)
 	{
-		const auto index = GetIndex(factory, attName);
-		maxValue = GetMaxValueByIndex(atts, index);
 		float percent = (float)curValue / (float)maxValue;
-		auto& att = GetAttributeByIndex(atts, index);
-		att += amount;
+		maxValue = (unsigned int)newMaxValue;
+		curValue = int(percent * newMaxValue);
+	}
+	static float ComputeFinalValue(const AttributeFactory& factory, size_t attIndex, STATS::Set& set)
+	{
+		/*const auto& map = factory.GetSpecialMap(attIndex).dependentAtts;
+		return std::accumulate(map.begin(), map.end(), 0.0f, [&set](float total, const AttributeFactory::DependIndex& index) {
+			float finalvalue = set[index.index].getFinalValue();
+			return total + finalvalue * index.perUnit + finalvalue * index.percent;
+			});*/
+		return 0.0f;
+	}
+	template<typename Value, typename Change>
+	void ChangeValueSystem(entt::registry& ECS)
+	{
+		auto group = ECS.group<Value, const Change>();
+		std::for_each(std::execution::par_unseq, group.begin(), group.end(), [&group](auto entity) {
+			auto [base, change] = group.get<Value, const Change>(entity);
 
-		curValue = unsigned int(percent * (float)att.getFinalValue());
-	}
-	static size_t GetIndex(const AttributeFactory& factory, entt::hashed_string attName)
-	{
-		return factory.GetIndex(attName);
-	}
-
-	static int GetMaxValueByName(const AttributeFactory& factory, const AttributeSet& atts, entt::hashed_string attName)
-	{
-		return atts[factory.GetIndex(attName)].getFinalValue();
-	}
-	static int GetMaxValueByIndex(const AttributeSet& atts, size_t index)
-	{
-		return atts[index].getFinalValue();
-	}
-
-	static Attribute& GetAttributeByName(const AttributeFactory& factory, AttributeSet& atts, entt::hashed_string attName)
-	{
-		return atts[factory.GetIndex(attName)];
-	}
-	static Attribute& GetAttributeByIndex(AttributeSet& atts, size_t index)
-	{
-		return atts[index];
+			for (auto& i : change)
+			{
+				atts[i.first] += i.second;
+			}
+			});
 	}
 };
