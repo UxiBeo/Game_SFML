@@ -1,7 +1,8 @@
 {
-    "DependentType":[
+  "SpecialType": [
     {
-      "name": "Health Points",
+      "name": "Max Health",
+      "main": true,
       "dependent": [
         {
           "name": "Constitution",
@@ -16,7 +17,8 @@
       ]
     },
     {
-      "name": "Magic Points",
+      "name": "Max Mana",
+      "main": false,
       "dependent": [
         {
           "name": "Intelligence",
@@ -29,7 +31,9 @@
           "percen": 0.1
         }
       ]
-    },
+    }
+  ],
+  "DependentType": [
     {
       "name": "Attack",
       "dependent": [
@@ -61,7 +65,7 @@
       ]
     }
   ],
-  "BaseType":[
+  "BaseType": [
     {
       "name": "Strength"
     },
@@ -76,4 +80,3 @@
     }
   ]
 }
-  

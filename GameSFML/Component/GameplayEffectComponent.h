@@ -65,8 +65,8 @@ namespace GAS
 		entt::entity source = entt::null;
 		entt::entity target = entt::null;
 	};
-	using RestoreStats = std::vector<std::pair<unsigned int, STATS::Value>>;
-	using CaptureStats = STATS::Set;
+	//using RestoreStats = std::vector<std::pair<unsigned int, STATS::Value>>;
+	//using CaptureStats = STATS::Set;
 	using ExecutionTimes = unsigned int;
 	//delete Effect
 	struct DeleteEffect{};

@@ -20,13 +20,13 @@ void GameplayEffectSystem::BeginPlay(entt::registry& ECS)
 
 void GameplayEffectSystem::DeleteEffectSystem(entt::registry& ECS) const
 {
-	ECS.view<GAS::DeleteEffect, GAS::RestoreStats, GAS::EffectInfo>().each([&ECS](auto entity, auto& stat, auto& info) {
+	/*ECS.view<GAS::DeleteEffect, GAS::RestoreStats, GAS::EffectInfo>().each([&ECS](auto entity, auto& stat, auto& info) {
 		auto& Set = ECS.get<STATS::Set>(info.target);
 		for (auto& s : stat)
 		{
 			Set[s.first] -= s.second;
 		}
-		});
+		});*/
 	
 	auto view = ECS.view<GAS::DeleteEffect>();
 	ECS.destroy(view.begin(), view.end());

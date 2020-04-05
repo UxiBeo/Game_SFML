@@ -212,9 +212,6 @@
     <ClInclude Include="Component\AttributeComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Component\AttributeFactory.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="System\AttributeSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>

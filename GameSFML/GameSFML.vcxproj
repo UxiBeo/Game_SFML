@@ -150,7 +150,6 @@
     <ClInclude Include="Component\AbilityComponent.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
     <ClInclude Include="Component\AttributeComponent.h" />
-    <ClInclude Include="Component\AttributeFactory.h" />
     <ClInclude Include="Component\CharacterStateComponent.h" />
     <ClInclude Include="Component\GameplayEffectComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
