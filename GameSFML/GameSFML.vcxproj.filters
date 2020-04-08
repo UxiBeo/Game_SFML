@@ -28,9 +28,6 @@
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{865456a1-4c55-4bc6-a6d4-2a5a1afceed0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Components">
-      <UniqueIdentifier>{28c09ba4-fdc8-47d3-8ce9-b11c9948838b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Keyboard.cpp">
@@ -65,9 +62,6 @@
     </ClCompile>
     <ClCompile Include="Source\Grid.cpp">
       <Filter>Source Files\Engine</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Components\AttributeFactory.cpp">
-      <Filter>Source Files\Components</Filter>
     </ClCompile>
     <ClCompile Include="Source\Systems\StateMachineSystem.cpp">
       <Filter>Source Files\Systems</Filter>

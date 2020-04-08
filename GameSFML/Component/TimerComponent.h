@@ -31,5 +31,39 @@ struct SelfDeleteTimer
 	entt::entity owner;
 };
 struct CancleTimer{};
+struct CurrentActiveTimer
+{
+	void AddEntity(entt::entity entity)
+	{
+		if (curIndex < maxSize - 1)
+		{
+			otherEntities[curIndex] = entity;
+			curIndex++;
+		}
+	}
+	void RemoveEntity(entt::entity entity)
+	{
+		if (auto it = std::find(std::execution::par_unseq, otherEntities.begin(), otherEntities.begin() + curIndex, entity); it != otherEntities.end())
+		{
+			*it = otherEntities[curIndex];
 
-using CurrentActiveTimer = std::vector<entt::entity>;
+			if (curIndex > 0)
+			{
+				curIndex--;
+			}
+		}
+		else
+			assert(false && "Can't find timer");
+	}
+	void OnDelete(entt::registry& ECS)
+	{
+		for (unsigned char i = 0; i < curIndex; i++)
+		{
+			ECS.destroy(otherEntities[i]);
+		}
+	}
+private:
+	constexpr static unsigned char maxSize = 4;
+	std::array<entt::entity, maxSize> otherEntities;
+	unsigned char curIndex = 0;
+};

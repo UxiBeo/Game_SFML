@@ -4,25 +4,22 @@
 #include <algorithm>
 class AttributeSystem final : public ISystemECS
 {
+	using ATT = RPGS::AttributeType;
 private:
 	void Update(entt::registry& ECS) final;
 	void BeginPlay(entt::registry& ECS) final;
 public:
-	template<typename EType, typename ValueType, typename ModifiedData>
-	void ModifiedStat(entt::registry& ECS) const
+	void ClearModified(entt::registry& ECS) const;
+	template<RPGS::AttributeType T>
+	void ModifiedAttribute(entt::registry& ECS) const
 	{
-		auto group = ECS.group<RPGS::SBase<EType, ValueType>, const RPGS::SModified<EType, ModifiedData>>();
-		std::for_each(std::execution::par_unseq, group.begin(), group.end(), [&group](auto entity) {
-
-			auto [base, modified] = group.get<RPGS::SBase<EType, ValueType>, const RPGS::SModified<EType, ModifiedData>>(entity);
-			std::transform(std::execution::par_unseq, base.data.begin(), base.data.end(), modified.data.begin(), base.data.begin(),
-				[](auto& lhs, const auto& rhs) {return lhs += rhs; });
+		using MType = RPGS::ModifiedAttribute<T>;
+		using AType = RPGS::Attribute<T>;
+		auto view = ECS.view<const MType, AType>();
+		std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&view](auto entity) {
+			auto [modified, value] = view.get<const MType, AType>(entity);
+			value.value += modified.value;
 			});
-	}
-	template<typename EType, typename ModifiedData>
-	void ClearModified(entt::registry& ECS) const
-	{
-		ECS.clear<RPGS::SModified<EType, ModifiedData>>();
 	}
 };
 

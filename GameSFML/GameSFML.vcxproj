@@ -133,7 +133,6 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Source\Components\AttributeFactory.cpp" />
     <ClCompile Include="Source\Grid.cpp" />
     <ClCompile Include="Source\Systems\AbilitySystem.cpp" />
     <ClCompile Include="Source\Systems\AnimationSystem.cpp" />

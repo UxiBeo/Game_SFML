@@ -58,16 +58,25 @@ namespace GAS
 		float maxTime = 0.0f;
 	};
 	using AddStack = unsigned int;
-
+	struct BeginEffect{};
 	struct EffectInfo
 	{
 		entt::hashed_string texturePath;
 		entt::entity source = entt::null;
 		entt::entity target = entt::null;
+		std::vector<std::pair<RPGS::AttributeType, float>> captureAtts;
+		bool firstTime = true;
+		std::vector<std::pair<RPGS::AttributeType, RPGS::Value>> modifiedAtts;
 	};
-	//using RestoreStats = std::vector<std::pair<unsigned int, STATS::Value>>;
-	//using CaptureStats = STATS::Set;
-	using ExecutionTimes = unsigned int;
-	//delete Effect
+
+	template <RPGS::AttributeType T>
+	struct RestoreAttribute
+	{
+		RPGS::Value value;
+	};
+	struct ExecutionTimes
+	{
+		unsigned int data;
+	};
 	struct DeleteEffect{};
 }

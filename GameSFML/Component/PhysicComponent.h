@@ -15,12 +15,23 @@ namespace Physic
 
 	using Engine = b2World;
 	using Component = b2Body*;
-	using SensorWith = std::vector<entt::entity>;
 
+	struct SensorWith
+	{
+		std::vector<entt::entity> otherEntities;
+	};
+	struct SensorIn
+	{
+		std::vector<entt::entity> otherEntities;
+	};
+	struct SensorOut
+	{
+		std::vector<entt::entity> otherEntities;
+	};
 
-	using SensorIn = std::vector<entt::entity>;
-	using SensorOut = std::vector<entt::entity>;
-	using ColliedWith = std::vector<entt::entity>;
+	struct ColliedWith
+	{
+		std::vector<entt::entity> otherEntities;
+	};
 	struct KeepColliedData{};
-	struct KeepSensorData{};
 }

@@ -48,15 +48,14 @@ void PhysicSystem::AddPhysic(entt::entity entity, entt::registry& ECS, const b2B
 void PhysicSystem::HandleSensorData(entt::registry& ECS)
 {
 	ECS.view<Physic::SensorIn>().each([&ECS](const auto entity, const Physic::SensorIn& sensorIn) {
-		if (!ECS.has<Physic::KeepSensorData>(entity)) return;
 
-		auto& senWith = ECS.get_or_assign<Physic::SensorWith>(entity);
+		auto& senWith = ECS.get_or_assign<Physic::SensorWith>(entity).otherEntities;
 
-		auto& data = ECS.get<Physic::SensorIn>(entity);
+		auto& data = ECS.get<Physic::SensorIn>(entity).otherEntities;
 		std::vector<entt::entity> merge;
-		std::merge(senWith.begin(), senWith.end(), sensorIn.begin(), sensorIn.end(), std::back_inserter(merge));
+		std::merge(senWith.begin(), senWith.end(), sensorIn.otherEntities.begin(), sensorIn.otherEntities.end(), std::back_inserter(merge));
 
-		if ((senWith.size() + sensorIn.size()) != merge.size()) assert(false && "Sensor out have some element mismatch");
+		if ((senWith.size() + sensorIn.otherEntities.size()) != merge.size()) assert(false && "Sensor out have some element mismatch");
 		if (merge.size() == 0) return;
 
 		senWith = std::move(merge);
@@ -65,13 +64,12 @@ void PhysicSystem::HandleSensorData(entt::registry& ECS)
 	//senser Out
 	ECS.view<Physic::SensorOut>().each([&ECS](const auto entity, const Physic::SensorOut& sensoOut) {
 
-		if (!ECS.has<Physic::KeepSensorData>(entity)) return;
-		auto& senWith = ECS.get_or_assign<Physic::SensorWith>(entity);
+		auto& senWith = ECS.get_or_assign<Physic::SensorWith>(entity).otherEntities;
 
 		std::vector<entt::entity> diff;
-		std::set_difference(senWith.begin(), senWith.end(), sensoOut.begin(), sensoOut.end(), std::back_inserter(diff));
+		std::set_difference(senWith.begin(), senWith.end(), sensoOut.otherEntities.begin(), sensoOut.otherEntities.end(), std::back_inserter(diff));
 
-		if ((senWith.size() - diff.size()) != sensoOut.size()) assert(false && "Sensor out have some element mismatch");
+		if ((senWith.size() - diff.size()) != sensoOut.otherEntities.size()) assert(false && "Sensor out have some element mismatch");
 		if (diff.size() == 0)
 		{
 			ECS.remove<Physic::SensorWith>(entity);
@@ -110,25 +108,22 @@ void PhysicSystem::ProcessContactData(entt::registry& ECS)
 			for (const auto& i : data[0])
 			{
 				if (ECS.has<Physic::KeepColliedData>(i.first))
-				{
-					ECS.get_or_assign<Physic::ColliedWith>(i.first).emplace_back(i.second);
-				}
+					ECS.get_or_assign<Physic::ColliedWith>(i.first).otherEntities.emplace_back(i.second);
+
 				if (ECS.has<Physic::KeepColliedData>(i.second))
-				{
-					ECS.get_or_assign<Physic::ColliedWith>(i.second).emplace_back(i.first);
-				}
+					ECS.get_or_assign<Physic::ColliedWith>(i.second).otherEntities.emplace_back(i.first);
 				
 			}});
 
 		auto a2 = std::async(std::launch::async, [&] {
 			for (const auto& i : data[1])
 			{
-				ECS.get_or_assign<Physic::SensorIn>(i.first).emplace_back(i.second);
+				ECS.get_or_assign<Physic::SensorIn>(i.first).otherEntities.emplace_back(i.second);
 			}});
 		auto a3 = std::async(std::launch::async, [&] {
 			for (const auto& i : data[2])
 			{
-				ECS.get_or_assign<Physic::SensorOut>(i.first).emplace_back(i.second);
+				ECS.get_or_assign<Physic::SensorOut>(i.first).otherEntities.emplace_back(i.second);
 			}});
 
 		a1.wait();

@@ -25,5 +25,8 @@ struct AnimationComponent
 	entt::hashed_string animationName;
 	entt::hashed_string textureName;
 };
-using PairKeyframe = std::pair<unsigned char, entt::delegate<void(entt::entity, entt::registry&)>>;
-using AnimNotify = std::vector<PairKeyframe>;
+struct AnimNotify
+{
+	float triggerTime;
+	entt::delegate<void(entt::entity, entt::registry&)> notifyDelegate;
+};

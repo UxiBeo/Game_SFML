@@ -53,14 +53,7 @@ void WorldTimerSystem::Update(entt::registry& ECS)
 		auto* con = ECS.try_get<CurrentActiveTimer>(timer.owner);
 		if (con)
 		{
-			std::sort(std::execution::par_unseq, con->begin(), con->end());
-			if (auto it = binary_find(*con, entity))
-			{
-				std::swap((*con)[*it], con->back());
-				con->pop_back();
-			}
-			else
-				assert(false && "Can't find timer");
+			con->RemoveEntity(entity);
 		}
 		});
 	ECS.destroy(view.begin(), view.end());

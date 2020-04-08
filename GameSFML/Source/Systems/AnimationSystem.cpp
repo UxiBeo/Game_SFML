@@ -10,9 +10,9 @@ void AnimationSystem::Update(entt::registry& ECS)
 	if (worldTime == nullptr) return;
 	float dt = worldTime->dt;
 
-	auto view = ECS.view<AnimationComponent>(entt::exclude<AnimNotify>);
-	std::for_each(std::execution::par, view.begin(), view.end(), [&view, dt](auto entity) {
-		auto& animation = view.get<AnimationComponent>(entity);
+	auto group = ECS.view<AnimationComponent>();
+	std::for_each(std::execution::par, group.begin(), group.end(), [&group, dt](auto entity) {
+		auto& animation = group.get<AnimationComponent>(entity);
 		if (animation.isUpdate)
 		{
 			animation.curFrameTime += dt;
@@ -28,44 +28,13 @@ void AnimationSystem::Update(entt::registry& ECS)
 			}
 		}
 		});
-	ECS.view<AnimNotify, AnimationComponent>().each([dt, &ECS](auto entity, const AnimNotify& notify, AnimationComponent& animation) {
-		if (animation.isUpdate)
+	
+	ECS.group<AnimationComponent, AnimNotify>().each([&group, &ECS](auto entity, const auto& ani, const auto& noti) {
+		
+		if (noti.notifyDelegate && noti.triggerTime >= ani.curFrameTime)
 		{
-			animation.curFrameTime += dt;
-			unsigned char beginFrame = animation.iCurFrame;
-			//const auto prevFrame = animation.iCurFrame;
-			bool isStep = false;
-			while (animation.curFrameTime >= animation.holdTime)
-			{
-				animation.curFrameTime -= animation.holdTime;
-				animation.iCurFrame++;
-				isStep = true;
-				if (animation.iCurFrame > animation.endFrame)
-				{
-					animation.iCurFrame = animation.beginFrame;
-				}
-			}
-			if (!isStep) return;
-
-			for (auto& p : notify)
-			{
-				if (p.second)
-				{
-					if (beginFrame < animation.iCurFrame)
-					{
-						if (beginFrame < p.first && p.first <= animation.iCurFrame)
-						{
-							p.second(entity, ECS);
-						}
-					}
-					else if (!(beginFrame <= p.first && p.first <= animation.iCurFrame))
-					{
-						p.second(entity, ECS);
-					}
-				}
-
-			}
-
+			noti.notifyDelegate(entity, ECS);
 		}
 		});
+	
 }

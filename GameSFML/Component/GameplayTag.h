@@ -7,7 +7,6 @@ class Tag
 {
 public:
 	using Bitfiled = unsigned int;
-public:
 	void AddTag(entt::hashed_string tag)
 	{
 		tagContainer.insert(tag.value());
@@ -34,7 +33,7 @@ public:
 	}
 	Bitfiled GetBitField(std::vector<entt::hashed_string>& tags)
 	{
-		Bitfiled bitfiled = 0;
+		unsigned int bitfiled = 0;
 		for (const auto& t : tags)
 		{
 			bitfiled |= GetBitField(t);
