@@ -13,4 +13,7 @@ private:
 	void BeginEffectSystem(entt::registry& ECS) const;
 	void ExecutionSystem(entt::registry& ECS) const;
 	void TryApplyEffect(entt::registry& ECS) const;
+	void ModifiedAttribute(entt::registry& ECS, GES::EffectInfo& eInfo, uint8_t totalExe) const;
+	void ApplyDame(entt::registry& ECS, GES::EffectInfo& eInfo, uint8_t totalExe) const;
+	void ApplyCostAndHealth(entt::registry& ECS, GES::EffectInfo& eInfo, uint8_t totalExe) const;
 };

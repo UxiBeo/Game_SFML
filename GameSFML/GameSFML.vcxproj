@@ -139,6 +139,7 @@
     <ClCompile Include="Source\Systems\AttributeSystem.cpp" />
     <ClCompile Include="Source\Systems\CullingSystem.cpp" />
     <ClCompile Include="Source\Systems\GameplayEffectSystem.cpp" />
+    <ClCompile Include="Source\Systems\ParentChildrenSystem.cpp" />
     <ClCompile Include="Source\Systems\PhysicSystem.cpp" />
     <ClCompile Include="Source\Systems\StateMachineSystem.cpp" />
     <ClCompile Include="Source\Systems\WorldTimerSystem.cpp" />
@@ -152,7 +153,7 @@
     <ClInclude Include="Component\CharacterStateComponent.h" />
     <ClInclude Include="Component\GameplayEffectComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
-    <ClInclude Include="Component\SpawnComponent.h" />
+    <ClInclude Include="Component\ParentChildrenComponent.h" />
     <ClInclude Include="Component\TagRule.h" />
     <ClInclude Include="Component\TimerComponent.h" />
     <ClInclude Include="Component\UIComponent.h" />
@@ -178,6 +179,7 @@
     <ClInclude Include="System\CleanDeathSystem.h" />
     <ClInclude Include="System\GameplayEffectSystem.h" />
     <ClInclude Include="System\LifeTimeSystem.h" />
+    <ClInclude Include="System\ParentChildrenSystem.h" />
     <ClInclude Include="System\PhysicSystem.h" />
     <ClInclude Include="System\PlayerUpdateSystem.h" />
     <ClInclude Include="System\RenderScreenBaseUISystem.h" />
@@ -191,7 +193,6 @@
     <ClInclude Include="System\PlayerControllerSystem.h" />
     <ClInclude Include="System\RenderGridSystem.h" />
     <ClInclude Include="System\RenderSpriteSystem.h" />
-    <ClInclude Include="System\SpawnAndCleanDeathSystem.h" />
     <ClInclude Include="System\SpawnStaticObjectSystem.h" />
     <ClInclude Include="System\StateMachineSystem.h" />
     <ClInclude Include="System\WorldTimerSystem.h" />

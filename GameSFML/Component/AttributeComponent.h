@@ -1,19 +1,9 @@
 #pragma once
 #include <numeric>
 #include <array>
-#define LEAF_ELEMENT_TYPES \
-	X(STRENGTH) \
-	X(CONSTITUTION) \
-	X(DEXTERITY) \
-	X(INTELLIGENCE) \
-	X(CRITCHANGE) \
-	X(CRITDAME) \
-	X(ATTACK)\
-	X(DEFENCE)
 
 namespace RPGS
 {
-
 	struct Value
 	{
 	public:
@@ -65,10 +55,6 @@ namespace RPGS
 		{
 			return std::max(minValue, baseValue * (1.0f + baseMultiplier) * (1.0f + multiplier) + value);
 		}
-		bool isZero() const
-		{
-			return baseValue == 0.0f && baseMultiplier == 0.0f && value == 0.0f && multiplier == 0.0f;
-		}
 	public:
 		float baseValue = 0;
 		float baseMultiplier = 0.0f;
@@ -82,9 +68,9 @@ namespace RPGS
 		{
 			ConsumeValue newValue = *this;
 			newValue.maxValue += rhs;
-			float percent = (float)newValue.curValue / newValue.curMaxValue;
+			float percent = newValue.curValue / newValue.curMaxValue;
 			newValue.curMaxValue = newValue.maxValue.getFinalValue();
-			newValue.curValue = int(percent * curMaxValue);
+			newValue.curValue = percent * curMaxValue;
 			return newValue;
 		}
 		ConsumeValue& operator+=(const Value& rhs)
@@ -96,9 +82,9 @@ namespace RPGS
 		{
 			ConsumeValue newValue = *this;
 			newValue.maxValue -= rhs;
-			float percent = (float)newValue.curValue / newValue.curMaxValue;
+			float percent = newValue.curValue / newValue.curMaxValue;
 			newValue.curMaxValue = newValue.maxValue.getFinalValue();
-			newValue.curValue = int(percent * curMaxValue);
+			newValue.curValue = percent * curMaxValue;
 			return newValue;
 		}
 		ConsumeValue& operator-=(const Value& rhs)
@@ -106,38 +92,49 @@ namespace RPGS
 			this->maxValue -= rhs;
 			return *this;
 		}
-		ConsumeValue operator+(const int& rhs) const
+		ConsumeValue operator+(const float& rhs) const
 		{
 			ConsumeValue newValue = *this;
 			newValue.curValue += rhs;
 			return newValue;
 		}
-		ConsumeValue& operator+=(const int& rhs)
+		ConsumeValue& operator+=(const float& rhs)
 		{
 			this->curValue += rhs;
 			return *this;
 		}
-		ConsumeValue operator-(const int& rhs) const
+		ConsumeValue operator-(const float& rhs) const
 		{
 			ConsumeValue newValue = *this;
 			newValue.curValue -= rhs;
 			return newValue;
 		}
-		ConsumeValue& operator-=(const int& rhs)
+		ConsumeValue& operator-=(const float& rhs)
 		{
 			this->curValue -= rhs;
 			return *this;
 		}
 		Value maxValue;
-		int curValue;
+		float curValue;
 		float curMaxValue;
 	};
-
+	
 	enum AttributeType
 	{
-		#define X(el) el,
-		LEAF_ELEMENT_TYPES
-		#undef X
+		Strength = 1,
+		Constitution = 1 << 2,
+		Dexterity = 1 << 3,
+		Intelligence = 1 << 4,
+		CritChange = 1 << 5,
+		CritDame = 1 << 6,
+		Attack = 1 << 7,
+		Defence = 1 << 8,
+		HealthPoint = 1 << 9,
+		ManaPoint = 1 << 10
+	};
+	struct AttributePack
+	{
+		unsigned int value;
 	};
 	template <AttributeType T>
 	struct Attribute
@@ -149,9 +146,26 @@ namespace RPGS
 	{
 		Value value;
 	};
-	
-}
 
-#ifndef AttXMacro
-#undef LEAF_ELEMENT_TYPES
-#endif
+	template <AttributeType T>
+	struct ModifiedConsumeCur
+	{
+		float value;
+	};
+	template <AttributeType T>
+	struct InputDame
+	{
+		float value;
+	};
+	/*-----------Template Specialization------------*/
+	template <>
+	struct Attribute<AttributeType::HealthPoint>
+	{
+		ConsumeValue value;
+	};
+	template <>
+	struct Attribute<AttributeType::ManaPoint>
+	{
+		ConsumeValue value;
+	};
+}

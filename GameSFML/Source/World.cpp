@@ -92,24 +92,6 @@ void World::AddNewPlayer(entt::registry& ECS)
 	}*/
 }
 
-void World::AddSpawner(entt::registry& ECS, float worldSize)
-{
-	auto entity = ECS.create();
-	ECS.assign<SpawnComponent>(entity).interval = 1.0f;
-	ECS.assign<SpawnCapacity>(entity).maxEntity = 20;
-	ECS.assign<UpdateSpawnComponent>(entity).myDelegate.connect<UpdateSpawnComponent::Enemy>();
-
-	if (Locator::Random::empty()) return;
-	auto& rng = Locator::Random::ref();
-	std::uniform_real_distribution<float> posRange(-worldSize, worldSize);
-	std::uniform_real_distribution<float> speedRange(-20.0f, 20.0f);
-	auto& spawnPos = ECS.assign<SpawnPosition>(entity);
-	spawnPos.spawnPosition = b2Vec2(posRange(rng), posRange(rng));
-	spawnPos.variationX = 5;
-	spawnPos.variationX = 2;
-	spawnPos.speed = b2Vec2(speedRange(rng), speedRange(rng));
-}
-
 void World::AddPlayer(entt::registry& ECS)
 {
 	b2BodyDef bodyDef;
@@ -184,7 +166,6 @@ void World::InitServiceLocator()
 		ECS.set<Physic::Engine>(b2Vec2(0.0f, 0.0f));
 
 		ECS.set<Grid>().LoadFromFile(Database::GridMap);
-		ECS.set<WorldTimer>();
 	}
 
 }
@@ -203,7 +184,7 @@ void World::InitSystem()
 	AddECSSystem(std::make_unique<AttributeSystem>());
 	AddECSSystem(std::make_unique<MoveCameraSystem>());
 	//AddECSSystem(std::make_unique<GridUpdateSystem>());
-	//AddECSSystem(std::make_unique<SpawnSystem>());
+	AddECSSystem(std::make_unique<ParentChildrenSystem>());
 	AddECSSystem(std::make_unique<CleanDeathSystem>());
 	//AddECSSystem(std::make_unique<CullingSystem>());
 	//AddECSSystem(std::make_unique<UpdateScreenBaseUISystem>());
@@ -251,8 +232,5 @@ void World::TestSomething()
 
 	std::uniform_real_distribution<float> pos(-worldSize + 5.0f, worldSize - 5.0f);
 	std::uniform_real_distribution<float> speed(-20.0f, 20.0f);
-	for (size_t i = 0; i < 10; i++)
-	{
-		AddSpawner(ECS, worldSize - 10.0f);
-	}
+
 }

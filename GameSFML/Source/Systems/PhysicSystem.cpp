@@ -19,20 +19,13 @@ void PhysicSystem::BeginPlay(entt::registry& ECS)
 }
 void PhysicSystem::Update(entt::registry& ECS)
 {
-	auto* worldTime = ECS.try_ctx<WorldTimer>();
-	if (worldTime == nullptr) return;
-	float dt = worldTime->dt;
-
 	if (auto* physicEngine = ECS.try_ctx<Physic::Engine>(); physicEngine)
 	{
 		ClearContactData(ECS);
-		physicEngine->Step(dt, 4, 2);
+		physicEngine->Step(ECS.ctx<Timer::World>().dt, 4, 2);
 		ProcessContactData(ECS);
 		HandleSensorData(ECS);
 	}
-
-	
-	
 }
 
 void PhysicSystem::AddPhysic(entt::entity entity, entt::registry& ECS, const b2BodyDef& Bdef, const b2FixtureDef& fixDef)

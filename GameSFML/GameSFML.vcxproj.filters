@@ -69,6 +69,9 @@
     <ClCompile Include="Source\Systems\AbilitySystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Systems\ParentChildrenSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -111,9 +114,6 @@
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="System\RenderSpriteSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="System\SpawnAndCleanDeathSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Component\AnimationComponent.h">
@@ -179,9 +179,6 @@
     <ClInclude Include="System\UpdateUISystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Component\SpawnComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="MaxxUtility.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -225,6 +222,12 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="System\AbilitySystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ParentChildrenComponent.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ParentChildrenSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

@@ -2,6 +2,7 @@
 #include "entt/entt.hpp"
 #include "../HashStringDataBase.h"
 #include <execution>
+struct DestroyMe{};
 class ISystemECS
 {
 public:

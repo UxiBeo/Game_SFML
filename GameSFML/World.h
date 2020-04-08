@@ -17,7 +17,6 @@ public:
 	{
 		drawSystems.emplace_back(std::move(newSystem));
 	}
-	void AddSpawner(entt::registry& ECS, float worldSize);
 	
 	void AddPlayer(entt::registry& ECS);
 	

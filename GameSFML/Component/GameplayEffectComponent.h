@@ -3,7 +3,7 @@
 #include "entt/entt.hpp"
 #include "AttributeComponent.h"
 #include "GameplayTag.h"
-namespace GAS
+namespace GES
 {
 	struct EffectTags
 	{
@@ -40,43 +40,62 @@ namespace GAS
 	};
 	struct TickCapacity
 	{
-		unsigned int curTick = 0;
-		unsigned int maxTick = 0;
+		uint8_t curTick = 0;
+		uint8_t maxTick = 0;
 	};
-	using TickTimes = unsigned int;
+	struct Ticks
+	{
+		uint8_t value;
+	};
 	using ObserverTick = entt::observer;
 
 	//Stack
 	struct Stack
 	{
-		unsigned int curStack = 0;
-		unsigned int maxStack = 0;
+		uint8_t minStack = 0;
+		uint8_t curStack = 0;
+		uint8_t maxStack = 0;
 	};
 	struct StackLost
 	{
 		float curTime = 0.0f;
 		float maxTime = 0.0f;
 	};
-	using AddStack = unsigned int;
+	struct AddStack
+	{
+		uint8_t value;
+	};
 	struct BeginEffect{};
 	struct EffectInfo
 	{
+		struct ModifiedValue
+		{
+			RPGS::AttributeType type;
+			RPGS::Value modValue;
+			RPGS::Value storeValue;
+		};
+		struct CaptureValue
+		{
+			RPGS::AttributeType type;
+			float value = 0.0f;
+		};
+		struct CostAndHealValue
+		{
+			RPGS::AttributeType type;
+			float value = 0.0f;
+		};
+		entt::hashed_string effectName;
 		entt::hashed_string texturePath;
 		entt::entity source = entt::null;
 		entt::entity target = entt::null;
-		std::vector<std::pair<RPGS::AttributeType, float>> captureAtts;
-		bool firstTime = true;
-		std::vector<std::pair<RPGS::AttributeType, RPGS::Value>> modifiedAtts;
+		std::vector<CaptureValue> capture;
+		std::vector<ModifiedValue> modified;
+		std::vector<CostAndHealValue> costAndHealth;
 	};
-
-	template <RPGS::AttributeType T>
-	struct RestoreAttribute
+	
+	struct Executions
 	{
-		RPGS::Value value;
+		uint8_t value;
 	};
-	struct ExecutionTimes
-	{
-		unsigned int data;
-	};
-	struct DeleteEffect{};
+	struct TryAppyEffect{};
 }

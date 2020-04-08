@@ -7,7 +7,6 @@ class AttributeSystem final : public ISystemECS
 	using ATT = RPGS::AttributeType;
 private:
 	void Update(entt::registry& ECS) final;
-	void BeginPlay(entt::registry& ECS) final;
 public:
 	void ClearModified(entt::registry& ECS) const;
 	template<RPGS::AttributeType T>
@@ -21,5 +20,7 @@ public:
 			value.value += modified.value;
 			});
 	}
+	void ModifiedConsumeCurrent(entt::registry& ECS) const;
+	void ApplyDame(entt::registry& ECS) const;
 };
 

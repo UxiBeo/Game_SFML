@@ -1,5 +1,4 @@
 #pragma once
-
 #include "../System/ISystemECS.h"
 class AbilitySystem final : public ISystemECS
 {

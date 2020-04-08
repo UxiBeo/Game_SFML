@@ -6,9 +6,7 @@
 
 void AnimationSystem::Update(entt::registry& ECS)
 {
-	auto* worldTime = ECS.try_ctx<WorldTimer>();
-	if (worldTime == nullptr) return;
-	float dt = worldTime->dt;
+	float dt = ECS.ctx<Timer::World>().dt;
 
 	auto group = ECS.view<AnimationComponent>();
 	std::for_each(std::execution::par, group.begin(), group.end(), [&group, dt](auto entity) {
