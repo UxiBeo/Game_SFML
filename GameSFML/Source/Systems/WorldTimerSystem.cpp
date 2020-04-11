@@ -8,8 +8,9 @@ void WorldTimerSystem::BeginPlay(entt::registry& ECS)
 
 void WorldTimerSystem::Update(entt::registry& ECS)
 {
-	auto worldTime = ECS.ctx<Timer::World>();
-	worldTime.dt = std::min(float(worldTime.clock.restart().asMilliseconds()) / 1000.0f, worldTime.maxdt);
+	auto& worldTime = ECS.ctx<Timer::World>();
+	worldTime.time = worldTime.clock.restart();
+	worldTime.dt = std::min(float(worldTime.time.asMilliseconds()) / 1000.0f, worldTime.maxdt);
 	worldTime.worldTimer += worldTime.dt;
 	float dt = worldTime.dt;
 
@@ -21,8 +22,7 @@ void WorldTimerSystem::Update(entt::registry& ECS)
 			if (timer.delegate)
 				timer.delegate(entity, ECS);
 
-			ECS.assign<DestroyMe>(entity);
-			ECS.get_or_assign<RemoveChildrent>(timer.owner).entties.push_back(entity);
+			ECS.assign<Timer::SelfDelete>(entity);
 		}
 
 		});
@@ -41,11 +41,13 @@ void WorldTimerSystem::Update(entt::registry& ECS)
 				timer.curLoop++;
 				if (timer.curLoop >= timer.intervalTime)
 				{
-					ECS.assign<DestroyMe>(entity);
-					ECS.get_or_assign<RemoveChildrent>(timer.owner).entties.push_back(entity);
+					ECS.assign<Timer::SelfDelete>(entity);
 				}
 			}
 		}
 
 		});
+
+	auto view = ECS.view<Timer::SelfDelete>();
+	ECS.destroy(view.begin(), view.end());
 }

@@ -9,6 +9,7 @@ namespace Timer
 		float worldTimer = 0.0f;
 		float maxdt = 0.5f;
 		sf::Clock clock;
+		sf::Time time;
 	};
 	struct OneTime
 	{
@@ -28,4 +29,5 @@ namespace Timer
 		entt::entity owner;
 		entt::delegate<void(entt::entity, entt::registry&)> delegate;
 	};
+	struct SelfDelete{};
 }

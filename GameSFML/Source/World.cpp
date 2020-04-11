@@ -3,35 +3,39 @@
 #include "../SystemInclude.h"
 #include "../HashStringDataBase.h"
 #include "../Component/CharacterStateComponent.h"
+#include "../Gird.h"
 #include <random>
-World::World()
+World::World(entt::registry& ECS)
 {
-	InitServiceLocator();
+	InitContex(ECS);
 	InitSystem();
-	BeginPlay(Locator::ECS::ref());
-	//TestSomething();
-	AddNewPlayer(Locator::ECS::ref());
+	BeginPlay(ECS);
+	AddNewPlayer(ECS);
 }
 
-void World::Update()
+void World::Update(entt::registry& ECS)
 {
-	if (Locator::ECS::empty()) return;
-	auto& ECS = Locator::ECS::ref();
 	for (auto& sys : ecsSystems)
 	{
 		sys->Update(ECS);
 	}
 }
 
-void World::Draw() const
+void World::Draw(Graphics& gfx, entt::registry& ECS) const
 {
-	if (Locator::Graphic::empty() || Locator::ECS::empty()) return;
-	auto& gfx = Locator::Graphic::ref();
-	auto& ECS = Locator::ECS::ref();
 	for (auto& sys : drawSystems)
 	{
 		sys->Draw(gfx, ECS);
 	}
+	auto controller = ECS.ctx<PlayerControllerComponent>();
+
+	sf::CircleShape shape;
+	shape.setRadius(32);
+	
+	
+	shape.setPosition(gfx.getRenderWindow().mapPixelToCoords(controller.mouseScreenPos) - sf::Vector2f(32.0f,32.0f));
+	shape.setFillColor(sf::Color(0, 0, 255, 128));
+	gfx.Draw(shape);
 }
 
 void World::AddNewPlayer(entt::registry& ECS)
@@ -156,18 +160,11 @@ void World::BeginPlay(entt::registry& ECS)
 	}
 }
 
-void World::InitServiceLocator()
+void World::InitContex(entt::registry& ECS)
 {
-	Locator::Random::set(std::random_device{}());
-	Locator::ECS::set();
-	if (!Locator::ECS::empty())
-	{
-		auto& ECS = Locator::ECS::ref();
-		ECS.set<Physic::Engine>(b2Vec2(0.0f, 0.0f));
-
-		ECS.set<Grid>().LoadFromFile(Database::GridMap);
-	}
-
+	ECS.set<std::mt19937>(std::random_device{}());
+	ECS.set<Physic::Engine>(b2Vec2(0.0f, 0.0f));
+	ECS.set<Grid>().LoadFromFile(Database::GridMap);
 }
 
 void World::InitSystem()
@@ -200,37 +197,4 @@ void World::InitSystem()
 	//drawSystems.emplace_back(std::make_unique<DrawDebugSystem>());
 	//drawSystems.emplace_back(std::make_unique<RenderWorldBaseUISystem>());
 	//drawSystems.emplace_back(std::make_unique<RenderScreenBaseUISystem>());
-}
-
-void World::AddWall(b2Vec2 p1, b2Vec2 p2)
-{
-	const auto entity = Locator::ECS::ref().create();
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_staticBody;
-	bodyDef.position.Set(0, 0);
-
-	b2EdgeShape edgeShape;
-	edgeShape.Set(p1, p2);
-
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &edgeShape;
-
-	//Locator::ECS::ref().assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-}
-
-void World::TestSomething()
-{
-	auto& ECS = Locator::ECS::ref();
-	auto& rng = Locator::Random::ref();
-	const float worldSize = 100.0f;
-	AddWall(b2Vec2(worldSize, -worldSize), b2Vec2(worldSize, worldSize));
-	AddWall(b2Vec2(worldSize, worldSize), b2Vec2(-worldSize, worldSize));
-	AddWall(b2Vec2(-worldSize, worldSize), b2Vec2(-worldSize, -worldSize));
-	AddWall(b2Vec2(-worldSize, -worldSize), b2Vec2(worldSize, -worldSize));
-
-	AddPlayer(ECS);
-
-	std::uniform_real_distribution<float> pos(-worldSize + 5.0f, worldSize - 5.0f);
-	std::uniform_real_distribution<float> speed(-20.0f, 20.0f);
-
 }

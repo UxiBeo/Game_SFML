@@ -8,18 +8,12 @@ namespace GES
 	struct EffectTags
 	{
 		Tag::Bitfiled tags;
-		// Cancels any already-executing Effect with Tags.
-		Tag::Bitfiled cancelWithTag;
-		//While this Effect is executing, the owner of the Effect will be granted this set of Tags.
-		Tag::Bitfiled act_OwnedTags;
-		//The Effect can only be activated if the Target has all of these Tags.
-		Tag::Bitfiled act_RequiredTags;
-		//The Effect can only be activated if the activating Actor or Component does not have any of these Tags.
-		Tag::Bitfiled act_BlockedTags;
-		//The Ability can only be activated if the target Actor or Component does not have any of these Tags.
+
 		Tag::Bitfiled target_RequiredTags;
-		// Same as Target Required Tags but with Blocked tags.
-		Tag::Bitfiled target_BlockedTags;
+		Tag::Bitfiled target_BlockTags;
+
+		Tag::Bitfiled target_GrantTags;
+		Tag::Bitfiled target_RemoveTags;
 	};
 	
 	//Duration
@@ -68,6 +62,7 @@ namespace GES
 	struct BeginEffect{};
 	struct EffectInfo
 	{
+		EffectTags tags;
 		struct ModifiedValue
 		{
 			RPGS::AttributeType type;
@@ -98,4 +93,5 @@ namespace GES
 		uint8_t value;
 	};
 	struct TryAppyEffect{};
+	struct SelfDelete{};
 }

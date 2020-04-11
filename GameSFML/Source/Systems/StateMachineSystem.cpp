@@ -27,14 +27,14 @@ void StateMachineSystem::Update(entt::registry& ECS)
 			pStateCom.curDir = controller.direction;
 			if (pStateCom.curState != CharacterStateComponent::State::Dead)
 			{
-				if (controller.shootIsPressed)
+				/*if (controller.shootIsPressed)
 				{
 					pStateCom.curState = CharacterStateComponent::State::Shooting;
 				}
 				else
 				{
 					pStateCom.curState = CharacterStateComponent::State::IdleAndWalking;
-				}
+				}*/
 			}
 		});
 

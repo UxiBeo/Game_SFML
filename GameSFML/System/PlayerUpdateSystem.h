@@ -7,9 +7,9 @@ class PlayerUpdateSystem final : public ISystemECS
 public:
 	void Update(entt::registry& ECS) final
 	{
-		auto& gfx = Locator::Graphic::ref();
+		auto& controller = ECS.ctx<PlayerControllerComponent>();
 		//update controller
-		ECS.view<PlayerControllerComponent, Physic::Component>().each([&ECS, &gfx](auto entity, PlayerControllerComponent& controller, Physic::Component& physic) {
+		ECS.view<entt::tag<"CameraTracking"_hs>, Physic::Component>().each([&ECS, &controller](auto entity, auto, Physic::Component& physic) {
 			
 			b2Vec2 vel = physic->GetLinearVelocity();
 			b2Vec2 desiredVel{(float)controller.direction.x, (float)controller.direction.y };

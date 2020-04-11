@@ -1,15 +1,20 @@
 #pragma once
-#include "../Locator.h"
 #include "../System/ISystemECS.h"
 #include "../Component/PlayerControllerComponent.h"
 #include "../MaxxConsole.h"
+#include "../Keyboard.h"
+#include "../Mouse.h"
 class PlayerControllerSystem final : public ISystemECS
 {
 public:
+	void BeginPlay(entt::registry& ECS) final
+	{
+		ECS.set<PlayerControllerComponent>();
+	}
 	void Update(entt::registry& ECS) final
 	{
 		//keyboard
-		auto& kbd = Locator::Keyboard::ref();
+		auto& kbd = ECS.ctx<Keyboard>();
 		sf::Vector2i dir{ 0,0 };
 		if (kbd.KeyIsPressed(sf::Keyboard::A))
 		{
@@ -38,15 +43,19 @@ public:
 				MaxxConsole::r_showDebugPhysic = 0;
 			}
 		}
+		
 		//mouse
-		auto& mouse = Locator::Mouse::ref();
-		bool bIsShooting = false;
+		auto& mouse = ECS.ctx<Mouse>();
+		auto& controller = ECS.ctx<PlayerControllerComponent>();
+		controller.mouseScreenPos = mouse.GetPos();
+		controller.LeftIsPress = 0;
+		controller.direction = dir;
 		while (!mouse.IsEmpty())
 		{
 			auto e = mouse.Read();
 			if (e.GetType() == Mouse::Event::Type::LPress)
 			{
-				bIsShooting = true;
+				controller.LeftIsPress++;
 				continue;
 			}
 			/*if (e.GetType() == Mouse::Event::Type::RPress)
@@ -55,10 +64,6 @@ public:
 				continue;
 			}*/
 		}
-		ECS.view<PlayerControllerComponent>().each([&dir, bIsShooting, &mouse](auto entity, PlayerControllerComponent& controller) {
-			controller.direction = dir;
-			controller.shootIsPressed = bIsShooting;
-			controller.mousePos = mouse.GetPos();
-		});
+		
 	}
 };

@@ -4,9 +4,9 @@
 class World
 {
 public:
-	World();
-	void Update();
-	void Draw()const;
+	World(entt::registry& ECS);
+	void Update(entt::registry& ECS);
+	void Draw(Graphics& gfx, entt::registry& ECS)const;
 	
 	void AddNewPlayer(entt::registry& ECS);
 	void AddECSSystem(std::unique_ptr<ISystemECS> newSystem)
@@ -23,13 +23,9 @@ public:
 private:
 	void BeginPlay(entt::registry& ECS);
 	
-	void InitServiceLocator();
+	void InitContex(entt::registry& ECS);
 	
 	void InitSystem();
-	
-	void AddWall(b2Vec2 p1, b2Vec2 p2);
-	
-	void TestSomething();
 	
 private:
 	std::vector<std::unique_ptr<ISystemECS>> ecsSystems;

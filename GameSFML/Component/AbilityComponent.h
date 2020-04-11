@@ -2,6 +2,7 @@
 #include <vector>
 #include "entt/entt.hpp"
 #include "box2d/box2d.h"
+#include "AttributeComponent.h"
 namespace GAS
 {
 	struct AbilityComponent

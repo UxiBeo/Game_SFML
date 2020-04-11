@@ -2,7 +2,6 @@
 #include "../Graphics.h"
 #include "../Component/PhysicComponent.h"
 #include "../System/IDrawSystem.h"
-#include "../Locator.h"
 #include "../MaxxConsole.h"
 class DrawDebugSystem final : public IDrawSystem
 {

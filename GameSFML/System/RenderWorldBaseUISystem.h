@@ -1,5 +1,4 @@
 #pragma once
-#include "../Locator.h"
 #include "../System/IDrawSystem.h"
 #include "../Component/UIComponent.h"
 #include "../Component/PhysicComponent.h"

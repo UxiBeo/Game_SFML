@@ -1,17 +1,19 @@
 #pragma once
 #include "../System/ISystemECS.h"
-#include "../Locator.h"
 #include "../Component/PhysicComponent.h"
-
+#include "../Component/PlayerControllerComponent.h"
+#include "../Component/TimerComponent.h"
 class MoveCameraSystem final : public ISystemECS
 {
 public:
 	void Update(entt::registry& ECS) final
 	{
-		ECS.view<entt::tag<"CameraTracking"_hs>, Physic::Component>().each([](auto entity, auto, Physic::Component& physic) {
-			if (Locator::Graphic::empty()) return;
-
-			Locator::Graphic::ref().MoveViewport(physic->GetPosition());
+		auto& gfx = ECS.ctx<Graphics>();
+		auto& controller = ECS.ctx<PlayerControllerComponent>();
+		controller.mouseWorldPos = gfx.MouseToWorldPos(controller.mouseScreenPos);
+		ECS.view<entt::tag<"CameraTracking"_hs>, Physic::Component>().each([&](auto entity, auto, Physic::Component& physic) {
+			
+			gfx.MoveViewport(physic->GetPosition(), controller.mouseScreenPos);
 		});
 	}
 private:

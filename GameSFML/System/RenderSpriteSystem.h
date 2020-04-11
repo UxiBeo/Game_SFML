@@ -1,5 +1,4 @@
 #pragma once
-#include "../Locator.h"
 #include "../System/ISystemECS.h"
 #include "../System/IDrawSystem.h"
 #include "../Component/PhysicComponent.h"
@@ -18,21 +17,19 @@ public:
 		{
 			auto view = ECS.view<AnimationComponent, sf::Sprite>();
 
-			std::for_each(std::execution::par, view.begin(), view.end(), [&ECS](auto entity) {
-				auto& animCom = ECS.get<AnimationComponent>(entity);
-				auto& sprite = ECS.get<sf::Sprite>(entity);
+			std::for_each(std::execution::par, view.begin(), view.end(), [&view](auto entity) {
+				auto [animCom, sprite] = view.get<AnimationComponent, sf::Sprite>(entity);
 				sprite.setTextureRect(Codex<AnimationResource>::Retrieve(animCom.animationName).GetRectByIndex(animCom.iCurFrame));
 			});
 		}
 
 		{
+			auto& gfx = ECS.ctx<Graphics>();
 			auto view = ECS.view<Physic::Component, sf::Sprite>();
-			std::for_each(std::execution::par, view.begin(), view.end(), [&ECS](auto entity) {
-				auto& sprite = ECS.get<sf::Sprite>(entity);
+			std::for_each(std::execution::par, view.begin(), view.end(), [&view,&gfx](auto entity) {
+				auto [physic, sprite] = view.get<Physic::Component, sf::Sprite>(entity);
 
-				sprite.setPosition(
-					Locator::Graphic::ref().WorldToScreenPos(ECS.get<Physic::Component>(entity)->GetPosition())
-				);
+				sprite.setPosition(gfx.WorldToScreenPos(physic->GetPosition()));
 				});
 		}
 		

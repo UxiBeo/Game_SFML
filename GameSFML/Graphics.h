@@ -5,23 +5,25 @@
 class Graphics
 {
 public:
-	Graphics(sf::RenderWindow& window)
+	Graphics()
 		:
-		window(window),
-		vertices(sf::Quads, 4)
+		window(sf::VideoMode(1280, 720), "SFML Game")
 	{
-		MoveViewport(b2Vec2(0.0f,0.0f));
-	}
+		//enable v-sync
+		window.setVerticalSyncEnabled(true);
+		//disable key auto repeat
+		window.setKeyRepeatEnabled(false);
 
-	void DrawVertexArray(sf::VertexArray& vertexArray, const sf::Texture& texture) const
+	}
+	void DrawVertexArray(sf::VertexArray& vertexArray, const sf::Texture& texture)
 	{
 		window.draw(vertexArray, &texture);
 	}
-	void Draw(const sf::Drawable& drawable) const
+	void Draw(const sf::Drawable& drawable)
 	{
 		window.draw(drawable);
 	}
-	void DrawSprite(sf::Sprite& sprite) const
+	void DrawSprite(const sf::Sprite& sprite)
 	{
 		window.draw(sprite);
 	}
@@ -33,7 +35,7 @@ public:
 	{
 		window.display();
 	}
-	std::pair<b2Vec2, b2Vec2> GetViewport()
+	std::pair<b2Vec2, b2Vec2> GetViewport() const
 	{
 		const auto center = window.getView().getCenter();
 		halfSize = 0.5f * window.getView().getSize();
@@ -48,23 +50,18 @@ public:
 		window.draw(vertices);*/
 		return { top, bottom };
 	}
-	std::pair<sf::Vector2f, sf::Vector2f> GetViewportScreen()
+	std::pair<sf::Vector2f, sf::Vector2f> GetViewportScreen() const
 	{
 		const auto center = window.getView().getCenter();
 		halfSize = 0.5f * window.getView().getSize();
 		return { center - halfSize , center + halfSize };
 	}
-	void MoveViewport(const b2Vec2& newWorldPos)
-	{
-		auto view = window.getView();
-		view.setCenter(WorldToScreenPos(newWorldPos));
-		window.setView(view);
-	}
-	void MoveViewport(const sf::Vector2i screenPos)
+	void MoveViewport(const b2Vec2& newWorldPos, const sf::Vector2i& mousePos);
+	void MoveViewport(const sf::Vector2f screenPos)
 	{
 		auto view = window.getView();
 
-		view.setCenter(view.getCenter() + (sf::Vector2f)screenPos);
+		view.setCenter(view.getCenter() + screenPos);
 		window.setView(view);
 	}
 	sf::Vector2f GetViewportLocation() const
@@ -77,7 +74,7 @@ public:
 	}
 	b2Vec2 MouseToWorldPos(const sf::Vector2i& mousePos) const
 	{
-		const auto newPosition = window.getView().getCenter() + sf::Vector2f(mousePos) - halfSize;
+		const auto newPosition = window.mapPixelToCoords(mousePos);
 
 		return b2Vec2((newPosition.x) / scalePixel, (-newPosition.y) / scalePixel);
 	}
@@ -94,8 +91,14 @@ public:
 		return { worldSize.x * scalePixel, worldSize.y * scalePixel };
 	}
 	static constexpr float scalePixel = 20.0f;
+	sf::RenderWindow& getRenderWindow()
+	{
+		return window;
+	}
 private:
-	sf::RenderWindow& window;
+	sf::RenderWindow window;
 	sf::Vector2f halfSize;
 	sf::VertexArray vertices;
+	float cameraRelative = 0.52f;
+	float cameraMovespeed = 0.1f;
 };

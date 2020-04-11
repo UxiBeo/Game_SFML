@@ -1,10 +1,7 @@
 #pragma once
 #include "entt/entt.hpp"
+#include <set>
 struct ParentComponent
 {
-	std::vector<entt::entity> childEntities;
-};
-struct RemoveChildrent
-{
-	std::vector<entt::entity> entties;
+	std::set<entt::entity> childEntities;
 };

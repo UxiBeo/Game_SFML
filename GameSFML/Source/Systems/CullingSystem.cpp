@@ -1,6 +1,5 @@
 #pragma once
 #include "../../System/CullingSystem.h"
-#include "../../Locator.h"
 #include "../../Component/PhysicComponent.h"
 #include "../../HashStringDataBase.h"
 
@@ -23,7 +22,7 @@ void CullingSystem::Update(entt::registry& ECS)
 	{
 		ECS.clear<entt::tag<"Viewable"_hs>>();
 		cullingQueryCallback.foundBodies.clear();
-		auto viewport = Locator::Graphic::ref().GetViewport();
+		/*auto viewport = Locator::Graphic::ref().GetViewport();
 		b2AABB aabb;
 		if (viewport.first.x > viewport.second.x)
 		{
@@ -39,7 +38,7 @@ void CullingSystem::Update(entt::registry& ECS)
 		for (auto e : cullingQueryCallback.foundBodies)
 		{
 			ECS.assign<entt::tag<Database::Viewable>>(e);
-		}
+		}*/
 	}
 
 

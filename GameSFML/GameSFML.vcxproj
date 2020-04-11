@@ -130,8 +130,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="Source\Grid.cpp" />
     <ClCompile Include="Source\Systems\AbilitySystem.cpp" />
@@ -160,14 +162,12 @@
     <ClInclude Include="Component\PhysicComponent.h" />
     <ClInclude Include="Component\PlayerControllerComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
-    <ClInclude Include="Game.h" />
     <ClInclude Include="GameResource.h" />
     <ClInclude Include="Gird.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="HashStringDataBase.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Keyboard.h" />
-    <ClInclude Include="Locator.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="MapLayer.h" />
     <ClInclude Include="MaxxConsole.h" />
@@ -177,6 +177,7 @@
     <ClInclude Include="System\AbilitySystem.h" />
     <ClInclude Include="System\AttributeSystem.h" />
     <ClInclude Include="System\CleanDeathSystem.h" />
+    <ClInclude Include="System\ClickSystem.h" />
     <ClInclude Include="System\GameplayEffectSystem.h" />
     <ClInclude Include="System\LifeTimeSystem.h" />
     <ClInclude Include="System\ParentChildrenSystem.h" />

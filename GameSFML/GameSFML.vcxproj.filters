@@ -72,11 +72,14 @@
     <ClCompile Include="Source\Systems\ParentChildrenSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Game.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -96,9 +99,6 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="HashStringDataBase.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="Locator.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="json.hpp">
@@ -228,6 +228,9 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="System\ParentChildrenSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ClickSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>

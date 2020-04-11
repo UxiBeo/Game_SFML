@@ -11,7 +11,7 @@ void GameplayEffectSystem::Update(entt::registry& ECS)
 	IntervalTickSystem(ECS, dt);
 	StackSystem(ECS, dt);
 	ExecutionSystem(ECS);
-	DeleteEffectSystem(ECS);
+	SelfDeleteEffectSystem(ECS);
 }
 
 void GameplayEffectSystem::BeginPlay(entt::registry& ECS)
@@ -19,13 +19,11 @@ void GameplayEffectSystem::BeginPlay(entt::registry& ECS)
 	ECS.set<GES::ObserverTick>().connect(ECS, entt::collector.replace<GES::Ticks>().where<GES::TickCapacity>());
 }
 
-void GameplayEffectSystem::DeleteEffectSystem(entt::registry& ECS) const
+void GameplayEffectSystem::SelfDeleteEffectSystem(entt::registry& ECS) const
 {
-	auto view = ECS.view<GES::EffectInfo, DestroyMe>();
-	view.each([&ECS](auto entity, const GES::EffectInfo& eInfo, auto) {
-
-		ECS.get_or_assign<RemoveChildrent>(eInfo.target).entties.push_back(entity);
-
+	auto view = ECS.view<GES::SelfDelete, GES::EffectInfo>();
+	view.each([&ECS](auto entity,auto , const GES::EffectInfo& eInfo) {
+		ECS.get<ParentComponent>(eInfo.target).childEntities.erase(entity);
 		for (const auto& restore : eInfo.modified)
 		{
 			switch (restore.type)
@@ -64,7 +62,8 @@ void GameplayEffectSystem::DeleteEffectSystem(entt::registry& ECS) const
 				break;
 			}
 		}
-		});
+	});
+	ECS.destroy(view.begin(), view.end());
 }
 
 void GameplayEffectSystem::IntervalTickSystem(entt::registry& ECS, float dt) const
@@ -91,7 +90,7 @@ void GameplayEffectSystem::IntervalTickSystem(entt::registry& ECS, float dt) con
 		{
 			nTick.value -= nTick.value + tickCap.curTick - tickCap.maxTick;
 			tickCap.curTick = tickCap.maxTick;
-			ECS.assign<DestroyMe>(entity);
+			ECS.assign<GES::SelfDelete>(entity);
 		}
 		else
 		{
@@ -106,10 +105,10 @@ void GameplayEffectSystem::DurationSystem(entt::registry& ECS, float dt) const
 	ECS.view<GES::DurationLimitedTime>().each([&ECS, dt](auto entity, GES::DurationLimitedTime& duration) {
 		duration.curTime += dt;
 		if (duration.curTime >= duration.maxTime)
-			ECS.assign<DestroyMe>(entity);
+			ECS.assign<GES::SelfDelete>(entity);
 		});
 	ECS.view<GES::DurationInstant>().each([&ECS, dt](auto entity, auto) {
-		ECS.assign<DestroyMe>(entity);
+		ECS.assign<GES::SelfDelete>(entity);
 		ECS.assign<GES::Executions>(entity, (uint8_t)1);
 		});
 }
@@ -141,7 +140,7 @@ void GameplayEffectSystem::StackSystem(entt::registry& ECS, float dt) const
 			stack.curStack = std::max<uint8_t>(stack.curStack - (uint8_t)1, stack.minStack);
 			if (stack.curStack == 0)
 			{
-				ECS.assign<DestroyMe>(entity);
+				ECS.assign<GES::SelfDelete>(entity);
 				break;
 			}
 			sLost.curTime = sLost.maxTime;
@@ -220,7 +219,19 @@ void GameplayEffectSystem::ExecutionSystem(entt::registry& ECS) const
 
 void GameplayEffectSystem::TryApplyEffect(entt::registry& ECS) const
 {
+	auto view = ECS.view<GES::TryAppyEffect, GES::EffectInfo>();
+	for (auto e : view)
+	{
+		const auto& eInfo = view.get<GES::EffectInfo>(e);
+		auto& targetTag = ECS.get<Tag::Bitfiled>(eInfo.target);
 
+		if (eInfo.tags.target_RequiredTags == (eInfo.tags.target_RequiredTags & targetTag) && (eInfo.tags.target_BlockTags & targetTag) > 0)
+		{
+			ECS.assign<GES::BeginEffect>(e);
+			targetTag |= eInfo.tags.target_GrantTags;
+			targetTag &= ~eInfo.tags.target_RemoveTags;
+		}
+	}
 }
 
 void GameplayEffectSystem::ModifiedAttribute(entt::registry& ECS, GES::EffectInfo& eInfo, uint8_t totalExe) const
