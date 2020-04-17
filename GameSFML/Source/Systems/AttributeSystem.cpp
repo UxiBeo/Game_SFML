@@ -3,12 +3,6 @@
 #include <vector>
 void AttributeSystem::Update(entt::registry& ECS)
 {
-	// base
-	ModifiedAttribute<ATT::Constitution>(ECS);
-	ModifiedAttribute<ATT::Dexterity   >(ECS);
-	ModifiedAttribute<ATT::Intelligence>(ECS);
-	ModifiedAttribute<ATT::Strength    >(ECS);
-	
 	//dependent
 	ModifiedAttribute<ATT::Attack      >(ECS);
 	ModifiedAttribute<ATT::CritChange  >(ECS);
@@ -26,10 +20,6 @@ void AttributeSystem::Update(entt::registry& ECS)
 
 void AttributeSystem::ClearModified(entt::registry& ECS) const
 {
-	ECS.clear<RPGS::ModifiedAttribute<ATT::Constitution>>();
-	ECS.clear<RPGS::ModifiedAttribute<ATT::Dexterity   >>();
-	ECS.clear<RPGS::ModifiedAttribute<ATT::Intelligence>>();
-	ECS.clear<RPGS::ModifiedAttribute<ATT::Strength    >>();
 	ECS.clear<RPGS::ModifiedAttribute<ATT::Attack      >>();
 	ECS.clear<RPGS::ModifiedAttribute<ATT::CritChange  >>();
 	ECS.clear<RPGS::ModifiedAttribute<ATT::CritDame    >>();

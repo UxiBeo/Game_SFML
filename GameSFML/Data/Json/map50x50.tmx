@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.3.3" orientation="orthogonal" renderorder="right-down" width="50" height="50" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#2b8235" nextlayerid="2" nextobjectid="1">
+ <editorsettings>
+  <export target="map50x50.tmx" format="tmx"/>
+ </editorsettings>
+ <tileset firstgid="1" name="my terrain" tilewidth="32" tileheight="32" tilecount="528" columns="22">
+  <image source="terrain.png" width="704" height="768"/>
+  <terraintypes>
+   <terrain name="Grass" tile="242"/>
+   <terrain name="Dust" tile="217"/>
+   <terrain name="Water" tile="377"/>
+   <terrain name="Sand" tile="374"/>
+  </terraintypes>
+  <tile id="128" terrain="2,2,2,2"/>
+  <tile id="129" terrain="2,2,2,2"/>
+  <tile id="130" terrain="2,2,2,2"/>
+  <tile id="150" terrain="0,0,0,0" probability="0.05"/>
+  <tile id="151" terrain="1,1,1,0"/>
+  <tile id="152" terrain="1,1,0,1"/>
+  <tile id="172" terrain="0,0,0,0" probability="0.05"/>
+  <tile id="173" terrain="1,0,1,1"/>
+  <tile id="174" terrain="0,1,1,1"/>
+  <tile id="194" terrain="0,0,0,1"/>
+  <tile id="195" terrain="0,0,1,1"/>
+  <tile id="196" terrain="0,0,1,0"/>
+  <tile id="199" probability="25"/>
+  <tile id="202" probability="25"/>
+  <tile id="216" terrain="0,1,0,1"/>
+  <tile id="217" terrain="1,1,1,1"/>
+  <tile id="218" terrain="1,0,1,0"/>
+  <tile id="238" terrain="0,1,0,0"/>
+  <tile id="239" terrain="1,1,0,0"/>
+  <tile id="240" terrain="1,0,0,0"/>
+  <tile id="242" terrain="0,0,0,0" probability="0.15"/>
+  <tile id="243" terrain="0,0,0,0" probability="0.15"/>
+  <tile id="244" terrain="0,0,0,0" probability="0.15"/>
+  <tile id="245" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="246" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="247" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="251" terrain="0,0,0,0" probability="0.05"/>
+  <tile id="252" terrain="0,0,0,0" probability="0.05"/>
+  <tile id="254" terrain="0,0,0,0" probability="100"/>
+  <tile id="255" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="256" terrain="0,0,0,0" probability="0.1"/>
+  <tile id="261" terrain="1,1,1,1"/>
+  <tile id="262" terrain="1,1,1,1"/>
+  <tile id="267" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="268" terrain="3,3,3,2"/>
+  <tile id="269" terrain="3,3,2,3"/>
+  <tile id="270" terrain="0,0,0,0"/>
+  <tile id="271" terrain="2,2,2,0"/>
+  <tile id="272" terrain="2,2,0,2"/>
+  <tile id="289" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="290" terrain="3,2,3,3"/>
+  <tile id="291" terrain="2,3,3,3"/>
+  <tile id="292" terrain="0,0,0,0"/>
+  <tile id="293" terrain="2,0,2,2"/>
+  <tile id="294" terrain="0,2,2,2"/>
+  <tile id="311" terrain="2,2,2,3"/>
+  <tile id="312" terrain="2,2,3,3"/>
+  <tile id="313" terrain="2,2,3,2"/>
+  <tile id="314" terrain="0,0,0,2"/>
+  <tile id="315" terrain="0,0,2,2"/>
+  <tile id="316" terrain="0,0,2,0"/>
+  <tile id="333" terrain="2,3,2,3"/>
+  <tile id="334" terrain="3,3,3,3"/>
+  <tile id="335" terrain="3,2,3,2"/>
+  <tile id="336" terrain="0,2,0,2"/>
+  <tile id="337" terrain="2,2,2,2"/>
+  <tile id="338" terrain="2,0,2,0"/>
+  <tile id="355" terrain="2,3,2,2"/>
+  <tile id="356" terrain="3,3,2,2"/>
+  <tile id="357" terrain="3,2,2,2"/>
+  <tile id="358" terrain="0,2,0,0"/>
+  <tile id="359" terrain="2,2,0,0"/>
+  <tile id="360" terrain="2,0,0,0"/>
+  <tile id="374" terrain="3,3,3,3"/>
+  <tile id="375" terrain="3,3,3,3"/>
+  <tile id="376" terrain="3,3,3,3"/>
+  <tile id="377" probability="0.1"/>
+  <tile id="378" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="379" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="380" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="381" terrain="2,2,2,2" probability="0.1"/>
+  <tile id="382" terrain="2,2,2,2" probability="50"/>
+ </tileset>
+ <layer id="1" name="Tile Layer 1" width="50" height="50">
+  <data encoding="base64" compression="zlib">
+   eJzNmU2O00AQhd2bzC5o7jCIK4DgDLG4AwhuYGfFiTgFcIiQQwxIA6xQsBWX5vnT8x+OJ16UOvFf1+t69dPVpyzLTheQ1ynLXlTyspK7SspK8mbcV1I0/zmW8r9sRr2nkuNb8Xx9bY7eb0QUQyFzUnIZczxXpDYuHRVrifdK4HiYgONto/crkTvoFnPGmukaqo576OfWX99Rm8Tz/2uPGscOfMghqr/qTJvEc44zKpxHbTcXh84fc+1Te21Vb7WP85nCfI+2cu/MwfGukveQLbgbmPbQMa7Rx9VOxNz1zTm8+lC9+xFy22DbpjbnqSPt5nAQL0Wv5zNwdGG7bfiWQ9c9rhEL9VL8LrbRbpfEoXzbYj7GVfUrxjb6SonfjMdL4AibqO8QE7musWzIH+hrgWuqnn8n+g4xMSY433D+5OK3Yrq0PcbEA4dvm9pxgbFVr7kaxs39pZKvC8o3wVfj+ZTOsUFjl+Oh+lb87vOPQyXfG9mk83iTzhK/N+lxjGc2uB7X9L16PDbzsLZU32UNpragL3XZgziIgfeIVfHp/ZCjweD41JXDlX99/nHI/NqrfTapLdT3xjwX12scUWeGHRirmH/U98mrrrr9YGxBfrjfqq97X+2hdc02tbnOmpd7GPWjvrirOLi21EtxOH+gLQKH+nnkzcLozLjbVXN14dhAF/KfOtPPnZ8or1zejNjLut3VmZrvh3hFfjtf6cOmGHUdjpiPNUDwTHnD3Mc9Yh+OPl8d0t3Zg3HX5UvWzG5vyTg8hlduPanXGN/Xdx0O2maX2rGV+zXWkPzOg4lXLp46vyf/aMfNCByn7HGvybzBmn1MHhzKBbQL8zfjBOPuFBw5dOf+rAvHfSU/FpSfI3GQR0vsz5cU7cW4Ol5zZvjPtXUewsGc7nowU+zx68K69vX8lFesz0vYZG6/5Cnsob7M+pYx+do6D/HK9RcKYFwjjtiXaK9S900Oy5K8+jwDQ+xLXG+LteLc/u5SfNK9VVc/0vVUn0rH5wNzKZ/Ym2Ned3y7tg26bDHUL2E/6Jo2II5datccrs/Dfsna8rn2hZm7XcwdU+9eQ3TfwX4u+w8FcKzJP5RbPBdw5wTsX4/5/u8L6TnkL+oj7qymq+5dsz24D2dOJ+fmzDvlnHpINH+wPmRPgTZak59r/iCniIE5fW1x18Uq1ZWxeM551BR5NvB9ve/2HOxX09/13rXtUO8zWavr+rOfW0Km1Il/FsZR26I+k+I5bxfH1B5ryufaE+W+3O07WAevIX+Ej9Sj+rrri7CfpeedS+o2VdjvUW45LimOfxDvqqI=
+  </data>
+ </layer>
+</map>

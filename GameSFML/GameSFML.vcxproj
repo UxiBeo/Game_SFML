@@ -134,8 +134,8 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
+    <ClCompile Include="Map.cpp" />
     <ClCompile Include="Mouse.cpp" />
-    <ClCompile Include="Source\Grid.cpp" />
     <ClCompile Include="Source\Systems\AbilitySystem.cpp" />
     <ClCompile Include="Source\Systems\AnimationSystem.cpp" />
     <ClCompile Include="Source\Systems\AttributeSystem.cpp" />
@@ -163,7 +163,8 @@
     <ClInclude Include="Component\PlayerControllerComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
     <ClInclude Include="GameResource.h" />
-    <ClInclude Include="Gird.h" />
+    <ClInclude Include="IEffect.h" />
+    <ClInclude Include="Map.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="HashStringDataBase.h" />
     <ClInclude Include="json.hpp" />
@@ -192,7 +193,6 @@
     <ClInclude Include="System\ISystemECS.h" />
     <ClInclude Include="System\MoveCameraSystem.h" />
     <ClInclude Include="System\PlayerControllerSystem.h" />
-    <ClInclude Include="System\RenderGridSystem.h" />
     <ClInclude Include="System\RenderSpriteSystem.h" />
     <ClInclude Include="System\SpawnStaticObjectSystem.h" />
     <ClInclude Include="System\StateMachineSystem.h" />

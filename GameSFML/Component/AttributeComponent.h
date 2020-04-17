@@ -1,6 +1,5 @@
 #pragma once
 #include <numeric>
-#include <array>
 
 namespace RPGS
 {
@@ -121,16 +120,12 @@ namespace RPGS
 	
 	enum AttributeType
 	{
-		Strength = 1,
-		Constitution = 1 << 2,
-		Dexterity = 1 << 3,
-		Intelligence = 1 << 4,
-		CritChange = 1 << 5,
-		CritDame = 1 << 6,
-		Attack = 1 << 7,
-		Defence = 1 << 8,
-		HealthPoint = 1 << 9,
-		ManaPoint = 1 << 10
+		CritChange = 1 << 1,
+		CritDame = 1 << 2,
+		Attack = 1 << 3,
+		Defence = 1 << 4,
+		HealthPoint = 1 << 5,
+		ManaPoint = 1 << 6
 	};
 	struct AttributePack
 	{

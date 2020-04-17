@@ -1,0 +1,48 @@
+{
+  "name": "Test Effect",
+  "Tags": {
+    "Tag": 1,
+    "target_RequiredTags": 2,
+    "target_BlockTags": 3,
+    "begin_target_GrantTags": 4,
+    "begin_target_RemoveTags": 5,
+    "end_target_GrantTags": 6,
+    "end_target_RemoveTags": 7
+  },
+  "Duration": {
+    "Type": 2,
+    "Time": 5
+  },
+  "IntervalTick": 5,
+  "MaxTick": 5,
+  "Stack": {
+    "Min": 1,
+    "Max": 2
+  },
+  "Cost": [
+    {
+      "Type": "Health Point",
+      "Amount": -10
+    }
+  ],
+  "Target": "source",
+  "Capture": [
+    {
+      "Type": "Attack"
+    },
+    {
+      "Type": "Magic"
+    }
+  ],
+  "Modified": [
+    {
+      "Type": "Health",
+      "Value": {
+        "Base": 10,
+        "MBase": 0.1,
+        "Value": 10,
+        "MValue": 0.1
+      }
+    }
+  ]
+}

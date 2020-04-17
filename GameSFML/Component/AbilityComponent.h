@@ -35,9 +35,11 @@ namespace GAS
 
 	struct CostComponent
 	{
+		entt::entity owner;
 		entt::hashed_string attributeName;
 		float amount;
 	};
+	struct StartCooldown{};
 	struct CooldownComponent
 	{
 		float maxTime = 0.0f;

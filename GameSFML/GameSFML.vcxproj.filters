@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Systems">
       <UniqueIdentifier>{865456a1-4c55-4bc6-a6d4-2a5a1afceed0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\3rd">
+      <UniqueIdentifier>{d1fd9302-7c1a-4237-8692-8dd5ad1bb13a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Keyboard.cpp">
@@ -60,9 +63,6 @@
     <ClCompile Include="Source\Systems\CullingSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Grid.cpp">
-      <Filter>Source Files\Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Systems\StateMachineSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -76,6 +76,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -121,12 +124,6 @@
     </ClInclude>
     <ClInclude Include="Component\PhysicComponent.h">
       <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Gird.h">
-      <Filter>Header Files\Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="System\RenderGridSystem.h">
-      <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="System\SpawnStaticObjectSystem.h">
       <Filter>Header Files\Systems</Filter>
@@ -232,6 +229,12 @@
     </ClInclude>
     <ClInclude Include="System\ClickSystem.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="IEffect.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

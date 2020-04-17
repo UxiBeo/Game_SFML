@@ -35,27 +35,27 @@ public:
 	{
 		window.display();
 	}
-	std::pair<b2Vec2, b2Vec2> GetViewport() const
-	{
-		const auto center = window.getView().getCenter();
-		halfSize = 0.5f * window.getView().getSize();
-		const auto top = ScreenToWorldPos(center - halfSize);
-		const auto bottom = ScreenToWorldPos(center + halfSize);
-		/*auto draw01 = WorldToScreenPos(top) + sf::Vector2f(10.0f,10.0f);
-		auto draw02 = WorldToScreenPos(bottom) - sf::Vector2f(10.0f, 10.0f);
-		vertices[0] = draw01;
-		vertices[1] = sf::Vector2f(draw01.x,draw02.y);
-		vertices[2] = draw02;
-		vertices[3] = sf::Vector2f(draw02.x, draw01.y);
-		window.draw(vertices);*/
-		return { top, bottom };
-	}
-	std::pair<sf::Vector2f, sf::Vector2f> GetViewportScreen() const
+	//std::pair<b2Vec2, b2Vec2> GetViewport() const
+	//{
+	//	const auto center = window.getView().getCenter();
+	//	halfSize = 0.5f * window.getView().getSize();
+	//	const auto top = ScreenToWorldPos(center - halfSize);
+	//	const auto bottom = ScreenToWorldPos(center + halfSize);
+	//	/*auto draw01 = WorldToScreenPos(top) + sf::Vector2f(10.0f,10.0f);
+	//	auto draw02 = WorldToScreenPos(bottom) - sf::Vector2f(10.0f, 10.0f);
+	//	vertices[0] = draw01;
+	//	vertices[1] = sf::Vector2f(draw01.x,draw02.y);
+	//	vertices[2] = draw02;
+	//	vertices[3] = sf::Vector2f(draw02.x, draw01.y);
+	//	window.draw(vertices);*/
+	//	return { top, bottom };
+	//}
+	/*std::pair<sf::Vector2f, sf::Vector2f> GetViewportScreen() const
 	{
 		const auto center = window.getView().getCenter();
 		halfSize = 0.5f * window.getView().getSize();
 		return { center - halfSize , center + halfSize };
-	}
+	}*/
 	void MoveViewport(const b2Vec2& newWorldPos, const sf::Vector2i& mousePos);
 	void MoveViewport(const sf::Vector2f screenPos)
 	{

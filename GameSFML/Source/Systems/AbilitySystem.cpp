@@ -39,3 +39,14 @@ void AbilitySystem::BeginPlay(entt::registry& ECS)
 	ECS.set<GAS::WaitTargetDataObserver>().connect(ECS, entt::collector.replace<GAS::WaitTargetData>());
 	ECS.set<GAS::WaitLocationObserver>().connect(ECS, entt::collector.replace<GAS::WaitLocation>());
 }
+
+void AbilitySystem::Cooldown(entt::registry& ECS, float dt) const
+{
+	ECS.view<GAS::StartCooldown, GAS::CooldownComponent>().each([&ECS,dt](auto entity, auto, auto& cd) {
+		cd.curTime += dt;
+		if (cd.curTime >= cd.maxTime)
+		{
+			ECS.remove<GAS::StartCooldown>(entity);
+		}
+		});
+}

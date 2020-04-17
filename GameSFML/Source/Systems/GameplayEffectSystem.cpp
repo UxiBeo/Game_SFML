@@ -6,98 +6,67 @@
 void GameplayEffectSystem::Update(entt::registry& ECS)
 {
 	float dt = ECS.ctx<Timer::World>().dt;
-	BeginEffectSystem(ECS);
+	TryApplyEffect(ECS);
 	DurationSystem(ECS, dt);
 	IntervalTickSystem(ECS, dt);
 	StackSystem(ECS, dt);
 	ExecutionSystem(ECS);
-	SelfDeleteEffectSystem(ECS);
+	DeleteEffect(ECS);
 }
 
 void GameplayEffectSystem::BeginPlay(entt::registry& ECS)
 {
-	ECS.set<GES::ObserverTick>().connect(ECS, entt::collector.replace<GES::Ticks>().where<GES::TickCapacity>());
-}
+	
+}						
 
-void GameplayEffectSystem::SelfDeleteEffectSystem(entt::registry& ECS) const
+
+
+void GameplayEffectSystem::DeleteEffect(entt::registry& ECS) const
 {
-	auto view = ECS.view<GES::SelfDelete, GES::EffectInfo>();
-	view.each([&ECS](auto entity,auto , const GES::EffectInfo& eInfo) {
-		ECS.get<ParentComponent>(eInfo.target).childEntities.erase(entity);
-		for (const auto& restore : eInfo.modified)
-		{
-			switch (restore.type)
-			{
-			case RPGS::Strength:
-				ECS.get<RPGS::Attribute<RPGS::Strength>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::Constitution:
-				ECS.get<RPGS::Attribute<RPGS::Constitution>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::Dexterity:
-				ECS.get<RPGS::Attribute<RPGS::Dexterity>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::Intelligence:
-				ECS.get<RPGS::Attribute<RPGS::Intelligence>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::CritChange:
-				ECS.get<RPGS::Attribute<RPGS::CritChange>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::CritDame:
-				ECS.get<RPGS::Attribute<RPGS::CritDame>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::Attack:
-				ECS.get<RPGS::Attribute<RPGS::Attack>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::Defence:
-				ECS.get<RPGS::Attribute<RPGS::Defence>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::HealthPoint:
-				ECS.get<RPGS::Attribute<RPGS::HealthPoint>>(eInfo.target).value += restore.storeValue;
-				break;
-			case RPGS::ManaPoint:
-				ECS.get<RPGS::Attribute<RPGS::ManaPoint>>(eInfo.target).value += restore.storeValue;
-				break;
-			default:
-				break;
-			}
-		}
-	});
+	RestoreAttribute<RPGS::Attack		>(ECS);
+	RestoreAttribute<RPGS::CritChange	>(ECS);
+	RestoreAttribute<RPGS::CritDame		>(ECS);
+	RestoreAttribute<RPGS::Defence		>(ECS);
+	RestoreAttribute<RPGS::HealthPoint	>(ECS);
+	RestoreAttribute<RPGS::ManaPoint	>(ECS);
+
+	auto view = ECS.view<GES::MarkDelete, GES::EffectInfo>();
+	view.each([&ECS](auto entity, auto, const GES::EffectInfo& ei) {
+		ECS.get<GES::CurrentActiveEffect>(ei.target).entities.erase(entity);
+		auto& targetTag = ECS.get<Tag::Bitfiled>(ei.target);
+		targetTag |= ei.tags.end_target_GrantTags;
+		targetTag &= ~ei.tags.end_target_RemoveTags;
+		});
 	ECS.destroy(view.begin(), view.end());
 }
 
 void GameplayEffectSystem::IntervalTickSystem(entt::registry& ECS, float dt) const
 {
-	auto view = ECS.view<GES::IntervalTick>();
-	std::for_each(std::execution::par_unseq, view.begin(), view.end(), [&ECS, dt, &view](auto entity) {
-		auto& tick = view.get<GES::IntervalTick>(entity);
-		tick.curTime += dt;
-		GES::Ticks nTicks{0};
-		while (tick.curTime >= tick.intervalTime)
+	ECS.view<GES::IntervalTick>().each([&ECS, dt](auto entity, GES::IntervalTick& it) {
+		it.curTime += dt;
+		uint8_t nTicks = 0;
+		while (it.curTime >= it.intervalTime)
 		{
-			tick.curTime -= tick.intervalTime;
-			nTicks.value++;
+			it.curTime -= it.intervalTime;
+			nTicks++;
 		}
-		if (nTicks.value > 0)
-			ECS.replace<GES::Ticks>(entity, [&nTicks](auto& tick) { tick.value = nTicks.value; });
-		});
+		if (nTicks == 0) return;
 
-	auto& obs = ECS.ctx<GES::ObserverTick>();
-	for (auto& entity : obs)
-	{
-		auto [nTick, tickCap] = ECS.get<GES::Ticks, GES::TickCapacity>(entity);
-		if (nTick.value + tickCap.curTick >= tickCap.maxTick)
+		if (it.maxTick > 0)
 		{
-			nTick.value -= nTick.value + tickCap.curTick - tickCap.maxTick;
-			tickCap.curTick = tickCap.maxTick;
-			ECS.assign<GES::SelfDelete>(entity);
+			if (nTicks + it.curTick >= it.maxTick)
+			{
+				nTicks -= nTicks + it.curTick - it.maxTick;
+				ECS.assign<GES::MarkDelete>(entity);
+			}
+			else
+			{
+				it.curTick += nTicks;
+			}
 		}
-		else
-		{
-			tickCap.curTick += nTick.value;
-		}
-		ECS.assign<GES::Executions>(entity, nTick.value);
-	}
+		if (nTicks > 0)
+			ECS.assign<GES::Executions>(entity, nTicks);
+		});
 }
 
 void GameplayEffectSystem::DurationSystem(entt::registry& ECS, float dt) const
@@ -105,10 +74,10 @@ void GameplayEffectSystem::DurationSystem(entt::registry& ECS, float dt) const
 	ECS.view<GES::DurationLimitedTime>().each([&ECS, dt](auto entity, GES::DurationLimitedTime& duration) {
 		duration.curTime += dt;
 		if (duration.curTime >= duration.maxTime)
-			ECS.assign<GES::SelfDelete>(entity);
+			ECS.assign<GES::MarkDelete>(entity);
 		});
-	ECS.view<GES::DurationInstant>().each([&ECS, dt](auto entity, auto) {
-		ECS.assign<GES::SelfDelete>(entity);
+	ECS.view<GES::DurationOnetime>().each([&ECS, dt](auto entity, auto) {
+		ECS.assign<GES::MarkDelete>(entity);
 		ECS.assign<GES::Executions>(entity, (uint8_t)1);
 		});
 }
@@ -140,7 +109,7 @@ void GameplayEffectSystem::StackSystem(entt::registry& ECS, float dt) const
 			stack.curStack = std::max<uint8_t>(stack.curStack - (uint8_t)1, stack.minStack);
 			if (stack.curStack == 0)
 			{
-				ECS.assign<GES::SelfDelete>(entity);
+				ECS.assign<GES::MarkDelete>(entity);
 				break;
 			}
 			sLost.curTime = sLost.maxTime;
@@ -148,166 +117,86 @@ void GameplayEffectSystem::StackSystem(entt::registry& ECS, float dt) const
 	});
 }
 
-void GameplayEffectSystem::BeginEffectSystem(entt::registry& ECS) const
-{
-	auto view = ECS.view<GES::BeginEffect, GES::EffectInfo>();
-	std::for_each(std::execution::par, view.begin(), view.end(), [&view, &ECS](auto entity) {
-		GES::EffectInfo& eInfo = view.get<GES::EffectInfo>(entity);
-		//modified value
-		const auto attPack = ECS.get<RPGS::AttributePack>(eInfo.target).value;
-		for (size_t i = 0; i < eInfo.modified.size();)
-		{
-			if (eInfo.modified[i].type & attPack)
-			{
-				i++;
-			}
-			else
-			{
-				std::swap(eInfo.modified[i], eInfo.modified.back());
-				eInfo.modified.pop_back();
-			}
-		}
-		//capture value
-		for (size_t i = 0; i < eInfo.capture.size();)
-		{
-			if (eInfo.capture[i].type & attPack)
-			{
-				i++;
-			}
-			else
-			{
-				std::swap(eInfo.capture[i], eInfo.capture.back());
-				eInfo.capture.pop_back();
-			}
-		}
-		// doing capture
-		for (auto& t : eInfo.capture)
-		{
-			switch (t.type)
-			{
-			case RPGS::Attack:
-				t.value = ECS.get<RPGS::Attribute<RPGS::AttributeType::Attack>>(eInfo.source).value.getFinalValue();
-				break;
-			default:
-				break;
-			}
-		}
-		
-	});
-	
-}
-
 void GameplayEffectSystem::ExecutionSystem(entt::registry& ECS) const
 {
-	ECS.view<GES::Executions, GES::EffectInfo>().each([&ECS, this](auto entity, const GES::Executions& eTimes, GES::EffectInfo& eInfo) {
-
-		uint8_t totalExe = eTimes.value;
-		if (auto* s = ECS.try_get<GES::Stack>(entity); s)
-		{
-			totalExe *= s->curStack;
-		}
-
-		if (totalExe <= 0) return;
-
-		ModifiedAttribute(ECS, eInfo, totalExe);
-		ApplyCostAndHealth(ECS, eInfo, totalExe);
-		ApplyDame(ECS, eInfo, totalExe);
+	ECS.view<GES::Executions, GES::Stack>().each([&ECS](auto entity,GES::Executions& ec, const GES::Stack& sc) {
+		ec.value *= sc.curStack;
+		if (ec.value == 0)
+			ECS.remove<GES::Executions>(entity);
 	});
 
-
+	ModifiedAttribute<RPGS::Attack		>(ECS);
+	ModifiedAttribute<RPGS::CritChange	>(ECS);
+	ModifiedAttribute<RPGS::CritDame	>(ECS);
+	ModifiedAttribute<RPGS::Defence		>(ECS);
+	ModifiedAttribute<RPGS::HealthPoint	>(ECS);
+	ModifiedAttribute<RPGS::ManaPoint	>(ECS);
+	ApplyCost<RPGS::ManaPoint>(ECS);
+	ApplyCost<RPGS::HealthPoint>(ECS);
+	ApplyDame<RPGS::Attack>(ECS);
 }
 
 void GameplayEffectSystem::TryApplyEffect(entt::registry& ECS) const
 {
-	auto view = ECS.view<GES::TryAppyEffect, GES::EffectInfo>();
-	for (auto e : view)
-	{
-		const auto& eInfo = view.get<GES::EffectInfo>(e);
-		auto& targetTag = ECS.get<Tag::Bitfiled>(eInfo.target);
+	ECS.view<GES::TryAppyEffect>().each([&ECS](auto entity, const GES::TryAppyEffect& te) {
+		const GES::EffectResource& ei = Codex<GES::EffectResource>::Retrieve(te.effectName);
 
-		if (eInfo.tags.target_RequiredTags == (eInfo.tags.target_RequiredTags & targetTag) && (eInfo.tags.target_BlockTags & targetTag) > 0)
+		auto& targetTag = ECS.get<Tag::Bitfiled>(te.target);
+		auto& cEffect = ECS.get<GES::CurrentActiveEffect>(te.target);
+		entt::entity anotherEffect= entt::null;
+		for (auto& i : cEffect.entities)
 		{
-			ECS.assign<GES::BeginEffect>(e);
-			targetTag |= eInfo.tags.target_GrantTags;
-			targetTag &= ~eInfo.tags.target_RemoveTags;
+			if (te.effectName == ECS.get<GES::EffectInfo>(i).effectName)
+			{
+				anotherEffect = i;
+				break;
+			}
 		}
-	}
-}
+		if (ei.tags.target_RequiredTags == (ei.tags.target_RequiredTags & targetTag) && (ei.tags.target_BlockTags & targetTag) > 0)
+		{
+			if (ei.minStack = 1)
+			{
+				ECS.assign<GES::AddStack>(i);
 
-void GameplayEffectSystem::ModifiedAttribute(entt::registry& ECS, GES::EffectInfo& eInfo, uint8_t totalExe) const
-{
-	for (auto& m : eInfo.modified)
-	{
-		const auto totalV = m.modValue * totalExe;
-		m.storeValue -= totalV;
-		switch (m.type)
-		{
-		case RPGS::Strength:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::Strength>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::Constitution:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::Constitution>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::Dexterity:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::Dexterity>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::Intelligence:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::Intelligence>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::CritChange:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::CritChange>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::CritDame:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::CritDame>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::Attack:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::Attack>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::Defence:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::Defence>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::HealthPoint:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::HealthPoint>>(eInfo.target).value += totalV;
-			break;
-		case RPGS::ManaPoint:
-			ECS.get<RPGS::Attribute<RPGS::AttributeType::ManaPoint>>(eInfo.target).value += totalV;
-			break;
-		default:
-			assert(false && "Unhandel case");
-			break;
-		}
-	}
-}
+			}
+			else
+			{
+				targetTag |= ei.tags.begin_target_GrantTags;
+				targetTag &= ~ei.tags.begin_target_RemoveTags;
 
-void GameplayEffectSystem::ApplyDame(entt::registry& ECS, GES::EffectInfo& eInfo, uint8_t totalExe) const
-{
-	for (const auto& a : eInfo.capture)
-	{
-		switch (a.type)
-		{
-		case RPGS::Attack:
-			ECS.get<RPGS::InputDame<RPGS::Attack>>(eInfo.target).value += a.value * (float)totalExe;
-		break;
-		default:
-			break;
-		}
-	}
-}
+				switch (type)
+				{
+				case GES::DurationType::Passive:
+					ECS.assign<GES::DurationPassive>(entity);
+					break;
+				case GES::DurationType::Onetime:
+					ECS.assign<GES::DurationOnetime>(entity);
+					break;
+				case GES::DurationType::LimitedTime:
+					ECS.assign<GES::DurationLimitedTime>(entity).maxTime = ei.durationTime;
+					break;
+				default:
+					break;
+				}
 
-void GameplayEffectSystem::ApplyCostAndHealth(entt::registry& ECS, GES::EffectInfo& eInfo, uint8_t totalExe) const
-{
-	for (const auto& a : eInfo.costAndHealth)
-	{
-		switch (a.type)
-		{
-		case RPGS::HealthPoint:
-			ECS.get<RPGS::ModifiedConsumeCur<RPGS::HealthPoint>>(eInfo.target).value += a.value * (float)totalExe;
-			break;
-		case RPGS::ManaPoint:
-			ECS.get<RPGS::ModifiedConsumeCur<RPGS::HealthPoint>>(eInfo.target).value += a.value * (float)totalExe;
-			break;
-		default:
-			break;
+				for (const auto& i : ei.CostAmount)
+				{
+					if (i.first == RPGS::AttributeType::HealthPoint)
+					{
+						auto& value = ECS.assign<GES::CostValue<RPGS::AttributeType::HealthPoint>>(entity);
+						value.value = i.second;
+						value.target = te.target;
+					}
+					else
+					{
+						auto& value = ECS.assign<GES::CostValue<RPGS::AttributeType::ManaPoint>>(entity);
+						value.value = i.second;
+						value.target = te.target;
+					}
+				}
+			}
 		}
-	}
+		});
+
+	CaptureAttack<RPGS::Attack>(ECS);
 }

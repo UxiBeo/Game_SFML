@@ -3,7 +3,7 @@
 #include "../SystemInclude.h"
 #include "../HashStringDataBase.h"
 #include "../Component/CharacterStateComponent.h"
-#include "../Gird.h"
+#include "../Map.h"
 #include <random>
 World::World(entt::registry& ECS)
 {
@@ -23,12 +23,13 @@ void World::Update(entt::registry& ECS)
 
 void World::Draw(Graphics& gfx, entt::registry& ECS) const
 {
+	gfx.Draw(ECS.ctx<Map>());
 	for (auto& sys : drawSystems)
 	{
 		sys->Draw(gfx, ECS);
 	}
 	auto controller = ECS.ctx<PlayerControllerComponent>();
-
+	
 	sf::CircleShape shape;
 	shape.setRadius(32);
 	
@@ -56,9 +57,6 @@ void World::AddNewPlayer(entt::registry& ECS)
 	fixtureDef.friction = 0.0f;
 	fixtureDef.restitution = 1.0f;
 
-
-	//ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
-	ECS.assign<PlayerControllerComponent>(entity);
 
 	auto& animation = ECS.assign<AnimationComponent>(entity, Database::PlayerAnimation);
 	ECS.assign<CharacterStateComponent>(entity);
@@ -164,7 +162,8 @@ void World::InitContex(entt::registry& ECS)
 {
 	ECS.set<std::mt19937>(std::random_device{}());
 	ECS.set<Physic::Engine>(b2Vec2(0.0f, 0.0f));
-	ECS.set<Grid>().LoadFromFile(Database::GridMap);
+	//ECS.set<Grid>().LoadFromFile(Database::GridMap);
+	ECS.set<Map>().Load("Data/Json/map200x200.tmx");
 }
 
 void World::InitSystem()
@@ -191,7 +190,7 @@ void World::InitSystem()
 	AddECSSystem(std::make_unique<SpirteUpdateSystem>());
 
 	//render Grid should be before render sprite and after move camera;
-	AddDrawSystem(std::make_unique<RenderGridSystem>());
+	//AddDrawSystem(std::make_unique<RenderGridSystem>());
 	//render Sprite should be the last
 	AddDrawSystem(std::make_unique<RenderSpriteSystem>());
 	//drawSystems.emplace_back(std::make_unique<DrawDebugSystem>());

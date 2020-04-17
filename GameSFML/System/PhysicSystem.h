@@ -10,9 +10,8 @@ public:
 	static void AddPhysic(entt::entity entity, entt::registry& ECS, const b2BodyDef& Bdef, const b2FixtureDef& fixDef);
 
 private:
-	void HandleSensorData(entt::registry& ECS);
-	void ClearContactData(entt::registry& ECS);
-	void ProcessContactData(entt::registry& ECS);
+	void ReactPhysic(entt::registry& ECS) const;
+	void ProcessContactData(entt::registry& ECS) const;
 	static void DestroyPhysicComponent(entt::registry& ECS, entt::entity entity);
 };
 
@@ -32,7 +31,6 @@ namespace Physic
 		{
 			return data;
 		}
-		void Sort();
 	private:
 		//0: for normal Collision, 1: for sensor in, 2: for sensor out
 		std::array<std::vector<PairEntity>, 3> data;
