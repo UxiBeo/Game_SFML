@@ -5,6 +5,8 @@
 #include "../Component/CharacterStateComponent.h"
 #include "../Map.h"
 #include <random>
+#include "../Grid.h"
+#include "../JPS.h"
 World::World(entt::registry& ECS)
 {
 	InitContex(ECS);

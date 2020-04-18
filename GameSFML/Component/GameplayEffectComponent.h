@@ -252,7 +252,7 @@ namespace GES
 	template <RPGS::AttributeType T>
 	struct OutputDame
 	{
-		float base;
+		float value;
 		float capture = 0.0f;
 		entt::entity target = entt::null;
 	};

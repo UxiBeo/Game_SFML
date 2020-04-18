@@ -81,6 +81,9 @@
     <ClCompile Include="Map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h">
@@ -233,8 +236,11 @@
     <ClInclude Include="Map.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
-    <ClInclude Include="IEffect.h">
-      <Filter>Header Files\Component</Filter>
+    <ClInclude Include="JPS.h">
+      <Filter>Header Files\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Header Files\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

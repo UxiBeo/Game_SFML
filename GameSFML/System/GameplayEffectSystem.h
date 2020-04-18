@@ -50,7 +50,7 @@ private:
 		ECS.view<GES::CaptureAttack<T>, GES::OutputDame<T>>().each([&ECS](auto entity, const GES::CaptureAttack<T>& ct, GES::OutputDame<T>& od) {
 			if (auto* ta = ECS.try_get<RPGS::Attribute<T>>(ct.source); ta)
 			{
-				od.capture == ta->value.getFinalValue();
+				od.capture = ta->value.getFinalValue();
 			}
 			});
 		ECS.clear<GES::CaptureAttack<T>>();

@@ -154,9 +154,9 @@ void GameplayEffectSystem::TryApplyEffect(entt::registry& ECS) const
 		}
 		if (ei.tags.target_RequiredTags == (ei.tags.target_RequiredTags & targetTag) && (ei.tags.target_BlockTags & targetTag) > 0)
 		{
-			if (ei.minStack = 1)
+			if (ei.minStack == 1)
 			{
-				ECS.assign<GES::AddStack>(i);
+				//ECS.assign<GES::AddStack>(i);
 
 			}
 			else
@@ -164,7 +164,7 @@ void GameplayEffectSystem::TryApplyEffect(entt::registry& ECS) const
 				targetTag |= ei.tags.begin_target_GrantTags;
 				targetTag &= ~ei.tags.begin_target_RemoveTags;
 
-				switch (type)
+				/*switch (type)
 				{
 				case GES::DurationType::Passive:
 					ECS.assign<GES::DurationPassive>(entity);
@@ -177,7 +177,7 @@ void GameplayEffectSystem::TryApplyEffect(entt::registry& ECS) const
 					break;
 				default:
 					break;
-				}
+				}*/
 
 				for (const auto& i : ei.CostAmount)
 				{

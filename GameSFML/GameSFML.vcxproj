@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Graphics.cpp" />
+    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
@@ -163,7 +164,8 @@
     <ClInclude Include="Component\PlayerControllerComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
     <ClInclude Include="GameResource.h" />
-    <ClInclude Include="IEffect.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="JPS.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="HashStringDataBase.h" />
