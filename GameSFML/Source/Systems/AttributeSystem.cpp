@@ -3,55 +3,29 @@
 #include <vector>
 void AttributeSystem::Update(entt::registry& ECS)
 {
-	//dependent
-	ModifiedAttribute<ATT::Attack      >(ECS);
-	ModifiedAttribute<ATT::CritChange  >(ECS);
-	ModifiedAttribute<ATT::CritDame    >(ECS);
-	ModifiedAttribute<ATT::Defence     >(ECS);
-
-	//consume
-	ModifiedAttribute<ATT::HealthPoint >(ECS);
-	ModifiedAttribute<ATT::ManaPoint   >(ECS);
-
-	ModifiedConsumeCurrent(ECS);
 	ApplyDame(ECS);
-	ClearModified(ECS);
 }
 
-void AttributeSystem::ClearModified(entt::registry& ECS) const
-{
-	ECS.clear<RPGS::ModifiedAttribute<ATT::Attack      >>();
-	ECS.clear<RPGS::ModifiedAttribute<ATT::CritChange  >>();
-	ECS.clear<RPGS::ModifiedAttribute<ATT::CritDame    >>();
-	ECS.clear<RPGS::ModifiedAttribute<ATT::Defence     >>();
-	ECS.clear<RPGS::ModifiedAttribute<ATT::HealthPoint >>();
-	ECS.clear<RPGS::ModifiedAttribute<ATT::ManaPoint   >>();
-	ECS.clear<RPGS::ModifiedConsumeCur<ATT::HealthPoint >>();
-	ECS.clear<RPGS::ModifiedConsumeCur<ATT::ManaPoint   >>();
-}
-
-void AttributeSystem::ModifiedConsumeCurrent(entt::registry& ECS) const
-{
-	auto viewH = ECS.view<const RPGS::ModifiedConsumeCur<ATT::HealthPoint>, RPGS::Attribute<ATT::HealthPoint>>();
-	std::for_each(std::execution::par_unseq, viewH.begin(), viewH.end(), [&viewH](auto entity) {
-		auto [modV, cVal] = viewH.get<const RPGS::ModifiedConsumeCur<ATT::HealthPoint>, RPGS::Attribute<ATT::HealthPoint>>(entity);
-		cVal.value += modV.value;
-
-		});
-	auto viewM = ECS.view<const RPGS::ModifiedConsumeCur<ATT::ManaPoint>, RPGS::Attribute<ATT::ManaPoint>>();
-	std::for_each(std::execution::par_unseq, viewM.begin(), viewM.end(), [&viewM](auto entity) {
-		auto [modV, cVal] = viewM.get<const RPGS::ModifiedConsumeCur<ATT::ManaPoint>, RPGS::Attribute<ATT::ManaPoint>>(entity);
-		cVal.value += modV.value;
-
-		});
-
-}
 
 void AttributeSystem::ApplyDame(entt::registry& ECS) const
 {
-	ECS.group<RPGS::InputDame<RPGS::Attack>, RPGS::Attribute<RPGS::Defence>, RPGS::Attribute<RPGS::HealthPoint>>().each(
-		[](auto entity, const RPGS::InputDame<RPGS::Attack>& atk, const RPGS::Attribute<RPGS::Defence>& def, RPGS::Attribute<RPGS::HealthPoint>& hp) {
-			auto dValue = def.value.getFinalValue();
-			hp.value.curValue -= atk.value * (1.0f - ((0.00352f * dValue) / (0.993f + 0.00348f * dValue)));
-		});
+	auto view = ECS.view<GES::InputDame, GES::AttributePack>();
+	for (auto e : view)
+	{
+		auto [modified, pack] = view.get<GES::InputDame, GES::AttributePack>(e);
+		if (((1 << (uint32_t)GES::HealthPoint) & pack.bitmask) > 0 && modified.value != 0.0f)
+		{
+			auto& curValue = ECS.get<GES::SpecialValue>(pack.attribute[(uint32_t)GES::HealthPoint]).curValue;
+			if (((1 << (uint32_t)GES::Defence) & pack.bitmask) > 0)
+			{
+				auto def = ECS.get<GES::Value>(pack.attribute[(uint32_t)GES::Defence]).getFinalValue();
+				curValue -= (1 - ((0.00352 * def) / (0.993 + 0.00348 * def))) * modified.value;
+			}
+			else
+			{
+				curValue -= modified.value;
+			}
+		}
+	}
+	ECS.clear<GES::InputDame>();
 }

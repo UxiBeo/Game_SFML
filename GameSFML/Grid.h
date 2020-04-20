@@ -22,7 +22,7 @@ public:
 	}
 	bool isInside(int x, int y) const
 	{
-		return (x >= 0 && x < width) && (y >= 0 && y < height);
+		return (x >= 0 && x < (int)width) && (y >= 0 && y < (int)height);
 	};
 	void setWalkableAt(int x, int y, bool walkable)
 	{

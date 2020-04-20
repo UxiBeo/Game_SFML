@@ -7,7 +7,6 @@
 #include "../GameResource.h"
 namespace GES
 {
-	
 	struct EffectTags
 	{
 		Tag::Bitfiled tags;
@@ -58,7 +57,7 @@ namespace GES
 	};
 	struct AddStack
 	{
-		uint8_t value;
+		uint8_t value = 0;
 	};
 
 	struct EffectResource
@@ -148,29 +147,29 @@ namespace GES
 						auto attName = i["Type"].get<int>();
 						if (attName == 5)
 						{
-							resource->CostAmount.emplace_back(RPGS::ManaPoint, i["Amount"].get<float>());
+							resource->CostAmount.emplace_back(GES::ManaPoint, i["Amount"].get<float>());
 						}
 						else if(attName == 6)
 						{
-							resource->CostAmount.emplace_back(RPGS::HealthPoint, i["Amount"].get<float>());
+							resource->CostAmount.emplace_back(GES::HealthPoint, i["Amount"].get<float>());
 						}
 					}
-				}
+				}/*
 				if (json.count("Capture") > 0)
 				{
 					for (auto i : json["Capture"])
 					{
-						if (i["Type"].get<uint8_t>() == RPGS::Attack)
+						if (i["Type"].get<uint8_t>() == GES::Attack)
 						{
-							resource->Capture.emplace_back(RPGS::Attack);
+							resource->Capture.emplace_back(GES::Attack);
 						}
 					}
-				}
+				}*/
 				if (json.count("Modified") > 0)
 				{
 					for (auto i : json["Modified"])
 					{
-						RPGS::Value value;
+						Value value;
 						value.baseValue = i["Value"]["Base"].get<float>();
 						value.baseMultiplier = i["Value"]["MBase"].get<float>();
 						value.value = i["Value"]["Value"].get<float>();
@@ -179,22 +178,22 @@ namespace GES
 						switch (type)
 						{
 						case 1:
-							resource->Modified.emplace_back(RPGS::CritChange, value);
+							resource->Modified.emplace_back(CritChange, value);
 							break;
 						case 2:
-							resource->Modified.emplace_back(RPGS::CritDame, value);
+							resource->Modified.emplace_back(CritDame, value);
 							break;
 						case 3:
-							resource->Modified.emplace_back(RPGS::Attack, value);
+							resource->Modified.emplace_back(Attack, value);
 							break;
 						case 4:
-							resource->Modified.emplace_back(RPGS::Defence, value);
+							resource->Modified.emplace_back(Defence, value);
 							break;
 						case 5:
-							resource->Modified.emplace_back(RPGS::HealthPoint, value);
+							resource->Modified.emplace_back(HealthPoint, value);
 							break;
 						case 6:
-							resource->Modified.emplace_back(RPGS::ManaPoint, value);
+							resource->Modified.emplace_back(ManaPoint, value);
 							break;
 						default:
 							break;
@@ -215,61 +214,56 @@ namespace GES
 		uint8_t maxTick = 0;
 		uint8_t minStack = 0;
 		uint8_t maxStack = 0;
-		std::vector<std::pair<RPGS::AttributeType, float>> CostAmount;
-		std::vector<RPGS::AttributeType> Capture;
-		std::vector<std::pair<RPGS::AttributeType, RPGS::Value>> Modified;
+		std::vector<std::pair<AttributeType, float>> CostAmount;
+		std::vector<std::pair<AttributeType, Value>> Modified;
 	};
 
 	struct EffectInfo
 	{
 		EffectTags tags;
-		entt::hashed_string effectName;
+		entt::entity prefapEntity;
 		entt::hashed_string texturePath;
 		entt::entity source = entt::null;
 		entt::entity target = entt::null;
 	};
-	
+	struct RenewEffect
+	{
+		entt::entity entity = entt::null;
+		uint8_t times = 0;
+	};
 	struct Executions
 	{
-		uint8_t value;
+		uint8_t value = 0;
 	};
 
-	template <RPGS::AttributeType T>
-	struct ModifiedValue
+	struct ModifiedAttribute
 	{
-		RPGS::Value modValue;
-		RPGS::Value storeValue;
-		entt::entity target = entt::null;
+		struct Total
+		{
+			AttributeType type;
+			Value modValue;
+			Value storeValue;
+		};
+		std::vector<Total> value;
 	};
 
-	template <RPGS::AttributeType T>
-	struct CostValue
+	struct ModifiedCurrentSpecial
 	{
-		float value;
-		entt::entity target = entt::null;
+		std::array<float, 2> value{ 0.0f };
 	};
-
-	template <RPGS::AttributeType T>
 	struct OutputDame
 	{
-		float value;
-		float capture = 0.0f;
-		entt::entity target = entt::null;
-	};
-	template <RPGS::AttributeType T>
-	struct CaptureAttack
-	{
-		entt::entity source = entt::null;
+		float value = 0.0f;
 	};
 	struct CurrentActiveEffect
 	{
-		std::set<entt::entity> entities;
+		std::unordered_map<entt::entity, entt::entity> entities;
 	};
 	struct TryAppyEffect
 	{
-		entt::entity target;
-		entt::entity source;
-		entt::hashed_string effectName;
+		entt::entity target = entt::null;
+		entt::entity source = entt::null;
+		entt::entity prefapEntity = entt::null;
 	};
 	struct MarkDelete{};
 };

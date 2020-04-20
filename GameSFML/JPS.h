@@ -53,7 +53,7 @@ namespace JPS
 		}
 		Node& GetNode(int index)
 		{
-			return pool[tracker.at(index)];
+			return pool[tracker[index]];
 		}
 		const Node& ReadNode(int index) const
 		{

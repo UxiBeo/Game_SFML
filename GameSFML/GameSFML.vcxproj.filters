@@ -242,5 +242,11 @@
     <ClInclude Include="Grid.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Component\StampContex.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\PrefapRegistry.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

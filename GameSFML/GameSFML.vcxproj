@@ -157,6 +157,8 @@
     <ClInclude Include="Component\GameplayEffectComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
     <ClInclude Include="Component\ParentChildrenComponent.h" />
+    <ClInclude Include="Component\PrefapRegistry.h" />
+    <ClInclude Include="Component\StampContex.h" />
     <ClInclude Include="Component\TagRule.h" />
     <ClInclude Include="Component\TimerComponent.h" />
     <ClInclude Include="Component\UIComponent.h" />

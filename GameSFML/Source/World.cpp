@@ -7,6 +7,8 @@
 #include <random>
 #include "../Grid.h"
 #include "../JPS.h"
+#include "../Component/StampContex.h"
+#include "../Component/PrefapRegistry.h"
 World::World(entt::registry& ECS)
 {
 	InitContex(ECS);
@@ -166,6 +168,8 @@ void World::InitContex(entt::registry& ECS)
 	ECS.set<Physic::Engine>(b2Vec2(0.0f, 0.0f));
 	//ECS.set<Grid>().LoadFromFile(Database::GridMap);
 	ECS.set<Map>().Load("Data/Json/map200x200.tmx");
+	ECS.set<StampContex>();
+	ECS.set<PrefapRegistry>();
 }
 
 void World::InitSystem()
