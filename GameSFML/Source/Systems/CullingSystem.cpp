@@ -5,23 +5,23 @@
 
 #include <algorithm>
 #include <execution>
-bool CullingSystem::CullingQuerySelector::ReportFixture(b2Fixture* fixture)
+bool CullingQuerySelector::ReportFixture(b2Fixture* fixture)
 {
 	foundBodies.emplace_back(fixture->GetBody()->GetUserEntity());
 	return true;//keep going to find all fixtures in the query area
 }
 
-void CullingSystem::CullingQuerySelector::Sort()
+void CullingQuerySelector::Sort()
 {
 	std::sort(std::execution::par_unseq, foundBodies.begin(), foundBodies.end());
 }
 
-void CullingSystem::Update(entt::registry& ECS)
+void CullingSystem::Update(entt::registry& ECS) const
 {
 	if (auto* physicEngine = ECS.try_ctx<Physic::Engine>(); physicEngine)
 	{
+		ECS.ctx<CullingQuerySelector>();
 		ECS.clear<entt::tag<"Viewable"_hs>>();
-		cullingQueryCallback.foundBodies.clear();
 		/*auto viewport = Locator::Graphic::ref().GetViewport();
 		b2AABB aabb;
 		if (viewport.first.x > viewport.second.x)
@@ -42,4 +42,9 @@ void CullingSystem::Update(entt::registry& ECS)
 	}
 
 
+}
+
+void CullingSystem::BeginPlay(entt::registry& ECS) const
+{
+	ECS.set<CullingQuerySelector>();
 }

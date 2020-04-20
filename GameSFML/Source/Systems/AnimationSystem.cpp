@@ -4,7 +4,7 @@
 #include "../../System/WorldTimerSystem.h"
 #include "../../System/AnimationSystem.h"
 
-void AnimationSystem::Update(entt::registry& ECS)
+void AnimationSystem::Update(entt::registry& ECS) const
 {
 	float dt = ECS.ctx<Timer::World>().dt;
 

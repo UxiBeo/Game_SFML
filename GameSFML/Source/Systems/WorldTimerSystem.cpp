@@ -1,12 +1,12 @@
 #pragma once
 #include "../../System/WorldTimerSystem.h"
 #include "../../Component/ParentChildrenComponent.h"
-void WorldTimerSystem::BeginPlay(entt::registry& ECS)
+void WorldTimerSystem::BeginPlay(entt::registry& ECS)const
 {
 	ECS.set<Timer::World>();
 }
 
-void WorldTimerSystem::Update(entt::registry& ECS)
+void WorldTimerSystem::Update(entt::registry& ECS)const
 {
 	auto& worldTime = ECS.ctx<Timer::World>();
 	worldTime.time = worldTime.clock.restart();

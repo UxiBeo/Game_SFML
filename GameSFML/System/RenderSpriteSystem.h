@@ -12,7 +12,7 @@ class SpirteUpdateSystem final : public ISystemECS
 {
 public:
 	//update before Culling, animation, physic
-	void Update(entt::registry& ECS) final
+	void Update(entt::registry& ECS)const  final
 	{
 		{
 			auto view = ECS.view<AnimationComponent, sf::Sprite>();

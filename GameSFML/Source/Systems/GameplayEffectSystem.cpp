@@ -6,7 +6,7 @@
 #include "../../Component/ParentChildrenComponent.h"
 #include "../../Component/StampContex.h"
 #include "../../Component/PrefapRegistry.h"
-void GameplayEffectSystem::Update(entt::registry& ECS)
+void GameplayEffectSystem::Update(entt::registry& ECS)const
 {
 	float dt = ECS.ctx<Timer::World>().dt;
 	TryApplyEffect(ECS);
@@ -18,7 +18,7 @@ void GameplayEffectSystem::Update(entt::registry& ECS)
 	DeleteEffect(ECS);
 }
 
-void GameplayEffectSystem::BeginPlay(entt::registry& ECS)
+void GameplayEffectSystem::BeginPlay(entt::registry& ECS)const
 {
 	ECS.on_destroy<GES::CurrentActiveEffect>().connect<&GameplayEffectSystem::OnDestroyedCurrentEffect>();
 	auto& sCtx = ECS.ctx<StampContex>();
@@ -180,6 +180,9 @@ void GameplayEffectSystem::TryApplyEffect(entt::registry& ECS) const
 
 		stamp.Clone(prefap.ECS, te.prefapEntity, ECS, entity);
 		auto& ei = ECS.get<GES::EffectInfo>(entity);
+		auto& targetTag = ECS.get<Tag::Bitfiled>(te.target);
+		targetTag |= ei.tags.begin_target_GrantTags;
+		targetTag &= ~ei.tags.begin_target_RemoveTags;
 		ei.target = te.target;
 		ei.source = te.source;
 		ei.prefapEntity = te.prefapEntity;

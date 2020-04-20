@@ -5,7 +5,7 @@
 class CleanDeathSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS) final
+	void Update(entt::registry& ECS) const final
 	{
 		auto view = ECS.view<DestroyMe, ParentComponent>();
 		ECS.destroy(view.begin(), view.end());

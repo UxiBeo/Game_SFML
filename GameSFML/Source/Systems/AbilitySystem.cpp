@@ -2,51 +2,64 @@
 #include "../../System/AbilitySystem.h"
 #include"../../Component/AbilityComponent.h"
 #include "../../Component/GameplayEffectComponent.h"
-
-void AbilitySystem::Update(entt::registry& ECS)
+#include "../../Component/TimerComponent.h"
+void AbilitySystem::Update(entt::registry& ECS) const
 {
-	ECS.view<GAS::TryActivateAbility, GAS::TryActivateDelegate>().each([&ECS](auto entity, GAS::TryActivateDelegate& tryActive) {
-		/*if (tryActive && tryActive(entity, ECS))
-			if (auto* bahavior = ECS.try_get<GAS::ActivateBehaviorDelegate>(entity); bahavior && (*bahavior))
-				(*bahavior)(entity, ECS);
-		*/
-		});
-	ECS.clear<GAS::TryActivateAbility>();
-	/*if (auto* obs = ECS.try_ctx<GAS::WaitTargetDataObserver>(); obs)
-	{
-		obs->each([&ECS](auto entity, GAS::WaitTargetData& target) {
-
-
-			auto effectEntity = ECS.create();
-			GAS::ApplyGameplayEffect GE;
-			GE.owner = entity;
-			GE.target = target;
-			ECS.replace<GAS::ApplyGameplayEffect>(effectEntity, GE);
-		});
-	}*/
-
-	/*if (auto* obs = ECS.try_ctx<GAS::WaitLocationObserver>(); obs)
-	{
-		obs->each([&ECS](auto entity, GAS::WaitLocation& location) {
-			
-			});
-	}*/
-
+	const float dt = ECS.ctx<Timer::World>().dt;
+	TryActiveAbility(ECS);
+	Cooldown(ECS, dt);
 }
 
-void AbilitySystem::BeginPlay(entt::registry& ECS)
+void AbilitySystem::BeginPlay(entt::registry& ECS) const
 {
-	ECS.set<GAS::WaitTargetDataObserver>().connect(ECS, entt::collector.replace<GAS::WaitTargetData>());
-	ECS.set<GAS::WaitLocationObserver>().connect(ECS, entt::collector.replace<GAS::WaitLocation>());
+	
 }
 
 void AbilitySystem::Cooldown(entt::registry& ECS, float dt) const
 {
-	ECS.view<GAS::StartCooldown, GAS::CooldownComponent>().each([&ECS,dt](auto entity, auto, auto& cd) {
+	ECS.view<GAS::DoingCooldown, GAS::CooldownComponent>().each([&ECS,dt](auto entity, auto, auto& cd) {
 		cd.curTime += dt;
 		if (cd.curTime >= cd.maxTime)
 		{
-			ECS.remove<GAS::StartCooldown>(entity);
+			ECS.remove<GAS::DoingCooldown>(entity);
+		}
+		});
+}
+
+void AbilitySystem::TryActiveAbility(entt::registry& ECS) const
+{
+	ECS.view<GAS::TryActivateAbility, GAS::AbilityComponent>().each([&ECS](auto entity, auto, const GAS::AbilityComponent& ac) {
+
+		if (ECS.has<GAS::DoingCooldown>(entity))
+			return;
+		const auto& sourceTag = ECS.get<Tag::Bitfiled>(ac.source);
+		if ((sourceTag & ac.tagSet.source_BlockTags) > 0)
+			return;
+		if ((sourceTag & ac.tagSet.source_RequiredTags) == ac.tagSet.source_RequiredTags)
+			return;
+		if (const GAS::CostComponent* cost = ECS.try_get<GAS::CostComponent>(entity); cost)
+		{
+			const auto& ap = ECS.get<GES::AttributePack>(cost->source);
+			if ((ap.bitmask & cost->attributeName) > 0)
+			{
+				switch (cost->attributeName)
+				{
+				case GES::AttributeType::HealthPoint:
+					if (ECS.get<GES::SpecialValue>(ap.attribute[(uint32_t)GES::AttributeType::HealthPoint]).curValue < cost->amount)
+						return;
+					break;
+				case GES::AttributeType::ManaPoint:
+					if (ECS.get<GES::SpecialValue>(ap.attribute[(uint32_t)GES::AttributeType::ManaPoint]).curValue < cost->amount)
+						return;
+					break;
+				}
+			}
+		}
+		
+		if (auto* listener = ECS.try_get<GAS::Listener<GAS::Event::OnAbilityStart>>(entity); listener)
+		{
+			if (listener->detegate)
+				listener->detegate(GAS::Trigger<GAS::Event::OnAbilityStart>{ entity, entity, ECS });
 		}
 		});
 }

@@ -4,7 +4,7 @@
 class LifeTimeSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS)
+	void Update(entt::registry& ECS)const
 	{
 		float dt = ECS.ctx<Timer::World>().dt;
 		/*ECS.view<LifeTimeComponent>().each([&ECS,dt](auto entity, LifeTimeComponent& lifeTime) {

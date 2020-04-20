@@ -3,7 +3,7 @@
 #include "../../System/WorldTimerSystem.h"
 #include <future>
 #include <execution>
-void PhysicSystem::BeginPlay(entt::registry& ECS)
+void PhysicSystem::BeginPlay(entt::registry& ECS)const
 {
 	auto& mrListner = ECS.set<Physic::ContactListener>();
 	ECS.ctx<Physic::Engine>().SetContactListener(&mrListner);
@@ -14,7 +14,7 @@ void PhysicSystem::BeginPlay(entt::registry& ECS)
 
 	ECS.on_destroy<Physic::Component>().connect<&PhysicSystem::DestroyPhysicComponent>();
 }
-void PhysicSystem::Update(entt::registry& ECS)
+void PhysicSystem::Update(entt::registry& ECS)const
 {
 	if (auto* physicEngine = ECS.try_ctx<Physic::Engine>(); physicEngine)
 	{

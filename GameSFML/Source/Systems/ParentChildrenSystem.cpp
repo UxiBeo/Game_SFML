@@ -1,12 +1,12 @@
 #include "..\..\System\ParentChildrenSystem.h"
 #include "../../Component/ParentChildrenComponent.h"
 
-void ParentChildrenSystem::Update(entt::registry& ECS)
+void ParentChildrenSystem::Update(entt::registry& ECS)const
 {
 	
 }
 
-void ParentChildrenSystem::BeginPlay(entt::registry& ECS)
+void ParentChildrenSystem::BeginPlay(entt::registry& ECS)const
 {
 	ECS.on_destroy<ParentComponent>().connect<&ParentChildrenSystem::DestroyParentComponent>();
 }

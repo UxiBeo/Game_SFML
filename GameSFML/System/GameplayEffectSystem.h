@@ -3,8 +3,8 @@
 #include "../Component/GameplayEffectComponent.h"
 class GameplayEffectSystem final : public ISystemECS
 {
-	void Update(entt::registry& ECS) final;
-	void BeginPlay(entt::registry& ECS) final;
+	void Update(entt::registry& ECS) const final;
+	void BeginPlay(entt::registry& ECS) const final;
 public:
 	static void OnDestroyedCurrentEffect(entt::registry& ECS, entt::entity entity);
 private:

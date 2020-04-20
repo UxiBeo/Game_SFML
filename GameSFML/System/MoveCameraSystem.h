@@ -6,7 +6,7 @@
 class MoveCameraSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS) final
+	void Update(entt::registry& ECS) const final
 	{
 		auto& gfx = ECS.ctx<Graphics>();
 		auto& controller = ECS.ctx<PlayerControllerComponent>();

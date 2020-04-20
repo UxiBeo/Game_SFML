@@ -3,23 +3,23 @@
 #include "entt/entt.hpp"
 #include "box2d/box2d.h"
 #include "AttributeComponent.h"
+#include "GameplayTag.h"
 namespace GAS
 {
+	struct AbilityTag
+	{
+		Tag::Bitfiled source_RequiredTags;
+		Tag::Bitfiled source_BlockTags;
+	};
 	struct AbilityComponent
 	{
-		entt::entity owner;
+		entt::entity owner = entt::null;
+		entt::entity source = entt::null;
 		entt::hashed_string abilityName;
+		AbilityTag tagSet;
 	};
-
-	using WaitTargetDataObserver = entt::observer;
-	using WaitLocationObserver = entt::observer;
-	using WaitTargetData = entt::entity;
-	using WaitLocation = b2Vec2;
-
+	
 	struct TryActivateAbility {};
-	using TryActivateDelegate = entt::delegate<bool(entt::entity, entt::registry&)>;
-	using ActivateBehaviorDelegate = entt::delegate<void(entt::entity, entt::registry&)>;
-	using CostDelegate = entt::delegate<void(entt::entity, entt::registry&)>;
 	
 	
 	enum BehaviorComponent
@@ -35,17 +35,22 @@ namespace GAS
 
 	struct CostComponent
 	{
-		entt::entity owner;
-		entt::hashed_string attributeName;
-		float amount;
+		entt::entity source = entt::null;
+		GES::AttributeType attributeName;
+		float amount = 0.0f;
 	};
-	struct StartCooldown{};
+	struct DoingCooldown{};
 	struct CooldownComponent
 	{
 		float maxTime = 0.0f;
 		float curTime = 0.0f;
 	};
-	enum EventTrigger
+	
+	struct EventDispatcher
+	{
+		entt::dispatcher dispatcher;
+	};
+	enum class Event
 	{
 		OnAbilityEndChannel,
 		OnAbilityPhaseStart, //Triggers when the ability is cast(before the unit turns toward the target)
@@ -78,5 +83,18 @@ namespace GAS
 		OnToggleOn,
 		OnUnitMoved,
 		OnUpgrade,
+	};
+	
+	template <Event E>
+	struct Trigger 
+	{
+		entt::entity triggerE;
+		entt::entity listenerE;
+		entt::registry& ECS;
+	};
+	template <Event E>
+	struct Listener 
+	{
+		entt::delegate<void(const Trigger<E>&)> detegate;
 	};
 }

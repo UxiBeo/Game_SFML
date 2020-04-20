@@ -5,7 +5,7 @@
 class PlayerUpdateSystem final : public ISystemECS
 {
 public:
-	void Update(entt::registry& ECS) final
+	void Update(entt::registry& ECS) const final
 	{
 		auto& controller = ECS.ctx<PlayerControllerComponent>();
 		//update controller

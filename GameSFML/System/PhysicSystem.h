@@ -4,8 +4,8 @@
 
 class PhysicSystem final : public ISystemECS
 {
-	void BeginPlay(entt::registry& ECS) final;
-	void Update(entt::registry& ECS) final;
+	void BeginPlay(entt::registry& ECS) const final;
+	void Update(entt::registry& ECS) const final;
 public:
 	static void AddPhysic(entt::entity entity, entt::registry& ECS, const b2BodyDef& Bdef, const b2FixtureDef& fixDef);
 

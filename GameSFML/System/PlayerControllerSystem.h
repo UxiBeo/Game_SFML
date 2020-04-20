@@ -7,11 +7,11 @@
 class PlayerControllerSystem final : public ISystemECS
 {
 public:
-	void BeginPlay(entt::registry& ECS) final
+	void BeginPlay(entt::registry& ECS) const final
 	{
 		ECS.set<PlayerControllerComponent>();
 	}
-	void Update(entt::registry& ECS) final
+	void Update(entt::registry& ECS) const final
 	{
 		//keyboard
 		auto& kbd = ECS.ctx<Keyboard>();

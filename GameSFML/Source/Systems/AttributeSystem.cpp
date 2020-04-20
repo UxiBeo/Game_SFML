@@ -1,7 +1,7 @@
 #pragma once
 #include "../../System/AttributeSystem.h"
 #include <vector>
-void AttributeSystem::Update(entt::registry& ECS)
+void AttributeSystem::Update(entt::registry& ECS) const
 {
 	ApplyDame(ECS);
 }
@@ -19,7 +19,7 @@ void AttributeSystem::ApplyDame(entt::registry& ECS) const
 			if (((1 << (uint32_t)GES::Defence) & pack.bitmask) > 0)
 			{
 				auto def = ECS.get<GES::Value>(pack.attribute[(uint32_t)GES::Defence]).getFinalValue();
-				curValue -= (1 - ((0.00352 * def) / (0.993 + 0.00348 * def))) * modified.value;
+				curValue -= (1 - ((0.00352f * def) / (0.993f + 0.00348f * def))) * modified.value;
 			}
 			else
 			{

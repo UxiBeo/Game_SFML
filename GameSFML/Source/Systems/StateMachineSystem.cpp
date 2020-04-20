@@ -6,7 +6,7 @@
 #include "../../Component/AnimationComponent.h"
 #include "../../Component/TagRule.h"
 
-void StateMachineSystem::Update(entt::registry& ECS)
+void StateMachineSystem::Update(entt::registry& ECS)const
 {
 	if (auto* rule = ECS.try_ctx<TagRule>(); rule)
 	{

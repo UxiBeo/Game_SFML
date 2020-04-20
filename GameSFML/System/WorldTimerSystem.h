@@ -5,6 +5,6 @@
 class WorldTimerSystem final : public ISystemECS
 {
 public:
-	void BeginPlay(entt::registry& ECS) final;
-	void Update(entt::registry& ECS) final;
+	void BeginPlay(entt::registry& ECS)const  final;
+	void Update(entt::registry& ECS) const final;
 };
