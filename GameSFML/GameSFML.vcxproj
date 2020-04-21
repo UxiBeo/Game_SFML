@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Component\AbilityComponent.h" />
+    <ClInclude Include="Component\Ability\TestAbilityh.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
     <ClInclude Include="Component\AttributeComponent.h" />
     <ClInclude Include="Component\CharacterStateComponent.h" />

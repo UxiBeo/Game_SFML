@@ -31,6 +31,9 @@
     <Filter Include="Header Files\3rd">
       <UniqueIdentifier>{d1fd9302-7c1a-4237-8692-8dd5ad1bb13a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Component\Abilitiy">
+      <UniqueIdentifier>{9ff556a3-e907-4134-a11a-108f7123dac3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Keyboard.cpp">
@@ -247,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="Component\PrefapRegistry.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Ability\TestAbilityh.h">
+      <Filter>Header Files\Component\Abilitiy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

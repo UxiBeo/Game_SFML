@@ -115,6 +115,7 @@ namespace GES
 		}
 		Value maxValue;
 		float curValue;
+		float reserve = 0.0f;
 		float curMaxValue;
 	};
 	

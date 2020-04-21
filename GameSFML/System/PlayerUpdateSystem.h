@@ -14,7 +14,7 @@ public:
 			b2Vec2 vel = physic->GetLinearVelocity();
 			b2Vec2 desiredVel{(float)controller.direction.x, (float)controller.direction.y };
 			desiredVel.Normalize();
-			desiredVel = 15.0f * desiredVel;
+			desiredVel = 8.0f * desiredVel;
 			physic->ApplyLinearImpulseToCenter(physic->GetMass() * (desiredVel - vel), true);
 
 			//if (controller.bIsShooting)

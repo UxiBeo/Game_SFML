@@ -7,6 +7,7 @@ void AbilitySystem::Update(entt::registry& ECS) const
 {
 	const float dt = ECS.ctx<Timer::World>().dt;
 	TryActiveAbility(ECS);
+	CommitAbility(ECS);
 	Cooldown(ECS, dt);
 }
 
@@ -32,34 +33,76 @@ void AbilitySystem::TryActiveAbility(entt::registry& ECS) const
 
 		if (ECS.has<GAS::DoingCooldown>(entity))
 			return;
-		const auto& sourceTag = ECS.get<Tag::Bitfiled>(ac.source);
+		auto& sourceTag = ECS.get<Tag::Bitfiled>(ac.source);
 		if ((sourceTag & ac.tagSet.source_BlockTags) > 0)
 			return;
-		if ((sourceTag & ac.tagSet.source_RequiredTags) == ac.tagSet.source_RequiredTags)
+		if ((sourceTag & ac.tagSet.source_RequiredTags) != ac.tagSet.source_RequiredTags)
 			return;
 		if (const GAS::CostComponent* cost = ECS.try_get<GAS::CostComponent>(entity); cost)
 		{
-			const auto& ap = ECS.get<GES::AttributePack>(cost->source);
+			const auto& ap = ECS.get<GES::AttributePack>(ac.source);
 			if ((ap.bitmask & cost->attributeName) > 0)
 			{
 				switch (cost->attributeName)
 				{
 				case GES::AttributeType::HealthPoint:
-					if (ECS.get<GES::SpecialValue>(ap.attribute[(uint32_t)GES::AttributeType::HealthPoint]).curValue < cost->amount)
+				{
+					auto& sv = ECS.get<GES::SpecialValue>(ap.attribute[(uint32_t)GES::AttributeType::HealthPoint]);
+					sv.reserve += cost->amount;
+					if (sv.curValue < sv.reserve)
 						return;
+				}
 					break;
 				case GES::AttributeType::ManaPoint:
-					if (ECS.get<GES::SpecialValue>(ap.attribute[(uint32_t)GES::AttributeType::ManaPoint]).curValue < cost->amount)
+				{
+					auto& sv = ECS.get<GES::SpecialValue>(ap.attribute[(uint32_t)GES::AttributeType::ManaPoint]);
+					sv.reserve += cost->amount;
+					if (sv.curValue < sv.reserve)
 						return;
+				}
 					break;
 				}
 			}
 		}
-		
-		if (auto* listener = ECS.try_get<GAS::Listener<GAS::Event::OnAbilityStart>>(entity); listener)
-		{
-			if (listener->detegate)
-				listener->detegate(GAS::Trigger<GAS::Event::OnAbilityStart>{ entity, entity, ECS });
-		}
+
+		sourceTag |= ac.tagSet.onStart_Source_GrandTags;
+		sourceTag &= ~ac.tagSet.onStart_Source_RemoveTags;
+
+		auto& le = ECS.get<GAS::Listener<GAS::Event::OnAbilityStart>>(entity);
+		if (le.mrD)
+			le.mrD(GAS::EventInfo<GAS::Event::OnAbilityStart>{ ECS, entity, entity });
 		});
+	ECS.clear<GAS::TryActivateAbility>();
+}
+
+void AbilitySystem::CommitAbility(entt::registry& ECS) const
+{
+	auto view = ECS.view<GAS::CommitAbility, GAS::AbilityComponent, GAS::CooldownComponent>();
+	for (auto e : view)
+	{
+		ECS.assign<GAS::DoingCooldown>(e);
+	}
+	ECS.view<GAS::CommitAbility, GAS::AbilityComponent, GAS::CostComponent>().each([&ECS](auto entity,
+		auto, const GAS::AbilityComponent& ac, const GAS::CostComponent& cc) {
+			auto& ap = ECS.get<GES::AttributePack>(ac.source);
+			switch (cc.attributeName)
+			{
+			case GES::AttributeType::HealthPoint:
+			{
+				auto& sv = ECS.get<GES::SpecialValue>(ap.attribute[(uint32_t)GES::AttributeType::HealthPoint]);
+				sv.reserve = 0.0f;
+				sv.curValue -= cc.amount;
+			}
+			break;
+			case GES::AttributeType::ManaPoint:
+			{
+				auto& sv = ECS.get<GES::SpecialValue>(ap.attribute[(uint32_t)GES::AttributeType::ManaPoint]);
+				sv.reserve = 0.0f;
+				sv.curValue -= cc.amount;
+			}
+			break;
+			}
+		});
+
+	ECS.clear<GAS::CommitAbility>();
 }

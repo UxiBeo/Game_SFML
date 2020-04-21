@@ -10,6 +10,8 @@ namespace GAS
 	{
 		Tag::Bitfiled source_RequiredTags;
 		Tag::Bitfiled source_BlockTags;
+		Tag::Bitfiled onStart_Source_GrandTags;
+		Tag::Bitfiled onStart_Source_RemoveTags;
 	};
 	struct AbilityComponent
 	{
@@ -35,10 +37,10 @@ namespace GAS
 
 	struct CostComponent
 	{
-		entt::entity source = entt::null;
 		GES::AttributeType attributeName;
 		float amount = 0.0f;
 	};
+	struct CommitAbility{};
 	struct DoingCooldown{};
 	struct CooldownComponent
 	{
@@ -46,10 +48,6 @@ namespace GAS
 		float curTime = 0.0f;
 	};
 	
-	struct EventDispatcher
-	{
-		entt::dispatcher dispatcher;
-	};
 	enum class Event
 	{
 		OnAbilityEndChannel,
@@ -86,15 +84,15 @@ namespace GAS
 	};
 	
 	template <Event E>
-	struct Trigger 
+	struct EventInfo 
 	{
+		entt::registry& ECS;
 		entt::entity triggerE;
 		entt::entity listenerE;
-		entt::registry& ECS;
 	};
 	template <Event E>
 	struct Listener 
 	{
-		entt::delegate<void(const Trigger<E>&)> detegate;
+		entt::delegate<void(const EventInfo<E>&)> mrD;
 	};
 }
