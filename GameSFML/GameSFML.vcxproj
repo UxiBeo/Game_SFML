@@ -140,6 +140,7 @@
     <ClCompile Include="Source\Systems\AbilitySystem.cpp" />
     <ClCompile Include="Source\Systems\AnimationSystem.cpp" />
     <ClCompile Include="Source\Systems\AttributeSystem.cpp" />
+    <ClCompile Include="Source\Systems\ControllerSystem.cpp" />
     <ClCompile Include="Source\Systems\CullingSystem.cpp" />
     <ClCompile Include="Source\Systems\GameplayEffectSystem.cpp" />
     <ClCompile Include="Source\Systems\ParentChildrenSystem.cpp" />
@@ -151,20 +152,21 @@
   <ItemGroup>
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Component\AbilityComponent.h" />
-    <ClInclude Include="Component\Ability\TestAbilityh.h" />
+    <ClInclude Include="Component\Ability\MeleeAttack.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
     <ClInclude Include="Component\AttributeComponent.h" />
     <ClInclude Include="Component\CharacterStateComponent.h" />
+    <ClInclude Include="Component\ControllerComponent.h" />
     <ClInclude Include="Component\GameplayEffectComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
     <ClInclude Include="Component\ParentChildrenComponent.h" />
     <ClInclude Include="Component\PrefapRegistry.h" />
     <ClInclude Include="Component\StampContex.h" />
+    <ClInclude Include="Component\StateMachineComponent.h" />
     <ClInclude Include="Component\TagRule.h" />
     <ClInclude Include="Component\TimerComponent.h" />
     <ClInclude Include="Component\UIComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
-    <ClInclude Include="Component\PlayerControllerComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
     <ClInclude Include="GameResource.h" />
     <ClInclude Include="Grid.h" />
@@ -184,11 +186,11 @@
     <ClInclude Include="System\AttributeSystem.h" />
     <ClInclude Include="System\CleanDeathSystem.h" />
     <ClInclude Include="System\ClickSystem.h" />
+    <ClInclude Include="System\ControllerSystem.h" />
     <ClInclude Include="System\GameplayEffectSystem.h" />
     <ClInclude Include="System\LifeTimeSystem.h" />
     <ClInclude Include="System\ParentChildrenSystem.h" />
     <ClInclude Include="System\PhysicSystem.h" />
-    <ClInclude Include="System\PlayerUpdateSystem.h" />
     <ClInclude Include="System\RenderScreenBaseUISystem.h" />
     <ClInclude Include="System\RenderWorldBaseUISystem.h" />
     <ClInclude Include="System\AnimationSystem.h" />
@@ -197,7 +199,6 @@
     <ClInclude Include="System\IDrawSystem.h" />
     <ClInclude Include="System\ISystemECS.h" />
     <ClInclude Include="System\MoveCameraSystem.h" />
-    <ClInclude Include="System\PlayerControllerSystem.h" />
     <ClInclude Include="System\RenderSpriteSystem.h" />
     <ClInclude Include="System\SpawnStaticObjectSystem.h" />
     <ClInclude Include="System\StateMachineSystem.h" />

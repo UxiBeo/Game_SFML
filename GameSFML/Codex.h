@@ -1,5 +1,5 @@
 #pragma once
-#include "entt/resource/cache.hpp"
+#include "entt/entt.hpp"
 
 template<typename Resource>
 class Codex

@@ -15,7 +15,6 @@ namespace GAS
 	};
 	struct AbilityComponent
 	{
-		entt::entity owner = entt::null;
 		entt::entity source = entt::null;
 		entt::hashed_string abilityName;
 		AbilityTag tagSet;

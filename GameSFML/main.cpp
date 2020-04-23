@@ -9,7 +9,11 @@ int main()
 	auto& kbd = ECS.set<Keyboard>();
 	auto& gfx = ECS.set<Graphics>();
 	auto& world = ECS.set<World>(ECS);
-
+	/*auto& window = gfx.getRenderWindow();
+	
+	auto view = window.getView();
+	view.zoom(0.5f);
+	window.setView(view);*/
 	while (wnd.Update(mouse, kbd, gfx.getRenderWindow()))
 	{
 		gfx.BeginFrame();

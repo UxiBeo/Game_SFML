@@ -11,25 +11,27 @@ namespace Physic
 		PLAYER = 0x0004,
 		BULLET = 0x0006
 	};
+	enum class Type
+	{
+		Normal,
+		Sensor,
+		SensorIn,
+		SensorOut
+	};
 	struct Sensor
 	{
-		std::vector<entt::entity> currentE;
-		std::vector<entt::entity> inE;
-		std::vector<entt::entity> outE;
-		entt::delegate<void(entt::registry&, Sensor&)> mrDelegate;
+		std::vector<entt::entity> entities;
 	};
 	using Engine = b2World;
 	using Component = b2Body*;
-
-	struct Collied
+	template <Type T>
+	struct Listener
 	{
-		std::vector<entt::entity> otherEntities;
-		entt::delegate<void(entt::registry&, Collied&)> mrDelegate;
+		entt::delegate<void(entt::registry&, const entt::entity, const entt::entity)> mrD;
 	};
-	struct KeepColliedData{};
-	struct ContexObserver
+	template<>
+	struct Listener<Type::Sensor>
 	{
-		entt::observer collied;
-		entt::observer sensor;
+		entt::delegate<void(entt::registry&, const entt::entity, const Sensor&)> mrD;
 	};
 }

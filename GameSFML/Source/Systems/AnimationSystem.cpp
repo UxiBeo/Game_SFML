@@ -8,28 +8,28 @@ void AnimationSystem::Update(entt::registry& ECS) const
 {
 	float dt = ECS.ctx<Timer::World>().dt;
 
-	auto group = ECS.view<AnimationComponent>();
-	std::for_each(std::execution::par, group.begin(), group.end(), [&group, dt](auto entity) {
-		auto& animation = group.get<AnimationComponent>(entity);
-		if (animation.isUpdate)
+	auto view = ECS.view<AnimationComponent>();
+	std::for_each(std::execution::par, view.begin(), view.end(), [&view, dt](auto entity) {
+		auto& ac = view.get<AnimationComponent>(entity);
+		if (ac.isUpdate)
 		{
-			animation.curFrameTime += dt;
+			ac.curTime += dt;
 			//const auto prevFrame = animation.iCurFrame;
-			while (animation.curFrameTime >= animation.holdTime)
+			while (ac.curTime >= ac.frameTime)
 			{
-				animation.curFrameTime -= animation.holdTime;
-				animation.iCurFrame++;
-				if (animation.iCurFrame > animation.endFrame)
+				ac.curTime -= ac.frameTime;
+				ac.iCurrent++;
+				if (ac.iCurrent > ac.iEnd)
 				{
-					animation.iCurFrame = animation.beginFrame;
+					ac.iCurrent = ac.iBegin;
 				}
 			}
 		}
 		});
 	
-	ECS.group<AnimationComponent, AnimNotify>().each([&group, &ECS](auto entity, const auto& ani, const auto& noti) {
+	ECS.group<AnimationComponent, AnimNotify>().each([&ECS](auto entity, const auto& ani, const auto& noti) {
 		
-		if (noti.notifyDelegate && noti.triggerTime >= ani.curFrameTime)
+		if (noti.notifyDelegate && noti.triggerTime >= ani.curTime)
 		{
 			noti.notifyDelegate(entity, ECS);
 		}

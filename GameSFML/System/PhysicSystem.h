@@ -11,7 +11,6 @@ public:
 
 private:
 	void ReactPhysic(entt::registry& ECS) const;
-	void ProcessContactData(entt::registry& ECS) const;
 	static void DestroyPhysicComponent(entt::registry& ECS, entt::entity entity);
 };
 

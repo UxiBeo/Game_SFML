@@ -32,20 +32,13 @@ void World::Draw(Graphics& gfx, entt::registry& ECS) const
 	{
 		sys->Draw(gfx, ECS);
 	}
-	auto controller = ECS.ctx<PlayerControllerComponent>();
-	
-	sf::CircleShape shape;
-	shape.setRadius(32);
-	
-	
-	shape.setPosition(gfx.getRenderWindow().mapPixelToCoords(controller.mouseScreenPos) - sf::Vector2f(32.0f,32.0f));
-	shape.setFillColor(sf::Color(0, 0, 255, 128));
-	gfx.Draw(shape);
 }
 
 void World::AddNewPlayer(entt::registry& ECS)
 {
 	auto entity = ECS.create();
+	ECS.ctx<PlayerController>().entity = entity;
+	ECS.assign<TargetPosition>(entity);
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	const float size = 1.3f;
@@ -60,99 +53,21 @@ void World::AddNewPlayer(entt::registry& ECS)
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.0f;
 	fixtureDef.restitution = 1.0f;
+	constexpr auto sa = "Data\\Json\\A_Shield.json"_hs;
 
-
-	auto& animation = ECS.assign<AnimationComponent>(entity, Database::PlayerAnimation);
-	ECS.assign<CharacterStateComponent>(entity);
+	auto& animation = ECS.assign<AnimationComponent>(entity, sa);
+	ECS.assign<FSM::State>(entity).mrD.connect<&PlayerAnimationState::Idle>();
 	//sprite
 	{
 		auto& sprite = ECS.assign<sf::Sprite>(entity);
-		const auto textureName = Codex<AnimationResource>::Retrieve(animation.animationName).textureName;
-		sprite.setTexture(Codex<TextureResource>::Retrieve(textureName).data);
+		sprite.setTexture(Codex<TextureResource>::Retrieve(animation.ar->textureName).data);
 		//const auto textSize = 0.5f * sf::Vector2f((float)animation.resource->tileWidth, (float)animation.resource->tileHeight);
 		//sprite.setOrigin(textSize);
 	}
-
-
-	//ECS.assign<PhysicDebug>(entity);
-	ECS.assign<entt::tag<"CameraTracking"_hs>>(entity);
 	PhysicSystem::AddPhysic(entity, ECS, bodyDef, fixtureDef);
-
-	//ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespondComponent::Player>();
-
-	//health text
-	/*{
-		auto entityUI = UIFactory::GetEntity(entity, ECS);
-		ECS.assign<sf::Text>(entityUI, "Health: ", Codex<FontResource>::Retrieve(Database::FontSplatch).data, 50);
-		ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-		ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateScreenBaseUIComponent::HealthText>();
-	}*/
-
-
-	//Health Bar
-	/*{
-		auto entityUI = UIFactory::GetEntity(entity, ECS);
-		auto& progressBar = ECS.assign<ProgressiveBarComponent>(entityUI, sf::Vector2f(400.0f, 55.0f));
-		ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-		ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateScreenBaseUIComponent::HealthBar>();
-	}*/
 }
 
-void World::AddPlayer(entt::registry& ECS)
-{
-	b2BodyDef bodyDef;
-	bodyDef.type = b2_dynamicBody;
-	const float size = 1.3f;
-	b2CircleShape circle;
-	circle.m_radius = size;
 
-	b2FixtureDef fixtureDef;
-	fixtureDef.shape = &circle;
-	fixtureDef.filter.categoryBits = Physic::Fillter::PLAYER;
-	//fixtureDef.filter.maskBits = CollisionFillter::ENEMY | CollisionFillter::STATIC;
-	//fixtureDef.isSensor = isSensor;
-	fixtureDef.density = 1.0f;
-	fixtureDef.friction = 0.0f;
-	fixtureDef.restitution = 1.0f;
-	auto entity = ECS.create();
-	//ECS.assign<HealthComponent>(entity, 50.0f, 50.0f);
-	ECS.assign<PlayerControllerComponent>(entity);
-
-	/*auto& animation = ECS.assign<AnimationComponent>(entity,
-		Codex<AnimationResource>::Retrieve(Database::PlayerAnimation),
-		ECS.assign<PlayerStateComponent>(entity).state);*/
-
-		//sprite
-	{
-		auto& sprite = ECS.assign<sf::Sprite>(entity);
-		//sprite.setTexture(*animation.resource->texture);
-		//const auto textSize = 0.5f * sf::Vector2f((float)animation.resource->tileWidth, (float)animation.resource->tileHeight);
-		//sprite.setOrigin(textSize);
-	}
-
-
-	ECS.assign<entt::tag<"PhysicDebug"_hs>>(entity);
-	ECS.assign<entt::tag<"CameraTracking"_hs>>(entity);
-	//ECS.assign<PhysicComponent>(entity, entity, bodyDef, fixtureDef);
-	//ECS.assign<CollisionRespondComponent>(entity).myDelegate.connect<&CollisionRespondComponent::Player>();
-
-	//health text
-	{
-		auto entityUI = UIFactory::GetEntity(entity, ECS);
-		ECS.assign<sf::Text>(entityUI, "Health: ", Codex<FontResource>::Retrieve(Database::FontSplatch).data, 50);
-		ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-		ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateScreenBaseUIComponent::HealthText>();
-	}
-
-
-	//Health Bar
-	{
-		auto entityUI = UIFactory::GetEntity(entity, ECS);
-		auto& progressBar = ECS.assign<ProgressiveBarComponent>(entityUI, sf::Vector2f(400.0f, 55.0f));
-		ECS.assign<ScreenBaseUI>(entityUI, entity, sf::Vector2f(-640.0f, -360.0f));
-		ECS.assign<UpdateScreenBaseUIComponent>(entityUI).myDelegate.connect<&UpdateScreenBaseUIComponent::HealthBar>();
-	}
-}
 
 void World::BeginPlay(entt::registry& ECS)
 {
@@ -170,6 +85,7 @@ void World::InitContex(entt::registry& ECS)
 	ECS.set<Map>().Load("Data/Json/map200x200.tmx");
 	ECS.set<StampContex>();
 	ECS.set<PrefapRegistry>();
+	ECS.set<PlayerController>();
 }
 
 void World::InitSystem()
@@ -177,14 +93,14 @@ void World::InitSystem()
 	AddECSSystem(std::make_unique<WorldTimerSystem>());
 	//AddECSSystem(std::make_unique<SpawnStaticObjectSystem>());
 	//AddECSSystem(std::make_unique<LifeTimeSystem>());
-	AddECSSystem(std::make_unique<PlayerControllerSystem>());
-	AddECSSystem(std::make_unique<PlayerUpdateSystem>());
+	AddECSSystem(std::make_unique<ControllerSystem>());
 	AddECSSystem(std::make_unique<StateMachineSystem>());
 	AddECSSystem(std::make_unique<PhysicSystem>());
+
+	AddECSSystem(std::make_unique<MoveCameraSystem>());
 	AddECSSystem(std::make_unique<AbilitySystem>());
 	AddECSSystem(std::make_unique<GameplayEffectSystem>());
 	AddECSSystem(std::make_unique<AttributeSystem>());
-	AddECSSystem(std::make_unique<MoveCameraSystem>());
 	//AddECSSystem(std::make_unique<GridUpdateSystem>());
 	AddECSSystem(std::make_unique<ParentChildrenSystem>());
 	AddECSSystem(std::make_unique<CleanDeathSystem>());

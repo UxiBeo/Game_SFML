@@ -17,9 +17,9 @@ public:
 		{
 			auto view = ECS.view<AnimationComponent, sf::Sprite>();
 
-			std::for_each(std::execution::par, view.begin(), view.end(), [&view](auto entity) {
-				auto [animCom, sprite] = view.get<AnimationComponent, sf::Sprite>(entity);
-				sprite.setTextureRect(Codex<AnimationResource>::Retrieve(animCom.animationName).GetRectByIndex(animCom.iCurFrame));
+			std::for_each(view.begin(), view.end(), [&view](auto entity) {
+				auto [ac, sprite] = view.get<AnimationComponent, sf::Sprite>(entity);
+				sprite.setTextureRect(ac.ar->frames[ac.iCurrent]);
 			});
 		}
 

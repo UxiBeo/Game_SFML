@@ -8,10 +8,6 @@ void PhysicSystem::BeginPlay(entt::registry& ECS)const
 	auto& mrListner = ECS.set<Physic::ContactListener>();
 	ECS.ctx<Physic::Engine>().SetContactListener(&mrListner);
 
-	auto& obs = ECS.set<Physic::ContexObserver>();
-	obs.collied.connect(ECS, entt::collector.replace<Physic::Collied>());
-	obs.sensor.connect(ECS, entt::collector.replace<Physic::Sensor>());
-
 	ECS.on_destroy<Physic::Component>().connect<&PhysicSystem::DestroyPhysicComponent>();
 }
 void PhysicSystem::Update(entt::registry& ECS)const
@@ -19,7 +15,6 @@ void PhysicSystem::Update(entt::registry& ECS)const
 	if (auto* physicEngine = ECS.try_ctx<Physic::Engine>(); physicEngine)
 	{
 		physicEngine->Step(ECS.ctx<Timer::World>().dt, 4, 2);
-		ProcessContactData(ECS);
 		ReactPhysic(ECS);
 	}
 }
@@ -36,52 +31,42 @@ void PhysicSystem::AddPhysic(entt::entity entity, entt::registry& ECS, const b2B
 
 void PhysicSystem::ReactPhysic(entt::registry& ECS) const
 {
-	auto& obs = ECS.ctx<Physic::ContexObserver>();
-	for (auto e : obs.collied)
+	auto* mrLisner = ECS.try_ctx<Physic::ContactListener>();
+	if (mrLisner == nullptr) return;
+	
+	const auto& data = mrLisner->ReadData();
+
+	for (const auto& i : data[0])
 	{
-		auto& data = ECS.get<Physic::Collied>(e);
-		if (data.mrDelegate)
+		if (auto* ls = ECS.try_get<Physic::Listener<Physic::Type::Normal>>(i.first); ls)
 		{
-			data.mrDelegate(ECS, data);
+			if (ls->mrD)
+				ls->mrD(ECS, i.first, i.second);
+		}
+		if (auto* ls = ECS.try_get<Physic::Listener<Physic::Type::Normal>>(i.second); ls)
+		{
+			if (ls->mrD)
+				ls->mrD(ECS, i.second, i.first);
 		}
 	}
-	for (auto e : obs.sensor)
+	for (const auto& i : data[1])
 	{
-		auto& data = ECS.get<Physic::Sensor>(e);
-		if (data.mrDelegate)
-		{
-			data.mrDelegate(ECS, data);
-		}
+		auto& ls = ECS.get<Physic::Listener<Physic::Type::SensorIn>>(i.first);
+		if (ls.mrD)
+			ls.mrD(ECS, i.first, i.second);
 	}
-}
-
-void PhysicSystem::ProcessContactData(entt::registry& ECS) const
-{
-	if (auto* mrLisner = ECS.try_ctx<Physic::ContactListener>(); mrLisner)
+	for (const auto& i : data[2])
 	{
-		const auto& data = mrLisner->ReadData();
-
-		for (const auto& i : data[0])
-		{
-			if (ECS.has<Physic::KeepColliedData>(i.first))
-				ECS.assign_or_replace<Physic::Collied>(i.first).otherEntities.emplace_back(i.second);
-
-			if (ECS.has<Physic::KeepColliedData>(i.second))
-				ECS.assign_or_replace<Physic::Collied>(i.second).otherEntities.emplace_back(i.first);
-				
-		};
-
-		for (const auto& i : data[1])
-		{
-			ECS.assign_or_replace<Physic::Sensor>(i.first).inE.emplace_back(i.second);
-		};
-		for (const auto& i : data[2])
-		{
-			ECS.assign_or_replace<Physic::Sensor>(i.first).outE.emplace_back(i.second);
-		};
-
-		mrLisner->ClearAll();
+		auto& ls = ECS.get<Physic::Listener<Physic::Type::SensorOut>>(i.first);
+		if (ls.mrD)
+			ls.mrD(ECS, i.first, i.second);
 	}
+	ECS.view<Physic::Sensor, Physic::Listener<Physic::Type::Sensor>>().each([&ECS](auto entity,
+		const Physic::Sensor& ss, Physic::Listener<Physic::Type::Sensor>& ls) {
+			if (ls.mrD)
+				ls.mrD(ECS, entity, ss);
+		});
+	mrLisner->ClearAll();
 }
 
 void PhysicSystem::DestroyPhysicComponent(entt::registry& ECS, entt::entity entity)

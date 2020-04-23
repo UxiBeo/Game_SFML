@@ -1,7 +1,7 @@
 #pragma once
 #include "../System/ISystemECS.h"
 #include "../Component/PhysicComponent.h"
-#include "../Component/PlayerControllerComponent.h"
+#include "../Component/ControllerComponent.h"
 #include "../Component/TimerComponent.h"
 class MoveCameraSystem final : public ISystemECS
 {
@@ -9,12 +9,12 @@ public:
 	void Update(entt::registry& ECS) const final
 	{
 		auto& gfx = ECS.ctx<Graphics>();
-		auto& controller = ECS.ctx<PlayerControllerComponent>();
-		controller.mouseWorldPos = gfx.MouseToWorldPos(controller.mouseScreenPos);
-		ECS.view<entt::tag<"CameraTracking"_hs>, Physic::Component>().each([&](auto entity, auto, Physic::Component& physic) {
-			
-			gfx.MoveViewport(physic->GetPosition(), controller.mouseScreenPos);
-		});
+		auto& controller = ECS.ctx<PlayerController>();
+		auto& gp = ECS.get<TargetPosition>(controller.entity);
+		gp.goalPos = gfx.MouseToWorldPos(controller.mousePos);
+		gp.mousePos = controller.mousePos;
+		gp.curPos = ECS.get<Physic::Component>(controller.entity)->GetPosition();
+		gfx.MoveViewport(gp.curPos, gp.mousePos);
 	}
 private:
 };

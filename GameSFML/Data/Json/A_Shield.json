@@ -1,0 +1,40 @@
+{
+  "imageName": "shield_96_96_8_8.png",
+  "width": 768,
+  "height": 768,
+  "tileWidth": 96,
+  "tileHeight": 96,
+  "frames" :  8,
+  "r": {
+    "frameTime": 150,
+    "index": 0
+  },
+  "u": {
+    "frameTime": 150,
+    "index": 8
+  },
+  "ru": {
+    "frameTime": 150,
+    "index": 16
+  },
+  "lu": {
+    "frameTime": 150,
+    "index": 24
+  },
+  "d": {
+    "frameTime": 150,
+    "index": 32
+  },
+  "rd": {
+    "frameTime": 150,
+    "index": 40
+  },
+  "ld": {
+    "frameTime": 150,
+    "index": 48
+  },
+  "l": {
+    "frameTime": 150,
+    "index": 56
+  }
+}

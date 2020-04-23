@@ -87,6 +87,9 @@
     <ClCompile Include="Grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Systems\ControllerSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h">
@@ -119,9 +122,6 @@
     <ClInclude Include="System\MoveCameraSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="System\PlayerControllerSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="System\RenderSpriteSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
@@ -143,9 +143,6 @@
     <ClInclude Include="System\CullingSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Component\PlayerControllerComponent.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="GameResource.h">
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
@@ -162,9 +159,6 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="System\PhysicSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="System\PlayerUpdateSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="System\LifeTimeSystem.h">
@@ -251,8 +245,17 @@
     <ClInclude Include="Component\PrefapRegistry.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Component\Ability\TestAbilityh.h">
+    <ClInclude Include="Component\Ability\MeleeAttack.h">
       <Filter>Header Files\Component\Abilitiy</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ControllerComponent.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="System\ControllerSystem.h">
+      <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\StateMachineComponent.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -4,23 +4,20 @@
   "height": 256,
   "tileWidth": 64,
   "tileHeight": 64,
-  "frameTime": 150,
-  "animationSets": [
-    {
-      "id": "MoveUp",
-      "index": [0, 8]
-    },
-    {
-      "id": "MoveLeft",
-      "index": [9, 17]
-    },
-    {
-      "id": "MoveDown",
-      "index": [18, 26]
-    },
-    {
-      "id": "MoveRight",
-      "index": [27, 35]
-    }
-  ]
+  "moveUp": {
+    "frameTime": 150,
+    "index": [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ]
+  },
+  "moveLeft": {
+    "frameTime": 150,
+    "index": [ 9, 10, 11, 12, 13, 14, 15, 16, 17 ]
+  },
+  "moveDown": {
+    "frameTime": 150,
+    "index": [ 18, 19, 20, 21, 22, 23, 24, 25, 26 ]
+  },
+  "moveRight": {
+    "frameTime": 150,
+    "index": [ 27, 28, 29, 30, 31, 32, 33, 34, 35 ]
+  }
 }

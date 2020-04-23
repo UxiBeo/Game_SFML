@@ -18,8 +18,6 @@ public:
 		drawSystems.emplace_back(std::move(newSystem));
 	}
 	
-	void AddPlayer(entt::registry& ECS);
-	
 private:
 	void BeginPlay(entt::registry& ECS);
 	

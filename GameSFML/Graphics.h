@@ -90,6 +90,10 @@ public:
 	{
 		return { worldSize.x * scalePixel, worldSize.y * scalePixel };
 	}
+	sf::View GetView() const
+	{
+		return window.getView();
+	}
 	static constexpr float scalePixel = 20.0f;
 	sf::RenderWindow& getRenderWindow()
 	{
