@@ -168,6 +168,7 @@
     <ClInclude Include="Component\UIComponent.h" />
     <ClInclude Include="Component\PhysicComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
+    <ClInclude Include="DrawDebugComponent.h" />
     <ClInclude Include="GameResource.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="JPS.h" />

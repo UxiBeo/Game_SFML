@@ -6,18 +6,25 @@
 #include "GameplayTag.h"
 namespace GAS
 {
+	struct AbilitySlot
+	{
+		std::vector<entt::entity> abilities;
+	};
 	struct AbilityTag
 	{
 		Tag::Bitfiled source_RequiredTags;
 		Tag::Bitfiled source_BlockTags;
 		Tag::Bitfiled onStart_Source_GrandTags;
 		Tag::Bitfiled onStart_Source_RemoveTags;
+		Tag::Bitfiled onEnd_Source_GrandTags;
+		Tag::Bitfiled onEnd_Source_RemoveTags;
 	};
 	struct AbilityComponent
 	{
 		entt::entity source = entt::null;
 		entt::hashed_string abilityName;
 		AbilityTag tagSet;
+		entt::entity eEffect = entt::null;
 	};
 	
 	struct TryActivateAbility {};
@@ -94,4 +101,5 @@ namespace GAS
 	{
 		entt::delegate<void(const EventInfo<E>&)> mrD;
 	};
+	struct EndAbility {};
 }

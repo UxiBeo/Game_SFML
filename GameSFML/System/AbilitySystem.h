@@ -9,4 +9,5 @@ private:
 	void Cooldown(entt::registry& ECS, float dt) const;
 	void TryActiveAbility(entt::registry& ECS) const;
 	void CommitAbility(entt::registry& ECS) const;
+	void EndAbility(entt::registry& ECS) const;
 };

@@ -1,6 +1,6 @@
 #include "..\..\System\ControllerSystem.h"
 #include "../../Component/PhysicComponent.h"
-
+#include "../../Component/AbilityComponent.h"
 void ControllerSystem::BeginPlay(entt::registry& ECS) const
 {
 
@@ -64,6 +64,11 @@ void ControllerSystem::UpdatePlayerController(entt::registry& ECS) const
 
 			continue;
 		}*/
+	}
+	if (ct.LeftIsPress > 0)
+	{
+		auto& al = ECS.get<GAS::AbilitySlot>(ct.entity);
+		ECS.assign<GAS::TryActivateAbility>(al.abilities[0]);
 	}
 	auto& pc = ECS.get<Physic::Component>(ct.entity);
 	b2Vec2 vel = pc->GetLinearVelocity();

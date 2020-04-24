@@ -2,41 +2,45 @@
 #include "../Graphics.h"
 #include "../Component/PhysicComponent.h"
 #include "../System/IDrawSystem.h"
+#include "../System/ISystemECS.h"
 #include "../MaxxConsole.h"
+#include "../DrawDebugComponent.h"
+#include "../Component/TimerComponent.h"
 class DrawDebugSystem final : public IDrawSystem
 {
 public:
 	void Draw(Graphics& gfx, entt::registry& ECS) const final
 	{
-		if (MaxxConsole::r_showDebugPhysic == 0) return;
+		auto& vertercies = ECS.ctx<DebugEntities>();
+		vertercies.vArray.clear();
+		ECS.view<DrawDebugComponent>().each([&ECS, &vertercies,&gfx](auto entity, DrawDebugComponent& dc) {
+			
+			for (auto& v : dc.vertercies)
+			{
+				vertercies.vArray.append({gfx.WorldToScreenPos(v), dc.color});
+			}
+			
+			});
+		gfx.Draw(vertercies);
+	}
+	
+};
 
-		/*ECS.view<Viewable, PhysicDebug, PhysicComponent>().each([&ECS, &gfx](auto entity, auto&, auto&, PhysicComponent &physic) {
-			switch (physic.body->GetFixtureList()->GetShape()->m_type)
+class DrawDebugUpdate final : public ISystemECS
+{
+	void Update(entt::registry& ECS) const final
+	{
+		const auto dt = ECS.ctx<Timer::World>().dt;		
+		ECS.view<DrawDebugComponent>().each([&ECS, dt](auto entity, DrawDebugComponent& dc) {
+			dc.dt += dt;
+			if (dc.dt > 5.0f)
 			{
-			case b2Shape::Type::e_polygon:
-			{
-				sf::RectangleShape rectangle;
-				const b2Vec2 boxExtents = static_cast<b2PolygonShape*>(physic.body->GetFixtureList()->GetShape())->m_vertices[2];
-				const auto screenSize = 2.0f * gfx.GetScreenSize(boxExtents);
-				rectangle.setPosition(gfx.WorldToScreenPos(physic.body->GetPosition() + b2Vec2(-boxExtents.x, boxExtents.y)));
-				rectangle.setSize(screenSize);
-				rectangle.setFillColor(sf::Color(255, 0, 0, 128));
-				gfx.Draw(rectangle);
-				break;
+				ECS.destroy(entity);
 			}
-			case b2Shape::Type::e_circle:
-			{
-				sf::CircleShape shape;
-				const auto radius = physic.body->GetFixtureList()->GetShape()->m_radius;
-				shape.setRadius(radius * gfx.scalePixel);
-				shape.setPosition(gfx.WorldToScreenPos(physic.body->GetPosition() + b2Vec2(-radius, radius)));
-				shape.setFillColor(sf::Color(0, 0, 255, 128));
-				gfx.Draw(shape);
-				break;
-			}
-			default:
-				break;
-			}
-		});*/
+			});
+	}
+	void BeginPlay(entt::registry& ECS) const final
+	{
+		ECS.set<DebugEntities>().vArray.setPrimitiveType(sf::Quads);
 	}
 };

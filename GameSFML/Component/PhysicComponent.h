@@ -34,4 +34,19 @@ namespace Physic
 	{
 		entt::delegate<void(entt::registry&, const entt::entity, const Sensor&)> mrD;
 	};
+	struct Query : public b2QueryCallback
+	{
+		const std::vector<entt::entity>& GetEntities(Engine& pe, const b2AABB& aabb)
+		{
+			pe.QueryAABB(this, aabb);
+			return foundBodies;
+		}
+		bool ReportFixture(b2Fixture* fixture) final
+		{
+			foundBodies.emplace_back(fixture->GetBody()->GetUserEntity());
+			return true;//keep going to find all fixtures in the query area
+		}
+	private:
+		std::vector<entt::entity> foundBodies;
+	};
 }

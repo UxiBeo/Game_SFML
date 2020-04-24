@@ -9,6 +9,7 @@ void AbilitySystem::Update(entt::registry& ECS) const
 	TryActiveAbility(ECS);
 	CommitAbility(ECS);
 	Cooldown(ECS, dt);
+	EndAbility(ECS);
 }
 
 void AbilitySystem::BeginPlay(entt::registry& ECS) const
@@ -22,6 +23,7 @@ void AbilitySystem::Cooldown(entt::registry& ECS, float dt) const
 		cd.curTime += dt;
 		if (cd.curTime >= cd.maxTime)
 		{
+			cd.curTime = 0.0f;
 			ECS.remove<GAS::DoingCooldown>(entity);
 		}
 		});
@@ -29,10 +31,8 @@ void AbilitySystem::Cooldown(entt::registry& ECS, float dt) const
 
 void AbilitySystem::TryActiveAbility(entt::registry& ECS) const
 {
-	ECS.view<GAS::TryActivateAbility, GAS::AbilityComponent>().each([&ECS](auto entity, auto, const GAS::AbilityComponent& ac) {
+	ECS.view<GAS::TryActivateAbility, GAS::AbilityComponent>(entt::exclude<GAS::DoingCooldown>).each([&ECS](auto entity, auto, const GAS::AbilityComponent& ac) {
 
-		if (ECS.has<GAS::DoingCooldown>(entity))
-			return;
 		auto& sourceTag = ECS.get<Tag::Bitfiled>(ac.source);
 		if ((sourceTag & ac.tagSet.source_BlockTags) > 0)
 			return;
@@ -105,4 +105,16 @@ void AbilitySystem::CommitAbility(entt::registry& ECS) const
 		});
 
 	ECS.clear<GAS::CommitAbility>();
+}
+
+void AbilitySystem::EndAbility(entt::registry& ECS) const
+{
+	ECS.view<GAS::EndAbility, GAS::AbilityComponent>().each([&ECS](auto entity, auto, const GAS::AbilityComponent& ac) {
+
+		auto& sourceTag = ECS.get<Tag::Bitfiled>(ac.source);
+
+		sourceTag |= ac.tagSet.onEnd_Source_GrandTags;
+		sourceTag &= ~ac.tagSet.onEnd_Source_RemoveTags;
+		});
+	ECS.clear<GAS::EndAbility>();
 }

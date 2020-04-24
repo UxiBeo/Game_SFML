@@ -9,6 +9,7 @@
 #include "../JPS.h"
 #include "../Component/StampContex.h"
 #include "../Component/PrefapRegistry.h"
+#include "../Component/Ability/MeleeAttack.h"
 World::World(entt::registry& ECS)
 {
 	InitContex(ECS);
@@ -54,15 +55,25 @@ void World::AddNewPlayer(entt::registry& ECS)
 	fixtureDef.friction = 0.0f;
 	fixtureDef.restitution = 1.0f;
 	constexpr auto sa = "Data\\Json\\A_Shield.json"_hs;
-
+	{
+		auto eac = ECS.create();
+		auto& ac = ECS.assign<GAS::AbilityComponent>(eac);
+		ECS.assign<GAS::Listener<GAS::Event::OnAbilityStart>>(eac).mrD.connect<&MeleeAttack::OnAbilityStart>();
+		ECS.assign<GAS::CooldownComponent>(eac).maxTime = 0.3f;
+		ac.source = entity;
+		ECS.assign<GAS::AbilitySlot>(entity).abilities.emplace_back(eac);
+		ECS.assign<Tag::Bitfiled>(entity);
+	}
+	
+	
 	auto& animation = ECS.assign<AnimationComponent>(entity, sa);
 	ECS.assign<FSM::State>(entity).mrD.connect<&PlayerAnimationState::Idle>();
 	//sprite
 	{
 		auto& sprite = ECS.assign<sf::Sprite>(entity);
 		sprite.setTexture(Codex<TextureResource>::Retrieve(animation.ar->textureName).data);
-		//const auto textSize = 0.5f * sf::Vector2f((float)animation.resource->tileWidth, (float)animation.resource->tileHeight);
-		//sprite.setOrigin(textSize);
+		const auto textSize = 0.5f * sf::Vector2f((float)animation.ar->tileWidth, (float)animation.ar->tileHeight);
+		sprite.setOrigin(textSize);
 	}
 	PhysicSystem::AddPhysic(entity, ECS, bodyDef, fixtureDef);
 }
@@ -110,12 +121,15 @@ void World::InitSystem()
 	//AddECSSystem(std::make_unique<TransitionStateSystem>());
 	AddECSSystem(std::make_unique<AnimationSystem>());
 	AddECSSystem(std::make_unique<SpirteUpdateSystem>());
+	AddECSSystem(std::make_unique<DrawDebugUpdate>());
 
 	//render Grid should be before render sprite and after move camera;
 	//AddDrawSystem(std::make_unique<RenderGridSystem>());
 	//render Sprite should be the last
+
+	
 	AddDrawSystem(std::make_unique<RenderSpriteSystem>());
-	//drawSystems.emplace_back(std::make_unique<DrawDebugSystem>());
+	AddDrawSystem(std::make_unique<DrawDebugSystem>());
 	//drawSystems.emplace_back(std::make_unique<RenderWorldBaseUISystem>());
 	//drawSystems.emplace_back(std::make_unique<RenderScreenBaseUISystem>());
 }
