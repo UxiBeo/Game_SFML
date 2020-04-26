@@ -23,9 +23,9 @@ void PhysicSystem::AddPhysic(entt::entity entity, entt::registry& ECS, const b2B
 {
 	if (auto* engine = ECS.try_ctx<Physic::Engine>(); engine)
 	{
-		auto& physic = ECS.assign<Physic::Component>(entity, engine->CreateBody(&Bdef));
-		physic->CreateFixture(&fixDef);
-		physic->SetUserEntity(entity);
+		auto& pc = ECS.assign<Physic::Component>(entity, engine->CreateBody(&Bdef));
+		pc->CreateFixture(&fixDef);
+		pc->SetUserEntity(entity);
 	}
 }
 

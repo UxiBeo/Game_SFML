@@ -1,6 +1,7 @@
 #include "..\..\System\ControllerSystem.h"
 #include "../../Component/PhysicComponent.h"
 #include "../../Component/AbilityComponent.h"
+#include "../../Component/AnimationComponent.h"
 void ControllerSystem::BeginPlay(entt::registry& ECS) const
 {
 
@@ -65,6 +66,11 @@ void ControllerSystem::UpdatePlayerController(entt::registry& ECS) const
 			continue;
 		}*/
 	}
+	float speed = 12.0f;
+	if (ECS.has<MontagePlaying>(ct.entity))
+	{
+		speed = 0.0f;
+	}
 	if (ct.LeftIsPress > 0)
 	{
 		auto& al = ECS.get<GAS::AbilitySlot>(ct.entity);
@@ -74,6 +80,6 @@ void ControllerSystem::UpdatePlayerController(entt::registry& ECS) const
 	b2Vec2 vel = pc->GetLinearVelocity();
 	b2Vec2 desiredVel{ (float)ct.direction.x, (float)ct.direction.y };
 	desiredVel.Normalize();
-	desiredVel = 8.0f * desiredVel;
+	desiredVel = speed * desiredVel;
 	pc->ApplyLinearImpulseToCenter(pc->GetMass() * (desiredVel - vel), true);
 }

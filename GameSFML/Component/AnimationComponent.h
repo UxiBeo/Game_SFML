@@ -9,11 +9,19 @@ struct AnimationResource
 {
 	struct AnimationSet
 	{
-		float frameTime = 0.0f;
-		uint8_t iBegin = 0;
-		uint8_t iEnd =  0;
+		uint16_t iBegin = 0;
+		uint16_t iEnd =  0;
 	};
-
+	struct FrameRect
+	{
+		FrameRect(int x, int y, int w, int h, float px, float py)
+			:
+			rect(x,y,w,h),
+			pivot(px,py)
+		{}
+		sf::IntRect rect;
+		sf::Vector2f pivot;
+	};
 	struct AnimationLoader final : entt::loader<AnimationLoader, AnimationResource> {
 		std::shared_ptr<AnimationResource> load(entt::hashed_string filename) const
 		{
@@ -25,45 +33,47 @@ struct AnimationResource
 			Codex<TextureResource>::LoadFromFile(textureName);
 			auto resource = std::make_shared<AnimationResource>();
 			resource->textureName = textureName;
-			resource->width = Json["width"].get<unsigned int>();
-			resource->height = Json["height"].get<unsigned int>();
-			resource->tileWidth = Json["tileWidth"].get<unsigned int>();
-			resource->tileHeight = Json["tileHeight"].get<unsigned int>();
-			resource->nFrame = Json["frames"].get<uint8_t>() - 1u;
-			unsigned int nCot = resource->width / resource->tileWidth;
-			resource->AddAnimation(Json["r"], nCot);
-			resource->AddAnimation(Json["rd"], nCot);
-			resource->AddAnimation(Json["d"], nCot);
-			resource->AddAnimation(Json["ld"], nCot);
-			resource->AddAnimation(Json["l"], nCot);
-			resource->AddAnimation(Json["lu"], nCot);
-			resource->AddAnimation(Json["u"], nCot);
-			resource->AddAnimation(Json["ru"], nCot);
+			resource->frameTime = Json["frameTime"].get<float>();
+			resource->AddSet(Json["frames"]["run"]);
+			resource->AddAnimation(Json["frames"]["idle"]);
+			resource->AddSet(Json["frames"]["attack"]);
 			return resource;
 		}
 	};
 	using Loader = AnimationLoader;
-	void AddAnimation(const nlohmann::json& set, unsigned int nCot)
+	void AddSet(const nlohmann::json& set, bool isdir = true)
+	{
+		if (isdir)
+		{
+			AddAnimation(set["r"]);
+			AddAnimation(set["dr"]);
+			AddAnimation(set["d"]);
+			AddAnimation(set["dl"]);
+			AddAnimation(set["l"]);
+			AddAnimation(set["ul"]);
+			AddAnimation(set["u"]);
+			AddAnimation(set["ur"]);
+			return;
+		}
+		
+		
+	}
+	void AddAnimation(const nlohmann::json& set)
 	{
 		AnimationSet as;
-		as.iBegin = (uint8_t)frames.size();
-		const auto iStart = set["index"].get<uint8_t>();
-		for (auto i = iStart; i < iStart + nFrame; i++)
+		as.iBegin = (uint16_t)frames.size();
+		for (auto& f : set)
 		{
-			unsigned int iHang = i / nCot;
-			unsigned int iCot = i % nCot;
-			frames.emplace_back(iCot * tileWidth, iHang * tileHeight,
-				tileWidth, tileHeight);
+			frames.emplace_back(f["x"].get<int>(), f["y"].get<int>(), f["w"].get<int>(), f["h"].get<int>() ,
+				f["px"].get<float>(), f["py"].get<float>() );
 		}
-		as.iEnd = (uint8_t)frames.size() - 1u;
-		as.frameTime = set["frameTime"].get<float>() / 1000.0f;
+		as.iEnd = (uint16_t)frames.size() - 1u;
 		sets.push_back(as);
 	}
 	std::vector<AnimationSet> sets;
-	std::vector<sf::IntRect> frames;
+	std::vector<FrameRect> frames;
 	entt::hashed_string textureName;
-	uint8_t nFrame = 0u;
-	unsigned int width, height, tileWidth, tileHeight;
+	float frameTime = 0.0f;
 };
 
 struct AnimationComponent
@@ -72,22 +82,30 @@ struct AnimationComponent
 		:
 		ar(&Codex<AnimationResource>::Retrieve(animationName))
 	{
-		frameTime = ar->sets.begin()->frameTime;
+		frameTime = ar->frameTime;
 		iBegin = ar->sets.begin()->iBegin;
-		iEnd = iBegin;
+		iEnd = ar->sets.begin()->iEnd;
 		iCurrent = iBegin;
 	}
 	const AnimationResource* ar = nullptr;
 	uint8_t iSet = 0;
-	bool isUpdate = true;
 	float frameTime = 0.16f;
 	float curTime = 0.0f;
-	uint8_t iCurrent = 0u;
-	uint8_t iBegin = 0u;
-	uint8_t iEnd = 0u;
+	uint16_t iCurrent = 0u;
+	uint16_t iBegin = 0u;
+	uint16_t iEnd = 0u;
 };
 struct AnimNotify
 {
-	float triggerTime;
-	entt::delegate<void(entt::entity, entt::registry&)> notifyDelegate;
+	float triggerTime = 0.6f;
+	float curTime = 0.0f;
+	entt::entity listenerE = entt::null;
+	entt::delegate<void(const entt::entity&, const entt::entity&, entt::registry&)> triggerD;
+	entt::delegate<void(const entt::entity&, const entt::entity&, entt::registry&)> interrupD;
 };
+struct PlayAnimationMontage
+{
+	uint8_t iSet;
+	AnimNotify an;
+};
+struct MontagePlaying {};

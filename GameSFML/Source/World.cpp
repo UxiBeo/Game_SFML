@@ -37,15 +37,17 @@ void World::Draw(Graphics& gfx, entt::registry& ECS) const
 
 void World::AddNewPlayer(entt::registry& ECS)
 {
-	auto entity = ECS.create();
+	const auto entity = ECS.create();
 	ECS.ctx<PlayerController>().entity = entity;
 	ECS.assign<TargetPosition>(entity);
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
-	const float size = 1.3f;
+	const float size = 2.0f;
 	b2CircleShape circle;
 	circle.m_radius = size;
-
+	auto& cricle = ECS.assign<sf::CircleShape>(entity, size * Graphics::scalePixel);
+	cricle.setOrigin({ size * Graphics::scalePixel, size * Graphics::scalePixel });
+	cricle.setFillColor(sf::Color(150, 50, 250, 128));
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &circle;
 	fixtureDef.filter.categoryBits = Physic::Fillter::PLAYER;
@@ -54,26 +56,28 @@ void World::AddNewPlayer(entt::registry& ECS)
 	fixtureDef.density = 1.0f;
 	fixtureDef.friction = 0.0f;
 	fixtureDef.restitution = 1.0f;
-	constexpr auto sa = "Data\\Json\\A_Shield.json"_hs;
+	constexpr auto sa = "Data\\Json\\a_greatsword.json"_hs;
+	auto& animation = ECS.assign<AnimationComponent>(entity, sa);
+	ECS.assign<FSM::State>(entity).mrD.connect<&PlayerAnimationState::Idle>();
 	{
-		auto eac = ECS.create();
+		float cd = animation.frameTime * float(1 + animation.ar->sets[9].iEnd - animation.ar->sets[9].iBegin);
+		const auto eac = ECS.create();
 		auto& ac = ECS.assign<GAS::AbilityComponent>(eac);
-		ECS.assign<GAS::Listener<GAS::Event::OnAbilityStart>>(eac).mrD.connect<&MeleeAttack::OnAbilityStart>();
-		ECS.assign<GAS::CooldownComponent>(eac).maxTime = 0.3f;
-		ac.source = entity;
+		ac.owner = entity;
+		ac.self = eac;
+		ac.mrD.connect<&MeleeAttack::OnAbilityStart>();
+		auto& ma = ECS.assign<MeleeAttack>(eac);
+		ma.triggerTime = cd * 0.7f;
+		ECS.assign<GAS::CooldownComponent>(eac).maxTime = cd;
 		ECS.assign<GAS::AbilitySlot>(entity).abilities.emplace_back(eac);
 		ECS.assign<Tag::Bitfiled>(entity);
 	}
 	
 	
-	auto& animation = ECS.assign<AnimationComponent>(entity, sa);
-	ECS.assign<FSM::State>(entity).mrD.connect<&PlayerAnimationState::Idle>();
 	//sprite
 	{
 		auto& sprite = ECS.assign<sf::Sprite>(entity);
 		sprite.setTexture(Codex<TextureResource>::Retrieve(animation.ar->textureName).data);
-		const auto textSize = 0.5f * sf::Vector2f((float)animation.ar->tileWidth, (float)animation.ar->tileHeight);
-		sprite.setOrigin(textSize);
 	}
 	PhysicSystem::AddPhysic(entity, ECS, bodyDef, fixtureDef);
 }
@@ -97,6 +101,7 @@ void World::InitContex(entt::registry& ECS)
 	ECS.set<StampContex>();
 	ECS.set<PrefapRegistry>();
 	ECS.set<PlayerController>();
+	ECS.set<TagRule>();
 }
 
 void World::InitSystem()
@@ -105,11 +110,12 @@ void World::InitSystem()
 	//AddECSSystem(std::make_unique<SpawnStaticObjectSystem>());
 	//AddECSSystem(std::make_unique<LifeTimeSystem>());
 	AddECSSystem(std::make_unique<ControllerSystem>());
+	AddECSSystem(std::make_unique<AbilitySystem>());
 	AddECSSystem(std::make_unique<StateMachineSystem>());
 	AddECSSystem(std::make_unique<PhysicSystem>());
 
 	AddECSSystem(std::make_unique<MoveCameraSystem>());
-	AddECSSystem(std::make_unique<AbilitySystem>());
+	
 	AddECSSystem(std::make_unique<GameplayEffectSystem>());
 	AddECSSystem(std::make_unique<AttributeSystem>());
 	//AddECSSystem(std::make_unique<GridUpdateSystem>());

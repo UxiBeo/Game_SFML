@@ -21,26 +21,15 @@ namespace GAS
 	};
 	struct AbilityComponent
 	{
-		entt::entity source = entt::null;
-		entt::hashed_string abilityName;
-		AbilityTag tagSet;
-		entt::entity eEffect = entt::null;
+		entt::entity owner = entt::null;
+		entt::entity self = entt::null;
+		entt::delegate<void(const AbilityComponent&, entt::registry&)> mrD;
 	};
-	
-	struct TryActivateAbility {};
-	
-	
-	enum BehaviorComponent
+	struct ModifiedEffect
 	{
-		PASSIVE = 1 << 1, //Cannot be cast like above but this one shows up on the ability HUD.
-		NO_TARGET = 1 << 2, //Doesn't need a target to be cast, ability fires off as soon as the button is pressed.
-		UNIT_TARGET = 1 << 3, //Needs a target to be cast on.
-		POINT = 1 << 4, //Can be cast anywhere the mouse cursor is (if a unit is clicked it will just be cast where the unit was standing).
-		AOE = 1 << 5, //Draws a radius where the ability will have effect. Kinda like POINT but with a an area of effect display.
-		CHANNELLED = 1 << 6, //Channeled ability. If the user moves or is silenced the ability is interrupted.
-		TOGGLE = 1 << 7, //Can be insta-toggled.
+		std::vector<entt::entity> eEffect;
 	};
-
+	struct TryActivateAbility {};
 	struct CostComponent
 	{
 		GES::AttributeType attributeName;
@@ -56,6 +45,8 @@ namespace GAS
 	
 	enum class Event
 	{
+		OnAnimationNotify,
+		OnAbilityInterrupt,
 		OnAbilityEndChannel,
 		OnAbilityPhaseStart, //Triggers when the ability is cast(before the unit turns toward the target)
 		OnAbilityStart,
@@ -89,17 +80,6 @@ namespace GAS
 		OnUpgrade,
 	};
 	
-	template <Event E>
-	struct EventInfo 
-	{
-		entt::registry& ECS;
-		entt::entity triggerE;
-		entt::entity listenerE;
-	};
-	template <Event E>
-	struct Listener 
-	{
-		entt::delegate<void(const EventInfo<E>&)> mrD;
-	};
-	struct EndAbility {};
+
+	struct Activating {};
 }

@@ -257,7 +257,7 @@
     <ClInclude Include="Component\StateMachineComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="DrawDebugComponent.h">
+    <ClInclude Include="Component\DrawDebugComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>

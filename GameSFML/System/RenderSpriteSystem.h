@@ -3,6 +3,7 @@
 #include "../System/IDrawSystem.h"
 #include "../Component/PhysicComponent.h"
 #include "../Component/AnimationComponent.h"
+#include "../Component/DrawDebugComponent.h"
 #include "../HashStringDataBase.h"
 #include "entt/entt.hpp"
 #include <algorithm>
@@ -16,23 +17,20 @@ public:
 	{
 		{
 			auto view = ECS.view<AnimationComponent, sf::Sprite>();
-
 			std::for_each(view.begin(), view.end(), [&view](auto entity) {
 				auto [ac, sprite] = view.get<AnimationComponent, sf::Sprite>(entity);
-				sprite.setTextureRect(ac.ar->frames[ac.iCurrent]);
+				sprite.setTextureRect(ac.ar->frames[ac.iCurrent].rect);
+				sprite.setOrigin(ac.ar->frames[ac.iCurrent].pivot);
 			});
 		}
-
 		{
 			auto& gfx = ECS.ctx<Graphics>();
 			auto view = ECS.view<Physic::Component, sf::Sprite>();
 			std::for_each(std::execution::par, view.begin(), view.end(), [&view,&gfx](auto entity) {
 				auto [physic, sprite] = view.get<Physic::Component, sf::Sprite>(entity);
-
 				sprite.setPosition(gfx.WorldToScreenPos(physic->GetPosition()));
 				});
 		}
-		
 	}
 };
 class RenderSpriteSystem final : public IDrawSystem

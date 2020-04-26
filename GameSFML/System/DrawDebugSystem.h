@@ -4,24 +4,28 @@
 #include "../System/IDrawSystem.h"
 #include "../System/ISystemECS.h"
 #include "../MaxxConsole.h"
-#include "../DrawDebugComponent.h"
+#include "../Component/DrawDebugComponent.h"
 #include "../Component/TimerComponent.h"
 class DrawDebugSystem final : public IDrawSystem
 {
 public:
 	void Draw(Graphics& gfx, entt::registry& ECS) const final
 	{
-		auto& vertercies = ECS.ctx<DebugEntities>();
-		vertercies.vArray.clear();
-		ECS.view<DrawDebugComponent>().each([&ECS, &vertercies,&gfx](auto entity, DrawDebugComponent& dc) {
+		ECS.view<Physic::Component, sf::CircleShape>().each([&gfx](auto enity, Physic::Component& pc, sf::CircleShape& cs) {
+			cs.setPosition(gfx.WorldToScreenPos(pc->GetPosition()));
+			gfx.Draw(cs);
+			});
+		auto& vertices = ECS.ctx<DebugEntities>();
+		vertices.vArray.clear();
+		ECS.view<DrawDebugComponent>().each([&ECS, &vertices,&gfx](auto entity, DrawDebugComponent& dc) {
 			
-			for (auto& v : dc.vertercies)
+			for (auto& v : dc.vertices)
 			{
-				vertercies.vArray.append({gfx.WorldToScreenPos(v), dc.color});
+				vertices.vArray.append({gfx.WorldToScreenPos(v), dc.color});
 			}
 			
 			});
-		gfx.Draw(vertercies);
+		gfx.Draw(vertices);
 	}
 	
 };
