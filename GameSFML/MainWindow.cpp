@@ -1,10 +1,12 @@
 #include "MainWindow.h"
-
+#include "imgui-SFML.h"
+#include "imgui.h"
 void MainWindow::ProcessEvent(Mouse& mouse, Keyboard& kbd, sf::RenderWindow& window)
 {
 	sf::Event event;
 	while (window.pollEvent(event))
 	{
+		ImGui::SFML::ProcessEvent(event);
 		switch (event.type)
 		{
 			/*----------------------Mouse Event---------------------*/
@@ -59,9 +61,17 @@ void MainWindow::ProcessEvent(Mouse& mouse, Keyboard& kbd, sf::RenderWindow& win
 
 			/*-------------------Keyboard Event-------------------*/
 		case sf::Event::KeyPressed:
+			if (ImGui::GetIO().WantCaptureKeyboard) 
+			{
+				break;
+			}
 			kbd.OnKeyPressed(event.key.code);
 			break;
 		case sf::Event::KeyReleased:
+			if (ImGui::GetIO().WantCaptureKeyboard) 
+			{
+				break;
+			}
 			kbd.OnKeyReleased(event.key.code);
 			break;
 

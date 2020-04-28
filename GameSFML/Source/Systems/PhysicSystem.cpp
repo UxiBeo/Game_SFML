@@ -5,8 +5,9 @@
 #include <execution>
 void PhysicSystem::BeginPlay(entt::registry& ECS)const
 {
+	auto& pe = ECS.set<Physic::Engine>(b2Vec2(0.0f, 0.0f));
 	auto& mrListner = ECS.set<Physic::ContactListener>();
-	ECS.ctx<Physic::Engine>().SetContactListener(&mrListner);
+	pe.SetContactListener(&mrListner);
 
 	ECS.on_destroy<Physic::Component>().connect<&PhysicSystem::DestroyPhysicComponent>();
 }

@@ -13,7 +13,14 @@ void WorldTimerSystem::Update(entt::registry& ECS)const
 	worldTime.dt = std::min(float(worldTime.time.asMilliseconds()) / 1000.0f, worldTime.maxdt);
 	worldTime.worldTimer += worldTime.dt;
 	float dt = worldTime.dt;
-
+	
+	ECS.view<Timer::LifeTimeComponent>().each([&ECS, dt](auto entity, Timer::LifeTimeComponent& lt) {
+		lt.curtime += dt;
+		if (lt.curtime >= lt.maxTime)
+		{
+			ECS.destroy(entity);
+		}
+		});
 	ECS.view<Timer::OneTime>().each([dt, &ECS](auto entity, auto& timer) {
 		if (!timer.delegate)
 			timer.curTime += dt;

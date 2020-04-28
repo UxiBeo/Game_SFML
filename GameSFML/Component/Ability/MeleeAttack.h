@@ -4,7 +4,8 @@
 #include "../ControllerComponent.h"
 #include "../AnimationComponent.h"
 #include "../GameplayEffectComponent.h"
-#include "../DrawDebugComponent.h"
+#include "../TimerComponent.h"
+#include "../../Graphics.h"
 struct MeleeAttack
 {
 	static void OnAbilityStart(const GAS::AbilityComponent& ab, entt::registry& ECS)
@@ -18,19 +19,10 @@ struct MeleeAttack
 		an.triggerD.connect<&MeleeAttack::OnAnimationNotify>();
 		an.interrupD.connect<&MeleeAttack::OnAnimationInterrupt>();
 		auto& ac = ECS.get<AnimationComponent>(ab.owner);
-		auto iSet = ac.iSet;
-		if (iSet <= 7)
-		{
-			iSet += 9;
-		}
-		else if (iSet == 8)
-		{
-			iSet = 9;
-		}
-		ac.frameTime = ac.ar->frameTime;
-		ECS.assign<PlayAnimationMontage>(ab.owner, iSet, an);
+		ECS.assign<PlayAnimationMontage>(ab.owner, uint8_t(ac.iSet % 4 + 4), an);
 		
 	}
+private:
 	static void OnAnimationInterrupt(const entt::entity& owner, const entt::entity& self, entt::registry& ECS)
 	{
 		ECS.remove<GAS::Activating>(self);
@@ -40,36 +32,36 @@ struct MeleeAttack
 		auto& pe = ECS.ctx<Physic::Engine>();
 		const auto& gp = ECS.get<TargetPosition>(owner);
 		const auto& ac = ECS.get<AnimationComponent>(owner);
+		const auto& me = ECS.get<MeleeAttack>(self);
 		float nLength = 4.0f;
 		float length = nLength / sqrt(2.0f);
-		b2Vec2 boxExtent{ 2.0f,2.0f };
+		b2Vec2 boxExtent{ 0.0f,0.0f };
 		b2Vec2 pos{ 0.0f,0.0f };
-		constexpr uint8_t step = 9;
-		switch (ac.iSet)
+		switch (ac.iSet % 4)
 		{
-		case 0 + step:
-			pos.x = nLength;
+		case 0:
+		{
+			pos = me.attackOffsetLR;
+			boxExtent = me.aoeV;
+		}
 			break;
-		case 1 + step:
-			pos = { length , -length };
+		case 1:
+		{
+			pos = me.attackOffsetD;
+			boxExtent = me.aoeH;
+		}
 			break;
-		case 2 + step:
-			pos.y = -nLength;
+		case 2:
+		{
+			pos = { -me.attackOffsetLR.x, me.attackOffsetLR.y };
+			boxExtent = me.aoeV;
+		}
 			break;
-		case 3 + step:
-			pos = { -length, -length };
-			break;
-		case 4 + step:
-			pos.x = -nLength;
-			break;
-		case 5 + step:
-			pos = { -length, length };
-			break;
-		case 6 + step:
-			pos.y = nLength;
-			break;
-		case 7 + step:
-			pos = { length, length };
+		case 3:
+		{
+			pos = me.attackOffsetU;
+			boxExtent = me.aoeH;
+		}
 			break;
 		default:
 			break;
@@ -79,12 +71,16 @@ struct MeleeAttack
 		pos += gp.curPos;
 		aabb.lowerBound = pos - boxExtent;
 		aabb.upperBound = pos + boxExtent;
-		auto& db = ECS.assign<DrawDebugComponent>(ECS.create());
-		db.vertices.resize(4);
-		db.vertices.emplace_back(aabb.lowerBound.x, aabb.upperBound.y);
-		db.vertices.emplace_back(aabb.upperBound);
-		db.vertices.emplace_back(aabb.upperBound.x, aabb.lowerBound.y);
-		db.vertices.emplace_back(aabb.lowerBound);
+		{
+			auto debugEntity = ECS.create();
+			ECS.assign<Timer::LifeTimeComponent>(debugEntity, 0.0f, 5.0f);
+			auto& rect = ECS.assign<sf::RectangleShape>(debugEntity);
+			rect.setSize(Graphics::WorldToScreenPos(2.0f * boxExtent));
+			rect.setOrigin(Graphics::WorldToScreenPos(boxExtent));
+			rect.setPosition(Graphics::WorldToScreenPos(pos));
+			rect.setFillColor(sf::Color(150, 50, 150, 128));
+		}
+		
 
 		Physic::Query query;
 		const auto& entities = query.GetEntities(pe, aabb);
@@ -104,5 +100,11 @@ struct MeleeAttack
 		}
 		ECS.remove<GAS::Activating>(self);
 	}
+public:
 	float triggerTime = 0.0f;
+	b2Vec2 attackOffsetLR = {4.0f, 4.0f};
+	b2Vec2 attackOffsetD = { 0.0f, -3.5f };
+	b2Vec2 attackOffsetU = { 0.0f, 5.0f };
+	b2Vec2 aoeV = { 3.0f,3.0f };
+	b2Vec2 aoeH = { 3.0f, 2.0f };
 };

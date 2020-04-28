@@ -9,22 +9,12 @@ public:
 	void Draw(Graphics& gfx, entt::registry& ECS)const;
 	
 	void AddNewPlayer(entt::registry& ECS);
-	void AddECSSystem(std::unique_ptr<ISystemECS> newSystem)
-	{
-		ecsSystems.emplace_back(std::move(newSystem));
-	}
-	void AddDrawSystem(std::unique_ptr<IDrawSystem> newSystem)
-	{
-		drawSystems.emplace_back(std::move(newSystem));
-	}
+	void AddECSSystem(std::unique_ptr<ISystemECS> newSystem);
+	void AddDrawSystem(std::unique_ptr<IDrawSystem> newSystem);
 	
 private:
-	void BeginPlay(entt::registry& ECS);
-	
 	void InitContex(entt::registry& ECS);
-	
 	void InitSystem();
-	
 private:
 	std::vector<std::unique_ptr<ISystemECS>> ecsSystems;
 	std::vector<std::unique_ptr<IDrawSystem>> drawSystems;

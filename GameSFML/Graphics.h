@@ -78,7 +78,7 @@ public:
 
 		return b2Vec2((newPosition.x) / scalePixel, (-newPosition.y) / scalePixel);
 	}
-	sf::Vector2f WorldToScreenPos(const b2Vec2& worldPos) const
+	static sf::Vector2f WorldToScreenPos(const b2Vec2& worldPos)
 	{
 		return { worldPos.x * scalePixel, - worldPos.y * scalePixel};
 	}

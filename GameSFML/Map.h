@@ -8,39 +8,6 @@
 #include <tmxlite/ObjectGroup.hpp>
 #include "GameResource.h"
 #include "Codex.h"
-struct TileMapResource
-{
-	struct TileMapLoader final : entt::loader<TileMapLoader, TileMapResource> {
-		std::shared_ptr<TileMapResource> load(entt::hashed_string filename) const
-		{
-			auto resource = std::make_shared<TileMapResource>();
-
-			if (!resource->map.load(static_cast<const char*>(filename)))
-				assert(false && "can't load map");
-
-
-			sf::Image fallback;
-			fallback.create(2, 2, sf::Color::Magenta);
-			for (const auto& ts : resource->map.getTilesets())
-			{
-				auto& texture = Codex<TextureResource>::RetrieveNonConst(entt::hashed_string{ ts.getImagePath().c_str() });
-				sf::Image img;
-
-				img.loadFromFile(ts.getImagePath());
-
-				if (ts.hasTransparency())
-				{
-					auto transparency = ts.getTransparencyColour();
-					img.createMaskFromColor({ transparency.r, transparency.g, transparency.b, transparency.a });
-				}
-				texture.data.loadFromImage(img);
-			}
-			return resource;
-		}
-	};
-	using Loader = TileMapLoader;
-	tmx::Map map;
-};
 class Map : public sf::Drawable
 {
 public:

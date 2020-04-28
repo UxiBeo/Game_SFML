@@ -23,3 +23,8 @@ public:
 private:
 	std::unordered_map<uint32_t, stamp_fn_type*> stamp_functions;
 };
+
+struct PrefapRegistry
+{
+	entt::registry ECS;
+};

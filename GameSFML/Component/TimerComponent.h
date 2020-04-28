@@ -30,4 +30,9 @@ namespace Timer
 		entt::delegate<void(entt::entity, entt::registry&)> delegate;
 	};
 	struct SelfDelete{};
+	struct LifeTimeComponent
+	{
+		float curtime = 0.0f;
+		float maxTime = 0.0f;
+	};
 }

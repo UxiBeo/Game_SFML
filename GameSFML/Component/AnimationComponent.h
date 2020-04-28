@@ -35,28 +35,19 @@ struct AnimationResource
 			resource->textureName = textureName;
 			resource->frameTime = Json["frameTime"].get<float>();
 			resource->AddSet(Json["frames"]["run"]);
-			resource->AddAnimation(Json["frames"]["idle"]);
 			resource->AddSet(Json["frames"]["attack"]);
+			resource->AddSet(Json["frames"]["cast"]);
+			resource->AddSet(Json["frames"]["idle"]);
 			return resource;
 		}
 	};
 	using Loader = AnimationLoader;
-	void AddSet(const nlohmann::json& set, bool isdir = true)
+	void AddSet(const nlohmann::json& set)
 	{
-		if (isdir)
-		{
-			AddAnimation(set["r"]);
-			AddAnimation(set["dr"]);
-			AddAnimation(set["d"]);
-			AddAnimation(set["dl"]);
-			AddAnimation(set["l"]);
-			AddAnimation(set["ul"]);
-			AddAnimation(set["u"]);
-			AddAnimation(set["ur"]);
-			return;
-		}
-		
-		
+		AddAnimation(set["r"]);
+		AddAnimation(set["d"]);
+		AddAnimation(set["l"]);
+		AddAnimation(set["u"]);
 	}
 	void AddAnimation(const nlohmann::json& set)
 	{

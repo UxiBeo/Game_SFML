@@ -90,6 +90,12 @@
     <ClCompile Include="Source\Systems\ControllerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Systems\RenderSpriteSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\ImguiSystem.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics.h">
@@ -159,9 +165,6 @@
       <Filter>Header Files\Engine</Filter>
     </ClInclude>
     <ClInclude Include="System\PhysicSystem.h">
-      <Filter>Header Files\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="System\LifeTimeSystem.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Component\UIComponent.h">
@@ -242,9 +245,6 @@
     <ClInclude Include="Component\StampContex.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Component\PrefapRegistry.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Component\Ability\MeleeAttack.h">
       <Filter>Header Files\Component\Abilitiy</Filter>
     </ClInclude>
@@ -257,8 +257,8 @@
     <ClInclude Include="Component\StateMachineComponent.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Component\DrawDebugComponent.h">
-      <Filter>Header Files\Component</Filter>
+    <ClInclude Include="System\ImguiSystem.h">
+      <Filter>Header Files\Systems</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

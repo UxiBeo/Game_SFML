@@ -1,6 +1,9 @@
+#include "imgui.h"
+#include "imgui-SFML.h"
 #include "entt/entt.hpp"
 #include "MainWindow.h"
 #include "World.h"
+#include "imgui-SFML.h"
 int main()
 {
 	entt::registry ECS;
@@ -9,11 +12,7 @@ int main()
 	auto& kbd = ECS.set<Keyboard>();
 	auto& gfx = ECS.set<Graphics>();
 	auto& world = ECS.set<World>(ECS);
-	/*auto& window = gfx.getRenderWindow();
-	
-	auto view = window.getView();
-	view.zoom(0.5f);
-	window.setView(view);*/
+	ImGui::SFML::Init(gfx.getRenderWindow());
 	while (wnd.Update(mouse, kbd, gfx.getRenderWindow()))
 	{
 		gfx.BeginFrame();
@@ -21,6 +20,6 @@ int main()
 		world.Draw(gfx, ECS);
 		gfx.EndFrame();
 	}
-
+	ImGui::SFML::Shutdown();
 	return 0;
 }

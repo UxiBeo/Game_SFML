@@ -5,7 +5,6 @@
 #include "../../System/WorldTimerSystem.h"
 #include "../../Component/ParentChildrenComponent.h"
 #include "../../Component/StampContex.h"
-#include "../../Component/PrefapRegistry.h"
 void GameplayEffectSystem::Update(entt::registry& ECS)const
 {
 	float dt = ECS.ctx<Timer::World>().dt;

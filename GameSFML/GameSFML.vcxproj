@@ -143,8 +143,10 @@
     <ClCompile Include="Source\Systems\ControllerSystem.cpp" />
     <ClCompile Include="Source\Systems\CullingSystem.cpp" />
     <ClCompile Include="Source\Systems\GameplayEffectSystem.cpp" />
+    <ClCompile Include="Source\Systems\ImguiSystem.cpp" />
     <ClCompile Include="Source\Systems\ParentChildrenSystem.cpp" />
     <ClCompile Include="Source\Systems\PhysicSystem.cpp" />
+    <ClCompile Include="Source\Systems\RenderSpriteSystem.cpp" />
     <ClCompile Include="Source\Systems\StateMachineSystem.cpp" />
     <ClCompile Include="Source\Systems\WorldTimerSystem.cpp" />
     <ClCompile Include="Source\World.cpp" />
@@ -157,11 +159,9 @@
     <ClInclude Include="Component\AttributeComponent.h" />
     <ClInclude Include="Component\CharacterStateComponent.h" />
     <ClInclude Include="Component\ControllerComponent.h" />
-    <ClInclude Include="Component\DrawDebugComponent.h" />
     <ClInclude Include="Component\GameplayEffectComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
     <ClInclude Include="Component\ParentChildrenComponent.h" />
-    <ClInclude Include="Component\PrefapRegistry.h" />
     <ClInclude Include="Component\StampContex.h" />
     <ClInclude Include="Component\StateMachineComponent.h" />
     <ClInclude Include="Component\TagRule.h" />
@@ -189,7 +189,7 @@
     <ClInclude Include="System\ClickSystem.h" />
     <ClInclude Include="System\ControllerSystem.h" />
     <ClInclude Include="System\GameplayEffectSystem.h" />
-    <ClInclude Include="System\LifeTimeSystem.h" />
+    <ClInclude Include="System\ImguiSystem.h" />
     <ClInclude Include="System\ParentChildrenSystem.h" />
     <ClInclude Include="System\PhysicSystem.h" />
     <ClInclude Include="System\RenderScreenBaseUISystem.h" />

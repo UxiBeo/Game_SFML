@@ -4,7 +4,7 @@
 #include "../../Component/AnimationComponent.h"
 void ControllerSystem::BeginPlay(entt::registry& ECS) const
 {
-
+	ECS.set<PlayerController>();
 }
 
 void ControllerSystem::Update(entt::registry& ECS) const
