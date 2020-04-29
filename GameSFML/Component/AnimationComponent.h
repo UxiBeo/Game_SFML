@@ -34,10 +34,31 @@ struct AnimationResource
 			auto resource = std::make_shared<AnimationResource>();
 			resource->textureName = textureName;
 			resource->frameTime = Json["frameTime"].get<float>();
-			resource->AddSet(Json["frames"]["run"]);
-			resource->AddSet(Json["frames"]["attack"]);
-			resource->AddSet(Json["frames"]["cast"]);
-			resource->AddSet(Json["frames"]["idle"]);
+			resource->type = Json["type"].get<uint8_t>();
+			switch (resource->type)
+			{
+			case 0: // Player animation
+			{
+				resource->AddSet(Json["frames"]["run"]);
+				resource->AddSet(Json["frames"]["attack"]);
+				resource->AddSet(Json["frames"]["cast"]);
+				resource->AddSet(Json["frames"]["idle"]);
+			}
+				break;
+			case 1: // effect, projectile
+			{
+				int iSet = 1;
+				while (Json["frames"].count(std::to_string(iSet)) > 0)
+				{
+					resource->AddAnimation(Json["frames"][std::to_string(iSet)]);
+					iSet++;
+				}
+			}
+				break;
+			default:
+				break;
+			}
+				
 			return resource;
 		}
 	};
@@ -61,6 +82,7 @@ struct AnimationResource
 		as.iEnd = (uint16_t)frames.size() - 1u;
 		sets.push_back(as);
 	}
+	uint8_t type = 0;
 	std::vector<AnimationSet> sets;
 	std::vector<FrameRect> frames;
 	entt::hashed_string textureName;
@@ -69,13 +91,13 @@ struct AnimationResource
 
 struct AnimationComponent
 {
-	AnimationComponent(entt::hashed_string animationName)
+	AnimationComponent(entt::hashed_string animationName, uint8_t iSet = 0)
 		:
 		ar(&Codex<AnimationResource>::Retrieve(animationName))
 	{
 		frameTime = ar->frameTime;
-		iBegin = ar->sets.begin()->iBegin;
-		iEnd = ar->sets.begin()->iEnd;
+		iBegin = ar->sets[iSet].iBegin;
+		iEnd = ar->sets[iSet].iEnd;
 		iCurrent = iBegin;
 	}
 	const AnimationResource* ar = nullptr;

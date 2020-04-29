@@ -4,6 +4,9 @@
 class ImguiUpdateSystem final : public ISystemECS
 {
 	void Update(entt::registry& ECS) const final;
+private:
+	void ShowMeleeWindow(entt::registry& ECS) const;
+	void ShowProjectTileWindow(entt::registry& ECS) const;
 };
 class ImguiDrawSystem final : public IDrawSystem
 {

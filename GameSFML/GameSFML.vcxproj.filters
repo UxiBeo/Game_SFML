@@ -84,9 +84,6 @@
     <ClCompile Include="Map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Grid.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Systems\ControllerSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -95,6 +92,9 @@
     </ClCompile>
     <ClCompile Include="Source\Systems\ImguiSystem.cpp">
       <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="System\ImguiSystem.h">
       <Filter>Header Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Ability\ProjectileAttack.h">
+      <Filter>Header Files\Component\Abilitiy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

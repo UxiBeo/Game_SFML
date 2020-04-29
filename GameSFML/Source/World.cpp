@@ -9,6 +9,7 @@
 #include "../JPS.h"
 #include "../Component/StampContex.h"
 #include "../Component/Ability/MeleeAttack.h"
+#include "../Component/Ability/ProjectileAttack.h"
 World::World(entt::registry& ECS)
 {
 	InitContex(ECS);
@@ -62,6 +63,8 @@ void World::AddNewPlayer(entt::registry& ECS)
 	constexpr auto sa = "Data\\Json\\a_greatsword.json"_hs;
 	auto& animation = ECS.assign<AnimationComponent>(entity, sa);
 	ECS.assign<FSM::State>(entity).mrD.connect<&PlayerAnimationState::Idle>();
+
+	//meleeAttack
 	{
 		float cd = animation.frameTime * float(1 + animation.ar->sets[4].iEnd - animation.ar->sets[4].iBegin);
 		const auto eac = ECS.create();
@@ -73,14 +76,32 @@ void World::AddNewPlayer(entt::registry& ECS)
 		ma.triggerTime = cd * 0.5f;
 		ECS.assign<GAS::CooldownComponent>(eac).maxTime = cd;
 		ECS.assign<GAS::AbilitySlot>(entity).abilities.emplace_back(eac);
-		ECS.assign<Tag::Bitfiled>(entity);
+		
 	}
 	
-	
+	//projectileAttack
+	{
+		entt::hashed_string animationName{ "Data\\Json\\a_effect.json"_hs };
+		Codex<AnimationResource>::LoadFromFile(animationName);
+		float cd = animation.frameTime * float(1 + animation.ar->sets[4 * 2].iEnd - animation.ar->sets[4 * 2].iBegin);
+		const auto eac = ECS.create();
+		auto& ac = ECS.assign<GAS::AbilityComponent>(eac);
+		ac.owner = entity;
+		ac.self = eac;
+		ac.mrD.connect<&ProjectileAttack::OnAbilityStart>();
+		auto& ma = ECS.assign<ProjectileAttack>(eac);
+		ma.animationName = animationName;
+		ma.castAnimation = 2;
+		ma.projectileAnimation = 0;
+		ma.triggerTime = cd * 0.5f;
+		ECS.assign<GAS::CooldownComponent>(eac).maxTime = cd;
+		ECS.get<GAS::AbilitySlot>(entity).abilities.emplace_back(eac);
+	}
+
+	ECS.assign<Tag::Bitfiled>(entity);
 	//sprite
 	{
-		auto& sprite = ECS.assign<sf::Sprite>(entity);
-		sprite.setTexture(Codex<TextureResource>::Retrieve(animation.ar->textureName).data);
+		ECS.assign<sf::Sprite>(entity).setTexture(Codex<TextureResource>::Retrieve(animation.ar->textureName).data);
 	}
 	PhysicSystem::AddPhysic(entity, ECS, bodyDef, fixtureDef);
 }

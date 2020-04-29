@@ -155,6 +155,7 @@
     <ClInclude Include="Codex.h" />
     <ClInclude Include="Component\AbilityComponent.h" />
     <ClInclude Include="Component\Ability\MeleeAttack.h" />
+    <ClInclude Include="Component\Ability\ProjectileAttack.h" />
     <ClInclude Include="Component\AnimationComponent.h" />
     <ClInclude Include="Component\AttributeComponent.h" />
     <ClInclude Include="Component\CharacterStateComponent.h" />

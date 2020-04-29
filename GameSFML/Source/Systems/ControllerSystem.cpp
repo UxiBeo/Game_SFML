@@ -51,6 +51,7 @@ void ControllerSystem::UpdatePlayerController(entt::registry& ECS) const
 	ct.mousePos = mouse.GetPos();
 
 	ct.LeftIsPress = 0;
+	ct.RightIsPress = 0;
 	ct.direction = dir;
 	while (!mouse.IsEmpty())
 	{
@@ -60,21 +61,25 @@ void ControllerSystem::UpdatePlayerController(entt::registry& ECS) const
 			ct.LeftIsPress++;
 			continue;
 		}
-		/*if (e.GetType() == Mouse::Event::Type::RPress)
+		if (e.GetType() == Mouse::Event::Type::RPress)
 		{
-
+			ct.RightIsPress++;
 			continue;
-		}*/
+		}
 	}
 	float speed = 12.0f;
 	if (ECS.has<MontagePlaying>(ct.entity))
 	{
 		speed = 0.0f;
 	}
+	auto& al = ECS.get<GAS::AbilitySlot>(ct.entity);
 	if (ct.LeftIsPress > 0)
 	{
-		auto& al = ECS.get<GAS::AbilitySlot>(ct.entity);
 		ECS.assign<GAS::TryActivateAbility>(al.abilities[0]);
+	}
+	if (ct.RightIsPress > 0)
+	{
+		ECS.assign<GAS::TryActivateAbility>(al.abilities[1]);
 	}
 	auto& pc = ECS.get<Physic::Component>(ct.entity);
 	b2Vec2 vel = pc->GetLinearVelocity();

@@ -20,14 +20,13 @@ void PhysicSystem::Update(entt::registry& ECS)const
 	}
 }
 
-void PhysicSystem::AddPhysic(entt::entity entity, entt::registry& ECS, const b2BodyDef& Bdef, const b2FixtureDef& fixDef)
+Physic::Component& PhysicSystem::AddPhysic(entt::entity entity, entt::registry& ECS, const b2BodyDef& Bdef, const b2FixtureDef& fixDef)
 {
-	if (auto* engine = ECS.try_ctx<Physic::Engine>(); engine)
-	{
-		auto& pc = ECS.assign<Physic::Component>(entity, engine->CreateBody(&Bdef));
-		pc->CreateFixture(&fixDef);
-		pc->SetUserEntity(entity);
-	}
+	auto& pe = ECS.ctx<Physic::Engine>();
+	auto& pc = ECS.assign<Physic::Component>(entity, pe.CreateBody(&Bdef));
+	pc->CreateFixture(&fixDef);
+	pc->SetUserEntity(entity);
+	return pc;
 }
 
 void PhysicSystem::ReactPhysic(entt::registry& ECS) const

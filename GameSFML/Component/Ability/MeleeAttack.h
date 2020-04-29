@@ -13,14 +13,13 @@ struct MeleeAttack
 		ECS.assign<GAS::CommitAbility>(ab.self);
 		ECS.assign<GAS::Activating>(ab.self);
 		const auto& ma = ECS.get<MeleeAttack>(ab.self);
-		AnimNotify an;
-		an.triggerTime = ma.triggerTime;
-		an.listenerE = ab.self;
-		an.triggerD.connect<&MeleeAttack::OnAnimationNotify>();
-		an.interrupD.connect<&MeleeAttack::OnAnimationInterrupt>();
 		auto& ac = ECS.get<AnimationComponent>(ab.owner);
-		ECS.assign<PlayAnimationMontage>(ab.owner, uint8_t(ac.iSet % 4 + 4), an);
-		
+		auto& pm = ECS.get_or_assign<PlayAnimationMontage>(ab.owner);
+		pm.an.triggerTime = ma.triggerTime;
+		pm.an.listenerE = ab.self;
+		pm.an.triggerD.connect<&MeleeAttack::OnAnimationNotify>();
+		pm.an.interrupD.connect<&MeleeAttack::OnAnimationInterrupt>();
+		pm.iSet = ac.iSet % 4 + 4 * ma.aSet;
 	}
 private:
 	static void OnAnimationInterrupt(const entt::entity& owner, const entt::entity& self, entt::registry& ECS)
@@ -101,10 +100,11 @@ private:
 		ECS.remove<GAS::Activating>(self);
 	}
 public:
+	uint8_t aSet = 1;
 	float triggerTime = 0.0f;
 	b2Vec2 attackOffsetLR = {4.0f, 4.0f};
-	b2Vec2 attackOffsetD = { 0.0f, -3.5f };
-	b2Vec2 attackOffsetU = { 0.0f, 5.0f };
+	b2Vec2 attackOffsetD = { 0.0f, -2.2f };
+	b2Vec2 attackOffsetU = { 0.0f, 7.0f };
 	b2Vec2 aoeV = { 3.0f,3.0f };
 	b2Vec2 aoeH = { 3.0f, 2.0f };
 };

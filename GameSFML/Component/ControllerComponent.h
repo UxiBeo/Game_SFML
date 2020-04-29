@@ -12,6 +12,7 @@ struct PlayerController
 {
 	sf::Vector2i direction;
 	unsigned int LeftIsPress = 0;
+	unsigned int RightIsPress = 0;
 	sf::Vector2i mousePos;
 	entt::entity entity;
 };
