@@ -1,7 +1,9 @@
 #include "../../System/RenderSpriteSystem.h"
 #include "../../Component/PhysicComponent.h"
 #include "../../Component/AnimationComponent.h"
+#include "../../GlowComponent.h"
 #include "../../Map.h"
+#include "imgui.h"
 #include "entt/entt.hpp"
 #include <algorithm>
 #include <execution>
@@ -36,5 +38,7 @@ void RenderSpriteSystem::Draw(Graphics& gfx, entt::registry& ECS) const
 	ECS.view<sf::Sprite>().each([&gfx](auto entity, sf::Sprite& sprite) {
 		gfx.DrawSprite(sprite);
 		});
-	
+	/*auto& ge = ECS.ctx<GlowEffect>();
+
+	gfx.getRenderWindow().draw(ge.sp3, ge.state);*/
 }

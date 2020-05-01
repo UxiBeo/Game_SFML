@@ -1,9 +1,21 @@
+#include <iostream>
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "entt/entt.hpp"
 #include "MainWindow.h"
 #include "World.h"
 #include "imgui-SFML.h"
+class ImguiManager
+{
+public:
+	ImguiManager(sf::RenderWindow& window) {
+		ImGui::SFML::Init(window);
+	};
+	~ImguiManager()
+	{
+		ImGui::SFML::Shutdown();
+	}
+};
 int main()
 {
 	entt::registry ECS;
@@ -12,14 +24,21 @@ int main()
 	auto& kbd = ECS.set<Keyboard>();
 	auto& gfx = ECS.set<Graphics>();
 	auto& world = ECS.set<World>(ECS);
-	ImGui::SFML::Init(gfx.getRenderWindow());
-	while (wnd.Update(mouse, kbd, gfx.getRenderWindow()))
+	ImguiManager imguiMgr = { gfx.getRenderWindow() };
+	try
 	{
-		gfx.BeginFrame();
-		world.Update(ECS);
-		world.Draw(gfx, ECS);
-		gfx.EndFrame();
+		while (wnd.Update(mouse, kbd, gfx.getRenderWindow()))
+		{
+			gfx.BeginFrame();
+			world.Update(ECS);
+			world.Draw(gfx, ECS);
+			gfx.EndFrame();
+		}
 	}
-	ImGui::SFML::Shutdown();
+	catch (const std::exception& e)
+	{
+		std::cerr << "caught exception - - - " << e.what() << '\n';
+		return 1;
+	}
 	return 0;
 }

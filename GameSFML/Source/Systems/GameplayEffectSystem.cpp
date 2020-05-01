@@ -21,7 +21,7 @@ void GameplayEffectSystem::BeginPlay(entt::registry& ECS)const
 {
 	ECS.on_destroy<GES::CurrentActiveEffect>().connect<&GameplayEffectSystem::OnDestroyedCurrentEffect>();
 	auto& sCtx = ECS.ctx<StampContex>();
-	sCtx.AddStampFunction<GES::AddStack>();
+	/*sCtx.AddStampFunction<GES::AddStack>();
 	sCtx.AddStampFunction<GES::DurationPassive>();
 	sCtx.AddStampFunction<GES::DurationOnetime>();
 	sCtx.AddStampFunction<GES::DurationLimitedTime>();
@@ -31,7 +31,7 @@ void GameplayEffectSystem::BeginPlay(entt::registry& ECS)const
 	sCtx.AddStampFunction<GES::ModifiedAttribute>();
 	sCtx.AddStampFunction<GES::ModifiedCurrentSpecial>();
 	sCtx.AddStampFunction<GES::OutputDame>();
-	sCtx.AddStampFunction<GES::EffectInfo>();
+	sCtx.AddStampFunction<GES::EffectInfo>();*/
 }
 
 void GameplayEffectSystem::OnDestroyedCurrentEffect(entt::registry& ECS, entt::entity entity)
@@ -46,7 +46,7 @@ void GameplayEffectSystem::DeleteEffect(entt::registry& ECS) const
 {
 	RestoreAttribute(ECS);
 
-	auto view = ECS.view<GES::MarkDelete, GES::EffectInfo>();
+	/*auto view = ECS.view<GES::MarkDelete, GES::EffectInfo>();
 	view.each([&ECS](auto entity, auto, const GES::EffectInfo& ei) {
 
 		auto& cEffect = ECS.get<GES::CurrentActiveEffect>(ei.target);
@@ -57,7 +57,7 @@ void GameplayEffectSystem::DeleteEffect(entt::registry& ECS) const
 		targetTag &= ~ei.tags.end_target_RemoveTags;
 
 		});
-	ECS.destroy(view.begin(), view.end());
+	ECS.destroy(view.begin(), view.end());*/
 }
 
 void GameplayEffectSystem::IntervalTickSystem(entt::registry& ECS, float dt) const
@@ -157,99 +157,30 @@ void GameplayEffectSystem::TryApplyEffect(entt::registry& ECS) const
 	if (view.size() == 0) return;
 	auto& stamp = ECS.ctx<StampContex>();
 	const auto& prefap = ECS.ctx<PrefapRegistry>();
+	
 	for (auto entity : view)
 	{
 		const auto& te = view.get<GES::TryAppyEffect>(entity);
 		assert(te.prefapEntity != entt::null);
 		assert(te.target != entt::null);
 		assert(te.source != entt::null);
-
-		auto& cEffect = ECS.get<GES::CurrentActiveEffect>(te.target);
-		if (cEffect.entities.count(te.prefapEntity) > 0)
-		{
-			auto& ne = ECS.get_or_assign<GES::RenewEffect>(cEffect.entities[te.prefapEntity]);
-			++ne.times;
-			if (ne.entity != entt::null)
-			{
-				ECS.destroy(ne.entity);
-			}
-			ne.entity = entity;
-			return;
-		}
-
-		stamp.Clone(prefap.ECS, te.prefapEntity, ECS, entity);
-		auto& ei = ECS.get<GES::EffectInfo>(entity);
-		auto& targetTag = ECS.get<Tag::Bitfiled>(te.target);
-		targetTag |= ei.tags.begin_target_GrantTags;
-		targetTag &= ~ei.tags.begin_target_RemoveTags;
-		ei.target = te.target;
-		ei.source = te.source;
-		ei.prefapEntity = te.prefapEntity;
+		auto& ec = prefap.ECS.get<GES::OnEffectCreate>(te.prefapEntity);
+		assert(ec.mrD);
+		ec.mrD(te, ECS);
 	}
 	ECS.clear<GES::TryAppyEffect>();
-	view.each([&ECS](auto entity, const GES::TryAppyEffect& te) {
-		
-
-
-		/*auto& targetTag = ECS.get<Tag::Bitfiled>(te.target);
-		const GES::EffectResource& ei = Codex<GES::EffectResource>::Retrieve(te.effectName);
-		if (ei.tags.target_RequiredTags == (ei.tags.target_RequiredTags & targetTag) && (ei.tags.target_BlockTags & targetTag) > 0)
-		{
-			targetTag |= ei.tags.begin_target_GrantTags;
-			targetTag &= ~ei.tags.begin_target_RemoveTags;
-
-			switch (ei.durationType)
-			{
-			case GES::DurationType::Passive:
-				ECS.assign<GES::DurationPassive>(entity);
-				break;
-			case GES::DurationType::Onetime:
-				ECS.assign<GES::DurationOnetime>(entity);
-				break;
-			case GES::DurationType::LimitedTime:
-				ECS.assign<GES::DurationLimitedTime>(entity).maxTime = ei.durationTime;
-				break;
-			default:
-				break;
-			}
-
-			if (ei.intervalTick > 0.0f && ei.maxTick > 0)
-			{
-				auto& interval = ECS.assign<GES::IntervalTick>(entity);
-				interval.intervalTime = ei.intervalTick;
-				interval.maxTick = ei.maxTick;
-			}
-
-			for (const auto& i : ei.CostAmount)
-			{
-				if (i.first == RPGS::AttributeType::HealthPoint)
-				{
-					auto& value = ECS.assign<GES::CostValue<RPGS::AttributeType::HealthPoint>>(entity);
-					value.value = i.second;
-					value.target = te.target;
-				}
-				else
-				{
-					auto& value = ECS.assign<GES::CostValue<RPGS::AttributeType::ManaPoint>>(entity);
-					value.value = i.second;
-					value.target = te.target;
-				}
-			}
-				
-		}*/
-		});
 }
 
 void GameplayEffectSystem::ApplyDame(entt::registry& ECS) const
 {
-	ECS.view<GES::Executions, GES::OutputDame, GES::EffectInfo>().each([&ECS](auto entity, const GES::Executions& ec, GES::OutputDame& od, const GES::EffectInfo& ei) {
+	/*ECS.view<GES::Executions, GES::OutputDame, GES::EffectInfo>().each([&ECS](auto entity, const GES::Executions& ec, GES::OutputDame& od, const GES::EffectInfo& ei) {
 		ECS.get_or_assign<GES::InputDame>(ei.target).value += od.value * ec.value;
-		});
+		});*/
 }
 
 void GameplayEffectSystem::ModifiedAttribute(entt::registry& ECS) const
 {
-	ECS.view<GES::Executions, GES::ModifiedAttribute, GES::EffectInfo>().each([&ECS](auto entity, const GES::Executions& ec, GES::ModifiedAttribute& ma, const GES::EffectInfo& ei) {
+	/*ECS.view<GES::Executions, GES::ModifiedAttribute, GES::EffectInfo>().each([&ECS](auto entity, const GES::Executions& ec, GES::ModifiedAttribute& ma, const GES::EffectInfo& ei) {
 		auto& pack = ECS.get<GES::AttributePack>(ei.target);
 		for (auto& p : ma.value)
 		{
@@ -280,26 +211,26 @@ void GameplayEffectSystem::ModifiedAttribute(entt::registry& ECS) const
 				}
 			}
 		}
-	});
+	});*/
 
 }
 
 void GameplayEffectSystem::ModifiedCurrentSpecial(entt::registry& ECS) const
 {
-	ECS.view<GES::Executions, GES::ModifiedCurrentSpecial, GES::EffectInfo>().each([&ECS](auto entity, const GES::Executions& ec, GES::ModifiedCurrentSpecial& ms, const GES::EffectInfo& ei) {
+	/*ECS.view<GES::Executions, GES::ModifiedCurrentSpecial, GES::EffectInfo>().each([&ECS](auto entity, const GES::Executions& ec, GES::ModifiedCurrentSpecial& ms, const GES::EffectInfo& ei) {
 		auto& pack = ECS.get<GES::AttributePack>(ei.target);
 		if ((pack.bitmask & (1 << (uint32_t)GES::HealthPoint)) > 0 && ms.value[0] != 0.0f)
 			ECS.get<GES::SpecialValue>(pack.attribute[(uint32_t)GES::HealthPoint]) += ms.value[0];
 
 		if ((pack.bitmask & (1 << (uint32_t)GES::ManaPoint)) > 0 && ms.value[1] != 0.0f)
 			ECS.get<GES::SpecialValue>(pack.attribute[(uint32_t)GES::ManaPoint]) += ms.value[1];
-		});
+		});*/
 	
 }
 
 void GameplayEffectSystem::RestoreAttribute(entt::registry& ECS) const
 {
-	ECS.view<GES::MarkDelete, const GES::ModifiedAttribute, const GES::EffectInfo>().each([&ECS](auto entity, auto, const GES::ModifiedAttribute& ma, const GES::EffectInfo& ei) {
+	/*ECS.view<GES::MarkDelete, const GES::ModifiedAttribute, const GES::EffectInfo>().each([&ECS](auto entity, auto, const GES::ModifiedAttribute& ma, const GES::EffectInfo& ei) {
 		auto& pack = ECS.get< GES::AttributePack>(ei.target);
 		for (auto& p : ma.value)
 		{
@@ -328,11 +259,11 @@ void GameplayEffectSystem::RestoreAttribute(entt::registry& ECS) const
 				}
 			}
 		}
-		});
+		});*/
 }
 
 void GameplayEffectSystem::RenewEffectSystem(entt::registry& ECS) const
 {
-	ECS.view<GES::RenewEffect, GES::EffectInfo>();
-	ECS.clear<GES::RenewEffect>();
+	/*ECS.view<GES::RenewEffect, GES::EffectInfo>();
+	ECS.clear<GES::RenewEffect>();*/
 }

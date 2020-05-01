@@ -67,7 +67,7 @@ void ControllerSystem::UpdatePlayerController(entt::registry& ECS) const
 			continue;
 		}
 	}
-	float speed = 12.0f;
+	float speed = 16.0f;
 	if (ECS.has<MontagePlaying>(ct.entity))
 	{
 		speed = 0.0f;

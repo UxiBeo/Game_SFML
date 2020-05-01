@@ -28,18 +28,13 @@ void AnimationSystem::Update(entt::registry& ECS) const
 void AnimationSystem::UpdateAnimationNotify(entt::registry& ECS, const float dt) const
 {
 	ECS.view<AnimNotify>().each([&ECS, &dt](auto entity, AnimNotify& an) {
-		if (an.triggerD)
+		assert(an.triggerD);
+		an.curTime += dt;
+		if (an.curTime >= an.triggerTime)
 		{
-			an.curTime += dt;
-			if (an.curTime >= an.triggerTime)
-			{
-				an.triggerD(entity, an.listenerE, ECS);
-				ECS.remove<AnimNotify>(entity);
-			}
-			return;
+			an.triggerD(entity, an.listenerE, ECS);
+			ECS.remove<AnimNotify>(entity);
 		}
-
-		assert(false);
 		});
 }
 
@@ -77,12 +72,9 @@ void AnimationSystem::UpdateAniamtionMontage(entt::registry& ECS, const float dt
 			{
 				an.interrupD(entity, an.listenerE, ECS);
 			}
-			if (am.an.triggerD || am.an.interrupD)
-			{
-				an = am.an;
-			}
+			an = am.an;
 		}
-		else if(am.an.triggerD || am.an.interrupD)
+		else
 		{
 			ECS.assign<AnimNotify>(entity) = am.an;
 		}

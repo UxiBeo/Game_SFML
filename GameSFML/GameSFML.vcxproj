@@ -142,6 +142,7 @@
     <ClCompile Include="Source\Systems\AttributeSystem.cpp" />
     <ClCompile Include="Source\Systems\ControllerSystem.cpp" />
     <ClCompile Include="Source\Systems\CullingSystem.cpp" />
+    <ClCompile Include="Source\Systems\DrawGlowSystem.cpp" />
     <ClCompile Include="Source\Systems\GameplayEffectSystem.cpp" />
     <ClCompile Include="Source\Systems\ImguiSystem.cpp" />
     <ClCompile Include="Source\Systems\ParentChildrenSystem.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="Component\ControllerComponent.h" />
     <ClInclude Include="Component\GameplayEffectComponent.h" />
     <ClInclude Include="Component\GameplayTag.h" />
+    <ClInclude Include="Component\ImguiComponent.h" />
     <ClInclude Include="Component\ParentChildrenComponent.h" />
     <ClInclude Include="Component\StampContex.h" />
     <ClInclude Include="Component\StateMachineComponent.h" />
@@ -171,6 +173,7 @@
     <ClInclude Include="Component\PhysicComponent.h" />
     <ClInclude Include="Component\StaticObjectSpawnInfo.h" />
     <ClInclude Include="GameResource.h" />
+    <ClInclude Include="GlowComponent.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="JPS.h" />
     <ClInclude Include="Map.h" />
@@ -189,6 +192,7 @@
     <ClInclude Include="System\CleanDeathSystem.h" />
     <ClInclude Include="System\ClickSystem.h" />
     <ClInclude Include="System\ControllerSystem.h" />
+    <ClInclude Include="System\DrawGlowSystem.h" />
     <ClInclude Include="System\GameplayEffectSystem.h" />
     <ClInclude Include="System\ImguiSystem.h" />
     <ClInclude Include="System\ParentChildrenSystem.h" />
@@ -207,6 +211,10 @@
     <ClInclude Include="System\WorldTimerSystem.h" />
     <ClInclude Include="System\UpdateUISystem.h" />
     <ClInclude Include="World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\Shader\Add.frag" />
+    <None Include="Data\Shader\GuassianBlur.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

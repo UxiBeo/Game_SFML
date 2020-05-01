@@ -6,6 +6,7 @@
 #include "../GameplayEffectComponent.h"
 #include "../TimerComponent.h"
 #include "../../Graphics.h"
+#include "imgui.h"
 struct MeleeAttack
 {
 	static void OnAbilityStart(const GAS::AbilityComponent& ab, entt::registry& ECS)
@@ -20,6 +21,25 @@ struct MeleeAttack
 		pm.an.triggerD.connect<&MeleeAttack::OnAnimationNotify>();
 		pm.an.interrupD.connect<&MeleeAttack::OnAnimationInterrupt>();
 		pm.iSet = ac.iSet % 4 + 4 * ma.aSet;
+	}
+	static void ShowMeleeWindow(entt::registry& ECS)
+	{
+		if (ImGui::Begin("Meelee Attack"))
+		{
+			float min = -10.0f;
+			float max = 10.0f;
+			ECS.view<MeleeAttack>().each([&min, &max](auto entity, MeleeAttack& ma) {
+				ImGui::SliderFloat("aoeH.X", &ma.aoeH.x, min, max, "%.1f");
+				ImGui::SliderFloat("aoeH.y", &ma.aoeH.y, min, max, "%.1f");
+				ImGui::SliderFloat("aoeV.y", &ma.aoeV.y, min, max, "%.1f");
+				ImGui::SliderFloat("aoeV.x", &ma.aoeV.x, min, max, "%.1f");
+				ImGui::SliderFloat("attackOffsetD.x", &ma.attackOffsetD.x, min, max, "%.1f");
+				ImGui::SliderFloat("attackOffsetD.y", &ma.attackOffsetD.y, min, max, "%.1f");
+				ImGui::SliderFloat("attackOffsetU.x", &ma.attackOffsetU.x, min, max, "%.1f");
+				ImGui::SliderFloat("attackOffsetU.y", &ma.attackOffsetU.y, min, max, "%.1f");
+				});
+		}
+		ImGui::End();
 	}
 private:
 	static void OnAnimationInterrupt(const entt::entity& owner, const entt::entity& self, entt::registry& ECS)

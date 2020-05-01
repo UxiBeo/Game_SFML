@@ -9,16 +9,8 @@ namespace GES
 {
 	struct EffectTags
 	{
-		Tag::Bitfiled tags;
-
-		Tag::Bitfiled target_RequiredTags;
-		Tag::Bitfiled target_BlockTags;
-
-		Tag::Bitfiled begin_target_GrantTags;
-		Tag::Bitfiled begin_target_RemoveTags;
-
-		Tag::Bitfiled end_target_GrantTags;
-		Tag::Bitfiled end_target_RemoveTags;
+		Tag::Bitfiled target_RequiredTags = 0;
+		Tag::Bitfiled target_BlockTags = 0;
 	};
 	enum class DurationType
 	{
@@ -60,7 +52,7 @@ namespace GES
 		uint8_t value = 0;
 	};
 
-	struct EffectResource
+	/*struct EffectResource
 	{
 		struct EffectLoader final : entt::loader<EffectLoader, EffectResource> {
 			std::shared_ptr<EffectResource> load(entt::hashed_string filename) const
@@ -154,17 +146,7 @@ namespace GES
 							resource->CostAmount.emplace_back(GES::HealthPoint, i["Amount"].get<float>());
 						}
 					}
-				}/*
-				if (json.count("Capture") > 0)
-				{
-					for (auto i : json["Capture"])
-					{
-						if (i["Type"].get<uint8_t>() == GES::Attack)
-						{
-							resource->Capture.emplace_back(GES::Attack);
-						}
-					}
-				}*/
+				}
 				if (json.count("Modified") > 0)
 				{
 					for (auto i : json["Modified"])
@@ -216,15 +198,19 @@ namespace GES
 		uint8_t maxStack = 0;
 		std::vector<std::pair<AttributeType, float>> CostAmount;
 		std::vector<std::pair<AttributeType, Value>> Modified;
+	};*/
+	struct TryAppyEffect
+	{
+		entt::entity target = entt::null;
+		entt::entity creator = entt::null;
+		entt::entity source = entt::null;
+		entt::entity self = entt::null;
+		entt::entity prefapEntity = entt::null;
 	};
-
-	struct EffectInfo
+	struct OnEffectCreate
 	{
 		EffectTags tags;
-		entt::entity prefapEntity;
-		entt::hashed_string texturePath;
-		entt::entity source = entt::null;
-		entt::entity target = entt::null;
+		entt::delegate<void(const TryAppyEffect&, entt::registry&)> mrD;
 	};
 	struct RenewEffect
 	{
@@ -259,11 +245,6 @@ namespace GES
 	{
 		std::unordered_map<entt::entity, entt::entity> entities;
 	};
-	struct TryAppyEffect
-	{
-		entt::entity target = entt::null;
-		entt::entity source = entt::null;
-		entt::entity prefapEntity = entt::null;
-	};
+	
 	struct MarkDelete{};
 };

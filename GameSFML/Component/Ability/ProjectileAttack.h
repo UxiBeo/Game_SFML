@@ -6,6 +6,7 @@
 #include "../GameplayEffectComponent.h"
 #include "../TimerComponent.h"
 #include "../../Graphics.h"
+#include "imgui.h"
 struct ProjectileAttack
 {
 	static void OnAbilityStart(const GAS::AbilityComponent& ab, entt::registry& ECS)
@@ -20,6 +21,28 @@ struct ProjectileAttack
 		pm.an.triggerD.connect<&ProjectileAttack::OnAnimationNotify>();
 		pm.an.interrupD.connect<&ProjectileAttack::OnAnimationInterrupt>();
 		pm.iSet = ac.iSet % 4 + 4 * pa.castAnimation;
+	}
+	static void ShowProjectTileWindow(entt::registry& ECS)
+	{
+		if (ImGui::Begin("Projecttile Attack"))
+		{
+			float min = -10.0f;
+			float max = 10.0f;
+			ECS.view<ProjectileAttack>().each([&min, &max](auto entity, ProjectileAttack& ma) {
+				int anime = (int)ma.projectileAnimation;
+				ImGui::SliderInt("P Animation", &anime, 0, 15);
+				ImGui::SliderFloat("P Speed", &ma.projectileSpeed, 5.0f, 100.0f, "%.1f");
+				ImGui::SliderFloat("Trigger Time", &ma.triggerTime, 0.0f, 2.0f, "%.3f");
+				ImGui::SliderFloat("attackOffsetD.x", &ma.attackOffsetD.x, min, max, "%.1f");
+				ImGui::SliderFloat("attackOffsetD.y", &ma.attackOffsetD.y, min, max, "%.1f");
+				ImGui::SliderFloat("attackOffsetU.x", &ma.attackOffsetU.x, min, max, "%.1f");
+				ImGui::SliderFloat("attackOffsetU.y", &ma.attackOffsetU.y, min, max, "%.1f");
+				ma.projectileAnimation = (uint8_t)anime;
+				});
+
+
+		}
+		ImGui::End();
 	}
 private:
 	static void OnAnimationInterrupt(const entt::entity& owner, const entt::entity& self, entt::registry& ECS)
@@ -66,6 +89,7 @@ private:
 		auto eProjectile = ECS.create();
 		auto& pAnim = ECS.assign<AnimationComponent>(eProjectile, me.animationName, me.projectileAnimation);
 		ECS.assign<sf::Sprite>(eProjectile).setTexture(Codex<TextureResource>::Retrieve(pAnim.ar->textureName).data);
+		//ECS.assign<GlowComponent>(eProjectile);
 		ECS.assign<Timer::LifeTimeComponent>(eProjectile, 0.0f, 5.0f);
 		//physic
 		{
@@ -74,10 +98,10 @@ private:
 			bodyDef.fixedRotation = true;
 			b2CircleShape circle;
 			circle.m_radius = 1.0f;
-			auto& rect = ECS.assign<sf::RectangleShape>(eProjectile);
+			/*auto& rect = ECS.assign<sf::RectangleShape>(eProjectile);
 			rect.setSize({ circle.m_radius * 20.0f, circle.m_radius * 20.0f });
 			rect.setOrigin(circle.m_radius * 20.0f / 2.0f, circle.m_radius * 20.0f / 2.0f);
-			rect.setFillColor(sf::Color(150, 150, 250, 128));
+			rect.setFillColor(sf::Color(150, 150, 250, 128));*/
 			b2FixtureDef fixtureDef;
 			fixtureDef.shape = &circle;
 			fixtureDef.filter.categoryBits = Physic::Fillter::PLAYER;
@@ -88,7 +112,9 @@ private:
 			fixtureDef.restitution = 1.0f;
 			auto& pc = PhysicSystem::AddPhysic(eProjectile, ECS, bodyDef, fixtureDef);
 			pc->SetTransform(pos, 0.0f);
-			pc->ApplyLinearImpulseToCenter(pc->GetMass() * me.projectileSpeed * (gp.goalPos - pos), true);
+			b2Vec2 direction = gp.goalPos - pos;
+			direction.Normalize();
+			pc->ApplyLinearImpulseToCenter(pc->GetMass() * me.projectileSpeed * direction, true);
 			ECS.assign<Physic::Listener<Physic::Type::Normal>>(eProjectile).mrD.connect<&ProjectileAttack::OnProjectileHit>();
 			ECS.assign<GAS::ModifiedEffect>(eProjectile);
 		}
@@ -110,8 +136,8 @@ public:
 	entt::hashed_string animationName;
 	uint8_t projectileAnimation = 0;
 	float triggerTime = 0.0f;
-	float projectileSpeed = 3.0f;
+	float projectileSpeed = 10.0f;
 	b2Vec2 attackOffsetLR = { 4.0f, 4.0f };
-	b2Vec2 attackOffsetD = { 0.0f, -3.5f };
-	b2Vec2 attackOffsetU = { 0.0f, 5.0f };
+	b2Vec2 attackOffsetD = { 0.0f, 0.0f };
+	b2Vec2 attackOffsetU = { 0.0f, 7.0f };
 };

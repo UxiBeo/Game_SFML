@@ -1,8 +1,7 @@
 #pragma once
-#include <set>
-#include <optional>
-#include <execution>
+#include <unordered_set>
 #include "entt/core/hashed_string.hpp"
+
 class Tag
 {
 public:
@@ -41,10 +40,14 @@ public:
 		return bitfiled;
 	}
 	
-	const std::set<entt::hashed_string::hash_type>& GetTagContainer() const
+	const std::unordered_set<entt::hashed_string::hash_type>& GetTagContainer() const
 	{
 		return tagContainer;
 	}
 private:
-	std::set<entt::hashed_string::hash_type> tagContainer;
+	std::unordered_set<entt::hashed_string::hash_type> tagContainer;
+};
+struct TagComponent
+{
+	Tag::Bitfiled tags = 0;
 };

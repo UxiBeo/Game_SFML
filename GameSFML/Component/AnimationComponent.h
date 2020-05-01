@@ -25,7 +25,7 @@ struct AnimationResource
 	struct AnimationLoader final : entt::loader<AnimationLoader, AnimationResource> {
 		std::shared_ptr<AnimationResource> load(entt::hashed_string filename) const
 		{
-			const nlohmann::json Json = MaxxUtility::GetJson(filename);
+			const nlohmann::json Json = MaxU::GetJson(filename);
 
 			std::string imageName{ "Data\\Images\\" };
 			imageName += Json["imageName"].get<std::string>();

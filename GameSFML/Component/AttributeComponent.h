@@ -1,6 +1,5 @@
 #pragma once
 #include <numeric>
-
 namespace GES
 {
 	struct Value
@@ -119,13 +118,14 @@ namespace GES
 		float curMaxValue;
 	};
 	
+
 	enum AttributeType
 	{
 		CritChange,
 		CritDame,
 		Attack,
 		Defence,
-		HealthPoint ,
+		HealthPoint,
 		ManaPoint,
 		Count
 	};

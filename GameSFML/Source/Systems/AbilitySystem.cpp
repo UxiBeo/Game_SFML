@@ -31,9 +31,13 @@ void AbilitySystem::Cooldown(entt::registry& ECS, float dt) const
 void AbilitySystem::TryActiveAbility(entt::registry& ECS) const
 {
 	ECS.view<GAS::TryActivateAbility, GAS::AbilityComponent>().each([&ECS](auto entity, auto, GAS::AbilityComponent& ac) {
-		if (ECS.has<GAS::Activating>(entity)) return;
-		if (ECS.has<GAS::DoingCooldown>(entity)) return;
-
+		if (ECS.has<GAS::Activating>(entity) || ECS.has<GAS::DoingCooldown>(entity)) return;
+		if ((ac.tag.self_BlockTags & ac.tag.self_tag) > 0 ||
+			(ac.tag.self_RequiredTags & ac.tag.self_tag) != ac.tag.self_RequiredTags) return;
+		const auto& tags = ECS.get<TagComponent>(ac.owner).tags;
+		if ((ac.tag.owner_BlockTags & tags) > 0 ||
+			(ac.tag.owner_RequiredTags & tags) != ac.tag.owner_RequiredTags) return;
+		assert(ac.mrD);
 		if (ac.mrD) ac.mrD(ac, ECS);
 		});
 	ECS.clear<GAS::TryActivateAbility>();

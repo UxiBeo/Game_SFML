@@ -10,6 +10,7 @@
 #include "../Component/StampContex.h"
 #include "../Component/Ability/MeleeAttack.h"
 #include "../Component/Ability/ProjectileAttack.h"
+#include "../Component/ImguiComponent.h"
 World::World(entt::registry& ECS)
 {
 	InitContex(ECS);
@@ -48,10 +49,10 @@ void World::AddNewPlayer(entt::registry& ECS)
 	b2PolygonShape box;
 	
 	box.SetAsBox(30.0f / 20.0f, 58.0f / 20.0f, { 0.0f, 53 / 20.0f }, 0.0f);
-	auto& rect = ECS.assign<sf::RectangleShape>(entity);
+	/*auto& rect = ECS.assign<sf::RectangleShape>(entity);
 	rect.setSize({ 60.0f, 116.0f });
 	rect.setOrigin(30.0f, 107.0f);
-	rect.setFillColor(sf::Color(150, 50, 250, 128));
+	rect.setFillColor(sf::Color(150, 50, 250, 128));*/
 	b2FixtureDef fixtureDef;
 	fixtureDef.shape = &box;
 	fixtureDef.filter.categoryBits = Physic::Fillter::PLAYER;
@@ -63,7 +64,13 @@ void World::AddNewPlayer(entt::registry& ECS)
 	constexpr auto sa = "Data\\Json\\a_greatsword.json"_hs;
 	auto& animation = ECS.assign<AnimationComponent>(entity, sa);
 	ECS.assign<FSM::State>(entity).mrD.connect<&PlayerAnimationState::Idle>();
-
+	//imgui
+	{
+		auto imguie = ECS.create();
+		ECS.assign<ImguiComponent>(imguie).mrD.connect<&ProjectileAttack::ShowProjectTileWindow>();
+		ECS.assign<ShowImgui>(imguie);
+	}
+	
 	//meleeAttack
 	{
 		float cd = animation.frameTime * float(1 + animation.ar->sets[4].iEnd - animation.ar->sets[4].iBegin);
@@ -98,7 +105,7 @@ void World::AddNewPlayer(entt::registry& ECS)
 		ECS.get<GAS::AbilitySlot>(entity).abilities.emplace_back(eac);
 	}
 
-	ECS.assign<Tag::Bitfiled>(entity);
+	ECS.assign<TagComponent>(entity);
 	//sprite
 	{
 		ECS.assign<sf::Sprite>(entity).setTexture(Codex<TextureResource>::Retrieve(animation.ar->textureName).data);
@@ -139,7 +146,7 @@ void World::InitSystem()
 	AddECSSystem(std::make_unique<CleanDeathSystem>());
 	AddECSSystem(std::make_unique<AnimationSystem>());
 	AddECSSystem(std::make_unique<SpirteUpdateSystem>());
-
+	//AddECSSystem(std::make_unique<DrawGlowSystem>());
 
 	
 	AddDrawSystem(std::make_unique<RenderSpriteSystem>());

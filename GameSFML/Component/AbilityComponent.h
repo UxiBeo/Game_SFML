@@ -10,17 +10,18 @@ namespace GAS
 	{
 		std::vector<entt::entity> abilities;
 	};
+
 	struct AbilityTag
 	{
-		Tag::Bitfiled source_RequiredTags;
-		Tag::Bitfiled source_BlockTags;
-		Tag::Bitfiled onStart_Source_GrandTags;
-		Tag::Bitfiled onStart_Source_RemoveTags;
-		Tag::Bitfiled onEnd_Source_GrandTags;
-		Tag::Bitfiled onEnd_Source_RemoveTags;
+		Tag::Bitfiled self_tag = 0;
+		Tag::Bitfiled self_RequiredTags = 0;
+		Tag::Bitfiled self_BlockTags = 0;
+		Tag::Bitfiled owner_RequiredTags = 0;
+		Tag::Bitfiled owner_BlockTags = 0;
 	};
 	struct AbilityComponent
 	{
+		AbilityTag tag;
 		entt::entity owner = entt::null;
 		entt::entity self = entt::null;
 		entt::delegate<void(const AbilityComponent&, entt::registry&)> mrD;
