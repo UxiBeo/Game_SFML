@@ -6,6 +6,9 @@
 * [Entt](https://github.com/skypjack/entt) : For ECS libary.
 * [nlohmann/json](https://github.com/nlohmann/json) : For parse json.
 * [Box2d](https://github.com/erincatto/Box2D) : For physic 2d.
+* [Imgui-sfml](https://github.com/eliasdaler/imgui-sfml) : GUI.
+* [Tmxlite](https://github.com/fallahn/tmxlite) : Parse Tiled Map.
+
 
 # How To Install
 Need SFML and Entt install using vcpkg
@@ -13,4 +16,7 @@ Need SFML and Entt install using vcpkg
 vcpkg install sfml:x64-windows
 vcpkg install entt:x64-windows
 vcpkg install box2d:x64-windows
+vcpkg install tmxlite:x64-windows
+vcpkg install imgui-sfml:x64-windows
+vcpkg install nlohmann-json:x64-windows
 ```
